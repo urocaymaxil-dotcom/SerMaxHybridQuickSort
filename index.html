@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SerMax Hybrid QuickSort: Optimizing Efficiency through Bidirectional Partitioning, Priority Queues, and Polynomial Regression-Based Pivot Estimation</title>
+  <meta name="description" content="Interactive comparison of Traditional QuickSort vs SerMaxHybridQuickSort featuring bidirectional partitioning, priority queue management, and polynomial regression-based pivot estimation." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<!-- ═══════════ UP CEBU BANNER ═══════════ -->
+<div class="up-banner">
+  <div class="up-banner-logos-left">
+    <img src="up-system-logo.jpg" alt="University of the Philippines System Logo" class="up-logo" onerror="this.style.display='none'" />
+    <img src="up-cebu-logo.png" alt="University of the Philippines Cebu Logo" class="up-logo" onerror="this.style.display='none'" />
+  </div>
+  <div class="up-text">
+    <div class="up-title">University of the Philippines, Cebu</div>
+    <div class="up-subtitle">College of Science • Department of Computer Science</div>
+    <div class="up-address">Gorordo Avenue, Cebu City, 6000 Cebu</div>
+    <div class="up-thesis">SerMax Hybrid QuickSort: Optimizing Efficiency through Bidirectional Partitioning, Priority Queues, and Polynomial Regression-Based Pivot Estimation</div>
+  </div>
+  <div class="up-banner-logos-right">
+    <img src="college-science-logo.png" alt="College of Science Logo" class="up-logo" onerror="this.style.display='none'" />
+    <img src="cs-logo.png" alt="Computer Science Logo" class="up-logo" onerror="this.style.display='none'" />
+  </div>
+</div>
+
+<!-- ═══════════ SIDEBAR ═══════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="sidebar-logo-card">
+      <img src="sermax-logo.png" alt="SerMaxHybridQuickSort Logo" onerror="this.style.display='none'" />
+    </div>
+    <span class="logo-text" style="text-align: center; width: 100%; display: block; margin-top: 10px;">SerMaxHybridQuickSort</span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <div class="nav-label">Algorithms</div>
+    <a class="nav-item active" href="#" onclick="showView('dashboard'); return false;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
+      Dashboard
+    </a>
+    <a class="nav-item" href="#" onclick="showView('visualizer'); return false;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+      Live Visualizer
+    </a>
+    <a class="nav-item" href="#" onclick="showView('benchmark'); return false;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Benchmark
+    </a>
+    <a class="nav-item" href="#" onclick="showView('manual'); return false;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+      Manual Input
+    </a>
+
+    <div class="nav-label" style="margin-top:16px;">Learn</div>
+    <a class="nav-item" href="#" onclick="showView('howit'); return false;">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      How SerMaxHybridQuickSort Works
+    </a>
+  </nav>
+
+  <div class="sidebar-footer" style="flex-direction: column; align-items: flex-start; gap: 4px;">
+    <div class="algo-pill trad" style="width: 100%; text-align: center;">Traditional QuickSort</div>
+    <span style="color:var(--text-dim);font-size:0.65rem; width: 100%; text-align: center;">vs</span>
+    <div class="algo-pill sermax" style="width: 100%; text-align: center;">SerMaxHybridQuickSort</div>
+  </div>
+</aside>
+
+<!-- ═══════════ MAIN ═══════════ -->
+<div class="layout">
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 id="page-title">Dashboard</h1>
+      <p id="page-sub">Overview of both algorithms and current dataset</p>
+    </div>
+    <div class="topbar-right">
+      <div class="dataset-info" id="dataset-info">No dataset loaded</div>
+      <button class="btn btn-ghost" onclick="showView('manual')">+ New Array</button>
+      <button class="btn btn-primary" onclick="quickGenerate()">🎲 Generate</button>
+    </div>
+  </header>
+
+  <main id="main-content">
+
+    <!-- ═══ DASHBOARD ═══ -->
+    <div class="view" id="view-dashboard">
+      <!-- Array preview -->
+      <div class="section-card" style="margin-bottom:20px;">
+        <div class="card-header">
+          <h2>Current Array</h2>
+          <div class="badge-row" id="array-badge-row">—</div>
+        </div>
+        <div class="mini-bars" id="dash-bars">
+          <div class="empty-hint">Generate or enter an array to begin.</div>
+        </div>
+      </div>
+
+      <!-- Quick action cards -->
+      <div class="action-grid">
+        <div class="action-card trad-card" onclick="runTraditional()">
+          <div class="action-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+          <h3>Traditional QuickSort</h3>
+          <p>Run classic Lomuto partition on the current array</p>
+          <span class="action-tag">O(n log n) average</span>
+        </div>
+        <div class="action-card sermax-card" onclick="runSermax()">
+          <div class="action-icon sermax-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
+          <h3>SerMaxHybridQuickSort</h3>
+          <p>Polynomial Regression Pivot + Bidirectional Partitioning + Priority Queue</p>
+          <span class="action-tag sermax-tag">Hybrid · Three Optimizations</span>
+        </div>
+        <div class="action-card compare-card" onclick="runBoth()">
+          <div class="action-icon compare-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <h3>Compare Both</h3>
+          <p>Run both simultaneously and compare all metrics</p>
+          <span class="action-tag compare-tag">Side-by-side analysis</span>
+        </div>
+        <div class="action-card vis-card" onclick="showView('visualizer')">
+          <div class="action-icon vis-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/><path d="M12 22V13m0-2V2"/></svg></div>
+          <h3>Live Visualizer</h3>
+          <p>Watch the sorting happen step-by-step with color coding</p>
+          <span class="action-tag vis-tag">Animated · Slow motion</span>
+        </div>
+      </div>
+
+      <!-- Result panels (shown after running) -->
+      <div id="dash-results" style="display:none; margin-top:20px;">
+        <div class="dual-result-grid">
+          <div class="result-panel" id="trad-result-panel">
+            <div class="result-header trad-header">
+              <span class="result-algo-name">Traditional QuickSort</span>
+              <span class="result-badge-trad">LOMUTO</span>
+            </div>
+            <div class="result-metrics" id="trad-metrics-display"></div>
+          </div>
+          <div class="result-panel" id="sermax-result-panel" style="display:none;">
+            <div class="result-header sermax-header">
+              <span class="result-algo-name">✦ SerMaxHybridQuickSort</span>
+              <span class="result-badge-sermax">Polynomial Regression Hybrid</span>
+            </div>
+            <div class="result-metrics" id="sermax-metrics-display"></div>
+          </div>
+        </div>
+        <div class="compare-summary" id="compare-summary" style="display:none;"></div>
+        <div class="result-explanation" id="result-explanation-card" style="display:none; margin-top:20px;"></div>
+      </div>
+
+      <!-- Sorted array preview -->
+      <div id="sorted-preview" style="display:none; margin-top:16px;">
+        <div class="section-card">
+          <div class="card-header"><h2>Sorted Result</h2></div>
+          <div class="mini-bars sorted" id="sorted-bars"></div>
+        </div>
+      </div>
+
+      <!-- Academic Context Panel -->
+      <div class="academic-panel" id="academic-dashboard">
+        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
+          <div class="academic-panel-left">
+            <span class="academic-badge">Thesis Context</span>
+            <div>
+              <div class="academic-panel-title">Experimental Setup and Performance Metrics Analysis</div>
+              <div class="academic-panel-ref">Reference: Section 2.3 and Section 2.4 — Experimental Setup and Metrics</div>
+            </div>
+          </div>
+          <div class="academic-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="academic-panel-body">
+          <div class="academic-panel-content">
+            <p>This interactive dashboard replicates the <b>experimental execution environment</b> utilized during the validation phase of the research. In the paper, performance metrics are meticulously captured and analyzed to verify the efficiency of the hybrid approach under controlled conditions.</p>
+            <p style="margin-top: 10px;">The metrics displayed above represent the critical performance indicators analyzed in <i>Table 1</i> and <i>Table 2</i> of the thesis:</p>
+            <ul style="margin-left: 20px; margin-top: 5px;">
+              <li><b>Comparisons</b>: The total number of element comparisons made during sorting. Fewer comparisons indicate a more balanced partitioning scheme.</li>
+              <li><b>Swaps</b>: The number of write operations performed to exchange elements. Reducing swaps directly translates to fewer memory writes and lower cache thrashing.</li>
+              <li><b>Execution Time</b>: Measured in <i>microseconds</i> or <i>milliseconds</i> to determine empirical runtime advantages.</li>
+              <li><b>Partition Operations</b>: The count of divide-and-conquer steps executed, indicating recursion tree height and subproblem partitioning health.</li>
+              <li><b>Recursive Calls / Queue Pops</b>: Measures the overhead of control flow execution, demonstrating how the iterative priority queue replaces deep call stacks.</li>
+            </ul>
+            <div class="academic-key-points">
+              <span class="academic-key-point">Comparisons</span>
+              <span class="academic-key-point">Swaps</span>
+              <span class="academic-key-point">Execution Time</span>
+              <span class="academic-key-point">Partition Operations</span>
+              <span class="academic-key-point">Recursive Calls</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ VISUALIZER ═══ -->
+    <div class="view" id="view-visualizer" style="display:none;">
+      <div class="vis-controls section-card" style="margin-bottom:20px;">
+        <div class="controls-row">
+          <div class="ctrl-group">
+            <label>Distribution</label>
+            <select id="vis-dist" onchange="generateForVis()">
+              <option value="random">Random</option>
+              <option value="nearly">Nearly Sorted</option>
+              <option value="reverse">Reverse Sorted</option>
+              <option value="duplicates">Many Duplicates</option>
+            </select>
+          </div>
+          <div class="ctrl-group">
+            <label>Size: <b id="vis-size-lbl">50</b></label>
+            <input type="range" id="vis-size" min="10" max="100" step="5" value="50"
+              oninput="document.getElementById('vis-size-lbl').textContent=this.value"
+              onchange="generateForVis()" />
+          </div>
+          <div class="ctrl-group">
+            <label>Speed: <b id="vis-speed-lbl">50 milliseconds</b></label>
+            <input type="range" id="vis-speed" min="5" max="600" step="10" value="50"
+              oninput="document.getElementById('vis-speed-lbl').textContent=this.value+' milliseconds'" />
+          </div>
+          <div class="ctrl-btns">
+            <button class="btn btn-primary" id="vis-play-btn" onclick="togglePlay()">▶ Play</button>
+            <button class="btn btn-ghost" id="vis-step-btn" onclick="stepOnce()">⏭ Step</button>
+            <button class="btn btn-ghost" onclick="resetVis()">↺ Reset</button>
+            <button class="btn btn-ghost" onclick="generateForVis()">🎲 New</button>
+          </div>
+        </div>
+        <div class="vis-progress-row">
+          <div class="vis-op-label" id="vis-op-label">Press Play to begin</div>
+          <div class="vis-frame-info">Frame <b id="vis-frame-cur">0</b> / <b id="vis-frame-tot">0</b></div>
+        </div>
+      </div>
+
+      <!-- Dual canvas -->
+      <div class="vis-dual">
+        <div class="vis-panel">
+          <div class="vis-panel-header">
+            <span class="vis-algo-name trad-name">Traditional QuickSort</span>
+            <span class="vis-badge trad-b">Lomuto</span>
+          </div>
+          <div class="bar-stage" id="vis-bars-trad"></div>
+          <div class="vis-metrics">
+            <div class="vm"><span class="vml">Comparisons</span><span class="vmv" id="vc-cmp">0</span></div>
+            <div class="vm"><span class="vml">Swaps</span><span class="vmv" id="vc-swp">0</span></div>
+            <div class="vm"><span class="vml">Partitions</span><span class="vmv" id="vc-prt">0</span></div>
+            <div class="vm"><span class="vml">Recursive Calls</span><span class="vmv" id="vc-cal">0</span></div>
+          </div>
+        </div>
+        <div class="vis-panel sermax-panel">
+          <div class="vis-panel-header">
+            <span class="vis-algo-name sermax-name">✦ SerMaxHybridQuickSort</span>
+            <span class="vis-badge sermax-b">Polynomial Regression · Bidirectional</span>
+          </div>
+          <div class="bar-stage" id="vis-bars-sermax"></div>
+          <div class="vis-metrics">
+            <div class="vm"><span class="vml">Comparisons</span><span class="vmv sermax-val" id="vs-cmp">0</span></div>
+            <div class="vm"><span class="vml">Swaps</span><span class="vmv sermax-val" id="vs-swp">0</span></div>
+            <div class="vm"><span class="vml">Partitions</span><span class="vmv sermax-val" id="vs-prt">0</span></div>
+            <div class="vm"><span class="vml">Queue Pops</span><span class="vmv sermax-val" id="vs-cal">0</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Legend -->
+      <div class="legend">
+        <div class="leg-item"><div class="leg-dot" style="background:#22d3ee"></div>Pivot</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#fbbf24"></div>Active Pointer</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#f43f5e"></div>Swapping</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#818cf8"></div>Traditional Subarray</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#38bdf8"></div>SerMaxHybridQuickSort Subarray</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#34d399"></div>Sorted</div>
+        <div class="leg-item"><div class="leg-dot" style="background:#1e2d45"></div>Inactive</div>
+      </div>
+
+      <!-- Academic Context Panel -->
+      <div class="academic-panel" id="academic-visualizer">
+        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
+          <div class="academic-panel-left">
+            <span class="academic-badge">Thesis Context</span>
+            <div>
+              <div class="academic-panel-title">Visualizing the Hybrid Algorithmic Framework</div>
+              <div class="academic-panel-ref">Reference: Section 2.2 — Algorithmic Framework and Innovations</div>
+            </div>
+          </div>
+          <div class="academic-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="academic-panel-body">
+          <div class="academic-panel-content">
+            <p>The Live Visualizer is designed to visually demonstrate the execution of the three core innovations proposed in the thesis: <b>Polynomial Regression-Based Pivot Estimation</b>, <b>Bidirectional Partitioning</b>, and the <b>Iterative Priority Queue</b> management system.</p>
+            <p style="margin-top: 10px;">By watching the step-by-step color-coded animation, you can observe the physical differences between the Lomuto partition scheme in Traditional QuickSort and the Hoare-style bidirectional partition scheme in SerMaxHybridQuickSort:</p>
+            <ul style="margin-left: 20px; margin-top: 5px;">
+              <li><b>Polynomial Regression-Based Pivot Estimation</b>: The cyan bar represents the pivot selected by statistical analysis of the subarray (mean, variance, skewness) to achieve optimal balance.</li>
+              <li><b>Bidirectional Partitioning</b>: The yellow pointer bars represent the twin pointers scanning from both ends simultaneously, swapping out-of-order elements instantly, minimizing array scanning.</li>
+              <li><b>Iterative Priority Queue</b>: Rather than plunging into recursive depths, the subproblems are pushed onto a queue, maintaining stack safety at a maximum of logarithmic depth.</li>
+            </ul>
+            <div class="academic-key-points">
+              <span class="academic-key-point">Pivot Estimation</span>
+              <span class="academic-key-point">Bidirectional Partitioning</span>
+              <span class="academic-key-point">Priority Queue</span>
+              <span class="academic-key-point">Lomuto vs Hoare</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ BENCHMARK ═══ -->
+    <div class="view" id="view-benchmark" style="display:none;">
+      <div class="section-card" style="margin-bottom:20px;">
+        <div class="card-header"><h2>Benchmark Configuration</h2></div>
+        <div class="controls-row" style="padding-top:4px;">
+          <div class="ctrl-group">
+            <label>Distribution</label>
+            <select id="bench-dist">
+              <option value="random">Random (Uniform)</option>
+              <option value="nearly">Nearly Sorted</option>
+              <option value="reverse">Reverse Sorted</option>
+              <option value="duplicates">Many Duplicates</option>
+            </select>
+          </div>
+          <div class="ctrl-group">
+            <label>Array Size: <b id="bench-size-lbl">3,000</b></label>
+            <input type="range" id="bench-size" min="100" max="10000" step="100" value="3000"
+              oninput="document.getElementById('bench-size-lbl').textContent=Number(this.value).toLocaleString()" />
+          </div>
+          <div class="ctrl-btns">
+            <button class="btn btn-primary" id="bench-run-btn" onclick="runBenchmark()">⚡ Run Benchmark</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts + Summary -->
+      <div class="bench-layout">
+        <div class="section-card">
+          <div class="card-header"><h2>Performance Charts</h2></div>
+          <div id="bench-chart-area">
+            <div class="bench-empty">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="8" width="4" height="12"/><rect x="17" y="4" width="4" height="16"/></svg>
+              <p>Run a benchmark to see charts</p>
+            </div>
+          </div>
+        </div>
+        <div class="bench-summary-panel section-card">
+          <div class="card-header"><h2>Results Summary</h2></div>
+          <div id="bench-summary-content">
+            <div class="bench-empty" style="height:200px;"><p>No results yet</p></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History table -->
+      <div class="section-card" id="bench-history-card" style="display:none; margin-top:20px;">
+        <div class="card-header"><h2>Benchmark History</h2></div>
+        <table class="history-table" id="bench-history-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Size</th><th>Distribution</th>
+              <th>Traditional Time</th><th>SerMaxHybridQuickSort Time</th><th>Speedup</th>
+              <th>Comparisons Difference</th><th>Swaps Difference</th>
+            </tr>
+          </thead>
+          <tbody id="bench-history-body"></tbody>
+        </table>
+      </div>
+
+      <!-- Academic Context Panel -->
+      <div class="academic-panel" id="academic-benchmark">
+        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
+          <div class="academic-panel-left">
+            <span class="academic-badge">Thesis Context</span>
+            <div>
+              <div class="academic-panel-title">Empirical Results and Speedup Comparisons</div>
+              <div class="academic-panel-ref">Reference: Section 3 — Empirical Results and Comparative Performance Analysis</div>
+            </div>
+          </div>
+          <div class="academic-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="academic-panel-body">
+          <div class="academic-panel-content">
+            <p>This Benchmark Sandbox replicates the exact experimental scenarios and test cases documented in the research paper to compare <i>Traditional QuickSort</i> and <i>SerMaxHybridQuickSort</i> on large datasets. The four distribution types map directly to the benchmark trials in the paper:</p>
+            <ul style="margin-left: 20px; margin-top: 5px;">
+              <li><b>Random Distribution</b>: Evaluates standard efficiency. While both algorithms achieve O(n log n) efficiency, SerMaxHybridQuickSort demonstrates a lower constant factor due to fewer swaps.</li>
+              <li><b>Nearly Sorted Distribution</b>: Highlights the vulnerability of traditional algorithms and demonstrates how the Polynomial Regression model avoids worst-case pivot selection.</li>
+              <li><b>Reverse Sorted Distribution</b>: Verifies resistance to standard quicksort degradation and showcases the symmetry of the bidirectional partitioning scheme.</li>
+              <li><b>Many Duplicates</b>: Demonstrates how the combination of pivot estimation and bidirectional scanning successfully prevents the O(n²) degradation common in basic partition schemes.</li>
+            </ul>
+            <p style="margin-top: 10px;">The speedup factor is calculated as the ratio of <i>Traditional QuickSort Execution Time</i> to <i>SerMaxHybridQuickSort Execution Time</i>, demonstrating real-world acceleration.</p>
+            <div class="academic-key-points">
+              <span class="academic-key-point">Random Distribution</span>
+              <span class="academic-key-point">Nearly Sorted</span>
+              <span class="academic-key-point">Reverse Sorted</span>
+              <span class="academic-key-point">Many Duplicates</span>
+              <span class="academic-key-point">Speedup Factor</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ INTERACTIVE GENERATION (WIZARD) ═══ -->
+    <div class="view" id="view-manual" style="display:none;">
+      <div class="section-card" style="max-width:680px; margin: 0 auto;">
+        <div class="card-header"><h2>Dataset Generator</h2></div>
+        
+        <div id="wizard-step-1" style="padding: 20px;">
+          <label class="field-label">How many elements do you want to sort?</label>
+          <input type="number" id="wizard-size" class="array-textarea" style="min-height: 40px; margin-bottom: 15px;" value="20" min="2" max="10000" />
+          
+          <label class="field-label">How would you like to provide the elements?</label>
+          <div style="display:flex;gap:10px;margin: 0 20px 20px;">
+            <button class="btn btn-primary" onclick="wizardStep2('random')">🎲 Generate Randomly</button>
+            <button class="btn btn-ghost" onclick="wizardStep2('manual')">⌨️ Enter Manually</button>
+          </div>
+        </div>
+
+        <div id="wizard-step-2-random" style="display:none; padding: 20px; border-top: 1px solid var(--border);">
+          <label class="field-label">Select Distribution Type:</label>
+          <div style="margin: 0 20px 20px; display:flex; flex-direction:column; gap:8px;">
+            <label><input type="radio" name="wiz-dist" value="random" checked> 1. Random (uniform)</label>
+            <label><input type="radio" name="wiz-dist" value="nearly"> 2. Nearly sorted</label>
+            <label><input type="radio" name="wiz-dist" value="reverse"> 3. Reverse sorted</label>
+            <label><input type="radio" name="wiz-dist" value="duplicates"> 4. Many duplicates</label>
+          </div>
+          
+          <div style="display:flex;gap:10px;margin: 0 20px;">
+            <button class="btn btn-primary" onclick="wizardGenerateRandom()">Generate Numbers</button>
+            <button class="btn btn-ghost" onclick="wizardBack()">Back</button>
+          </div>
+          
+          <div id="wizard-preview" style="display:none; margin-top: 20px; padding: 15px; background: var(--surface2); border-radius: var(--radius-sm);">
+            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:10px;">Generated Array:</div>
+            <div id="wizard-preview-text" style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; word-break:break-all; max-height:100px; overflow-y:auto; margin-bottom:15px;"></div>
+            <div style="display:flex;gap:10px;">
+              <button class="btn btn-primary" onclick="wizardAccept()">✅ Use this Array</button>
+              <button class="btn btn-ghost" onclick="wizardGenerateRandom()">🎲 Generate Again</button>
+            </div>
+          </div>
+        </div>
+
+        <div id="wizard-step-2-manual" style="display:none; padding: 20px; border-top: 1px solid var(--border);">
+          <label class="field-label">Enter <span id="wiz-manual-count"></span> elements (comma or space separated):</label>
+          <textarea id="manual-input" class="array-textarea" placeholder="e.g. 64, 34, 25, 12..."></textarea>
+          <div style="display:flex;gap:10px;margin: 20px 20px 0;">
+            <button class="btn btn-primary" onclick="loadManualArray()">✓ Load Array</button>
+            <button class="btn btn-ghost" onclick="wizardBack()">Back</button>
+          </div>
+          <div id="manual-error" class="field-error" style="display:none;"></div>
+          <div id="manual-success" class="field-success" style="display:none;"></div>
+        </div>
+      </div>
+
+      <!-- Academic Context Panel -->
+      <div class="academic-panel" id="academic-wizard">
+        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
+          <div class="academic-panel-left">
+            <span class="academic-badge">Thesis Context</span>
+            <div>
+              <div class="academic-panel-title">Controlled Input Generation and Experimental Reproducibility</div>
+              <div class="academic-panel-ref">Reference: Section 3.1 — Input Verification Methodology</div>
+            </div>
+          </div>
+          <div class="academic-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="academic-panel-body">
+          <div class="academic-panel-content">
+            <p>The Dataset Generator replicates the input generation methodology built into the original Java test suite of the research project. To guarantee scientific accuracy and reproducibility, the sorting algorithms must be subjected to specific controlled inputs.</p>
+            <p style="margin-top: 10px;">By letting you customize the input size and select from four mathematically structured distributions, this wizard allows validation of the thesis's core performance hypotheses:</p>
+            <ul style="margin-left: 20px; margin-top: 5px;">
+              <li><b>Controlled Input</b>: Standardizes empirical benchmarks to ensure that results are not due to randomized anomalies but are statistically sound.</li>
+              <li><b>Distribution Type</b>: Reflects diverse datasets encountered in database systems, compilers, and operating systems.</li>
+              <li><b>Array Size</b>: Allows testing of scalability and growth in time and space complexity across several orders of magnitude.</li>
+            </ul>
+            <div class="academic-key-points">
+              <span class="academic-key-point">Controlled Input</span>
+              <span class="academic-key-point">Distribution Type</span>
+              <span class="academic-key-point">Array Size</span>
+              <span class="academic-key-point">Reproducibility</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ HOW IT WORKS ═══ -->
+    <div class="view" id="view-howit" style="display:none;">
+      <div class="howit-header section-card">
+        <div class="howit-title-area">
+          <div class="howit-badge">SerMaxHybridQuickSort</div>
+          <h2>Three Innovations Over Traditional QuickSort</h2>
+          <p>SerMaxHybridQuickSort combines three independent algorithmic improvements that together create a more efficient sorting algorithm, especially on real-world (non-random) data distributions.</p>
+        </div>
+      </div>
+
+      <div class="howit-grid">
+        <div class="howit-card">
+          <div class="howit-num">01</div>
+          <h3>Polynomial Regression–Based Pivot Estimation</h3>
+          <div class="howit-tag">Statistical Analysis</div>
+          <p>Traditional QuickSort (Lomuto partition scheme) always picks the last element as pivot — catastrophic on sorted/reverse-sorted input, leading to O(n²) worst case.</p>
+          <p>SerMaxHybridQuickSort analyzes each subarray's statistical properties before selecting a pivot:</p>
+          <ul>
+            <li><b>Mean</b> — central tendency</li>
+            <li><b>Variance</b> — spread of values</li>
+            <li><b>Skewness</b> — distribution asymmetry</li>
+          </ul>
+          <p>A fitted polynomial regression model estimates the optimal pivot position (offset index) to achieve a near-perfect split of elements, minimizing partition imbalance. On small subarrays containing fewer than ten elements, it falls back to the robust Median-of-Three partition method.</p>
+          <div class="formula-box">
+            Position = &beta;<sub>0</sub> + &beta;<sub>1</sub>&middot;&mu; + &beta;<sub>2</sub>&middot;&sigma;<sup>2</sup> + &beta;<sub>3</sub>&middot;&gamma; + &beta;<sub>4</sub>&middot;&mu;<sup>2</sup> + &beta;<sub>5</sub>&middot;&sigma;<sup>4</sup>
+          </div>
+          <div style="font-size: 0.78rem; color: var(--text-sub); margin-top: 10px; line-height: 1.6;">
+            <p style="font-weight: 700; color: var(--sermax); text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.05em; margin-bottom: 6px;">Variable and Coefficient Definitions:</p>
+            <ul style="margin-left: 15px; list-style-type: square; display: flex; flex-direction: column; gap: 4px;">
+              <li><b>Position (Predicted Pivot Position)</b>: The estimated optimal pivot index, expressed as a normalized ratio between zero and one relative to the subarray boundaries.</li>
+              <li><b>&beta;<sub>0</sub> (Intercept)</b>: The constant baseline index representing the default pivot when all statistical distribution characteristics are balanced.</li>
+              <li><b>&beta;<sub>1</sub>, &beta;<sub>2</sub>, &beta;<sub>3</sub> (Linear Coefficients)</b>: Represent the first-order sensitivity of the pivot selection to the normalized mean (&mu;), normalized variance (&sigma;<sup>2</sup>), and bounded skewness (&gamma;) respectively.</li>
+              <li><b>&beta;<sub>4</sub>, &beta;<sub>5</sub> (Nonlinear Polynomial Coefficients)</b>: Account for high-order interactions, specifically the quadratic behavior of the mean (&mu;<sup>2</sup>) and quartic behavior of the variance (&sigma;<sup>4</sup>) to capture dense clusters and asymmetrical tails.</li>
+              <li><b>&mu; (Normalized Mean)</b>: The first statistical moment, quantifying the central tendency of the subarray elements.</li>
+              <li><b>&sigma;<sup>2</sup> (Normalized Variance)</b>: The second statistical moment, measuring the dispersion and spread of values.</li>
+              <li><b>&gamma; (Bounded Skewness)</b>: The third statistical moment, determining the direction and degree of asymmetry in the dataset.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="howit-card">
+          <div class="howit-num">02</div>
+          <h3>Bidirectional Partitioning</h3>
+          <div class="howit-tag">Partition Efficiency</div>
+          <p>Traditional QuickSort's Lomuto partition scheme scans left-to-right only, causing up to <b>n swaps per partition</b> in the worst case. Elements far from their target position get moved multiple times.</p>
+          <p>SerMaxHybridQuickSort uses Hoare-style <b>bidirectional scanning</b>:</p>
+          <ul>
+            <li>Left pointer scans rightward for values ≥ pivot</li>
+            <li>Right pointer scans leftward for values ≤ pivot</li>
+            <li>When both stop, swap and continue</li>
+          </ul>
+          <p>This produces approximately <b>3× fewer swaps</b> on average, which reduces memory writes and cache thrashing on large arrays.</p>
+        </div>
+
+        <div class="howit-card">
+          <div class="howit-num">03</div>
+          <h3>Priority Queue Management</h3>
+          <div class="howit-tag">Stack Optimization</div>
+          <p>Traditional recursive QuickSort pushes both subarrays onto the call stack. On a sorted array of n=100,000 elements with poor pivot selection, call stack depth reaches n — causing <b>StackOverflow</b>.</p>
+          <p>SerMaxHybridQuickSort replaces the recursive call stack with an explicit <b>iterative priority queue</b>:</p>
+          <ul>
+            <li>Smaller subarrays are always processed first</li>
+            <li>Maximum queue depth stays O(log n)</li>
+            <li>No stack overflow risk, even on pathological inputs</li>
+            <li>Better CPU branch prediction due to smaller working sets</li>
+          </ul>
+          <p>This also enables future parallelism — queue items can be dispatched to worker threads.</p>
+        </div>
+      </div>
+
+      <!-- Complexity comparison -->
+      <div class="section-card">
+        <div class="card-header"><h2>Time Complexity Comparison</h2></div>
+        <table class="complexity-table">
+          <thead>
+            <tr><th>Case</th><th>Traditional QuickSort</th><th>SerMaxHybridQuickSort</th><th>Improvement</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Best case</td><td>O(n log n)</td><td>O(n log n)</td><td>Equivalent</td></tr>
+            <tr><td>Average case</td><td>O(n log n)</td><td>O(n log n)</td><td>Lower constant factor</td></tr>
+            <tr class="highlight-row"><td>Sorted / nearly-sorted input</td><td>O(n²)</td><td>O(n log n)</td><td class="better">Significantly better</td></tr>
+            <tr class="highlight-row"><td>Many duplicates</td><td>O(n²)</td><td>O(n log n)</td><td class="better">Significantly better</td></tr>
+            <tr><td>Space (stack depth)</td><td>O(n) worst case</td><td>O(log n)</td><td class="better">Eliminates overflow risk</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Academic Context Panel -->
+      <div class="academic-panel" id="academic-howit">
+        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
+          <div class="academic-panel-left">
+            <span class="academic-badge">Thesis Context</span>
+            <div>
+              <div class="academic-panel-title">Theoretical Foundations and Lomuto/Hoare Limitations</div>
+              <div class="academic-panel-ref">Reference: Section 1 and Section 2 — Theoretical Foundations</div>
+            </div>
+          </div>
+          <div class="academic-arrow">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </div>
+        </div>
+        <div class="academic-panel-body">
+          <div class="academic-panel-content">
+            <p>The theoretical basis of <b>SerMaxHybridQuickSort</b> addresses the three primary bottlenecks of standard recursive quicksort with Lomuto partitioning:</p>
+            <ol style="margin-left: 20px; margin-top: 5px;">
+              <li><b>O(n²) Worst-Case Time Complexity</b>: Solved by the Polynomial Regression model. It calculates optimal pivot indexes using statistical moments, avoiding unbalanced partitions.</li>
+              <li><b>Excessive Write Overhead</b>: Solved by bidirectional partitioning. The left and right scanning pointers swap elements across the array directly, reducing swaps by up to 66%.</li>
+              <li><b>Stack Overflow Vulnerability</b>: Solved by the Iterative Priority Queue. By replacing CPU recursive frames with heap-allocated priorities, stack depth remains strictly limited to logarithmic depth, guaranteeing system stability.</li>
+            </ol>
+            <p style="margin-top: 10px;">This page provides the mathematical models and comparative matrices analyzing these behaviors as proven in the core sections of the paper.</p>
+            <div class="academic-key-points">
+              <span class="academic-key-point">O(n log n) Guarantee</span>
+              <span class="academic-key-point">Pivot Estimation</span>
+              <span class="academic-key-point">Bidirectional Scanning</span>
+              <span class="academic-key-point">Stack Safety</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<div id="toast" class="toast" style="display:none;"></div>
+
+<link rel="stylesheet" href="style.css" />
+<script src="app.js"></script>
+</body>
+</html>
