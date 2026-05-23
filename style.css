@@ -6,6 +6,7 @@
 
 :root {
   --bg:          #160a0c;
+  --bg-lighter:  var(--surface2);
   --surface:     #2c1014;
   --surface2:    #3e161c;
   --surface3:    #4e1b23;

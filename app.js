@@ -123,11 +123,11 @@ function renderMiniBars(containerId, arr, activeColor = '#818cf8') {
   
   for (let i = 0; i < arr.length; i++) {
     const bar = document.createElement('div');
-    bar.className = 'bar';
+    bar.className = 'mb bar';
     bar.title = `Value: ${arr[i]}`;
     const heightPct = (arr[i] / max) * 100;
     bar.style.height = `${Math.max(5, heightPct)}%`;
-    bar.style.backgroundColor = containerId === 'dash-bars' ? 'var(--bg-lighter)' : activeColor;
+    bar.style.backgroundColor = containerId === 'dash-bars' ? 'var(--trad)' : activeColor;
     el.appendChild(bar);
   }
 }
