@@ -1655,9 +1655,13 @@
             <div>
               <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Verification / Visualization Size (<span id="vis-size-lbl" style="color:var(--up-gold);">25</span>)</label>
               <select id="vis-size" onchange="document.getElementById('vis-size-lbl').textContent=this.value; generateForVis();">
-                <option value="5">n = 5 (Verification Only)</option>
-                <option value="25" selected>n = 25 (Verification / Visualization)</option>
-                <option value="50">n = 50 (Verification / Visualization)</option>
+                <option value="5">n = 5 (Canonical Thesis Verification)</option>
+                <option value="15">n = 15 (Small Array: 5–20 Range)</option>
+                <option value="25" selected>n = 25 (Standard Visualization: 21–50 Range)</option>
+                <option value="50">n = 50 (Upper Medium: 21–50 Range)</option>
+                <option value="75">n = 75 (Large Array: 51–100 Range)</option>
+                <option value="100">n = 100 (Upper Large: 51–100 Range)</option>
+                <option value="150">n = 150 (Dense Windowed: &gt;100 Range)</option>
               </select>
             </div>
             <div style="flex:1; min-width:140px;">
@@ -1739,6 +1743,25 @@
               <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Logical Depth</div><b id="vc-dep">0</b></div>
               <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Balance (B)</div><b id="vc-bal">0.00</b></div>
             </div>
+
+            <!-- Expandable Current Array State Panel (Traditional QuickSort) -->
+            <div class="array-state-panel">
+              <div class="array-state-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-weight:700; font-size:0.75rem; color:var(--trad);">Current Array State</span>
+                  <span class="mono" id="trad-state-count" style="font-size:0.68rem; color:var(--text-dim);">(n elements)</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <label style="font-size:0.68rem; color:var(--text-dim);">Find Index:
+                    <input type="number" class="vis-search-input" id="vis-search-trad" min="0" placeholder="0..n-1" oninput="highlightSearchedIndex(this.value, false)" />
+                  </label>
+                  <button type="button" class="btn btn-ghost btn-xs" onclick="toggleLocalArrayState('trad-state-wrap')">Collapse / Expand</button>
+                </div>
+              </div>
+              <div class="array-state-table-wrap" id="trad-state-wrap">
+                <div id="trad-array-state-grid"></div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -1763,6 +1786,25 @@
               <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Logical Depth</div><b id="vs-dep" style="color:var(--up-gold);">0</b></div>
               <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Balance (B)</div><b id="vs-bal" style="color:var(--up-gold);">0.00</b></div>
             </div>
+
+            <!-- Expandable Current Array State Panel (SerMax Hybrid QuickSort) -->
+            <div class="array-state-panel">
+              <div class="array-state-header">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <span style="font-weight:700; font-size:0.75rem; color:var(--up-gold);">Current Array State</span>
+                  <span class="mono" id="sermax-state-count" style="font-size:0.68rem; color:var(--text-dim);">(n elements)</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <label style="font-size:0.68rem; color:var(--text-dim);">Find Index:
+                    <input type="number" class="vis-search-input" id="vis-search-sermax" min="0" placeholder="0..n-1" oninput="highlightSearchedIndex(this.value, true)" />
+                  </label>
+                  <button type="button" class="btn btn-ghost btn-xs" onclick="toggleLocalArrayState('sermax-state-wrap')">Collapse / Expand</button>
+                </div>
+              </div>
+              <div class="array-state-table-wrap" id="sermax-state-wrap">
+                <div id="sermax-array-state-grid"></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1779,35 +1821,7 @@
         <button type="button" class="btn btn-ghost btn-sm" onclick="unpinBarElement()">✕ Unpin</button>
       </div>
 
-      <!-- Expandable Current Array State Inspector -->
-      <div class="section-card mt-16" id="vis-array-state-card">
-        <div class="card-header">
-          <div class="card-header-left">
-            <div class="macos-dots">
-              <span class="mac-dot red" onclick="resetCard(this)"></span>
-              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
-              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
-            </div>
-            <h2>Current Array State &amp; Element Inspector (Synchronized)</h2>
-          </div>
-          <div style="display:flex; align-items:center; gap:8px;">
-            <label style="font-size:0.75rem; color:var(--text-dim);">Find Index:
-              <input type="number" id="vis-search-idx" placeholder="0..n-1" min="0" style="width:75px; padding:3px 6px; font-size:0.75rem;" oninput="highlightSearchedIndex(this.value)" />
-            </label>
-            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleArrayStateCollapse()">Collapse / Expand</button>
-          </div>
-        </div>
-        <div class="card-body" id="vis-array-state-body">
-          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
-            <div>
-              <div style="font-size:0.75rem; font-weight:700; color:var(--trad); margin-bottom:6px;" id="vis-state-trad-lbl">Baseline QuickSort Array State</div>
-              <div class="array-state-table-wrap" id="trad-array-state-grid"></div>
-            </div>
-            <div>
-              <div style="font-size:0.75rem; font-weight:700; color:var(--up-gold); margin-bottom:6px;">SerMax Hybrid QuickSort Array State</div>
-              <div class="array-state-table-wrap" id="sermax-array-state-grid"></div>
-            </div>
-          </div>
+      
         </div>
       </div>
 
@@ -1832,12 +1846,12 @@
             <table class="data-table" id="vis-history-table">
               <thead>
                 <tr>
-                  <th style="width:60px;">Step #</th>
-                  <th style="width:140px;">Algorithm</th>
-                  <th style="width:120px;">Operation</th>
-                  <th style="width:120px;">Affected Indices</th>
-                  <th style="width:160px;">Values Involved</th>
-                  <th>Resulting Array State Snippet</th>
+                  <th style="width:65px;">Step #</th>
+                  <th style="width:115px;">Operation</th>
+                  <th style="width:130px;">Affected Indices</th>
+                  <th style="width:170px;">Values Before Operation</th>
+                  <th style="width:170px;">Values After Operation</th>
+                  <th>Resulting Array State</th>
                 </tr>
               </thead>
               <tbody id="vis-history-tbody"></tbody>

@@ -1780,7 +1780,7 @@ function computeVisGlobalExtremes(arr) {
 
 function generateForVis(forceArray = null) {
   stopPlay();
-  const baselineAlgo = document.getElementById('vis-baseline-algo').value || 'trad';
+  const baselineAlgo = document.getElementById('vis-baseline-algo')?.value || 'trad';
   const titles = {
     trad: 'Traditional QuickSort (First-Element Pivot)',
     median3: 'Median-of-Three QuickSort',
@@ -1788,15 +1788,13 @@ function generateForVis(forceArray = null) {
   };
   const titleEl = document.getElementById('vis-baseline-title');
   if (titleEl) titleEl.textContent = titles[baselineAlgo] || titles.trad;
-  const stateTradLbl = document.getElementById('vis-state-trad-lbl');
-  if (stateTradLbl) stateTradLbl.textContent = (titles[baselineAlgo] || titles.trad) + ' Array State';
 
   let arr;
   if (forceArray && Array.isArray(forceArray)) {
     arr = [...forceArray];
   } else {
-    const size = parseInt(document.getElementById('vis-size').value, 10) || 25;
-    const dist = document.getElementById('vis-dist').value || 'random';
+    const size = parseInt(document.getElementById('vis-size')?.value, 10) || 25;
+    const dist = document.getElementById('vis-dist')?.value || 'random';
     arr = Engine.generateDataset(size, dist, 20261001, 5, 100).array;
   }
 
@@ -1813,6 +1811,12 @@ function generateForVis(forceArray = null) {
     scrub.value = 0;
   }
 
+  // Update element counts in array state panel headers
+  const tc = document.getElementById('trad-state-count');
+  if (tc) tc.textContent = '(' + arr.length + ' elements)';
+  const sc = document.getElementById('sermax-state-count');
+  if (sc) sc.textContent = '(' + arr.length + ' elements)';
+
   renderFrame();
   if (document.getElementById('vis-history-drawer')?.style.display !== 'none') {
     populateVisHistory();
@@ -1823,8 +1827,8 @@ function getBarColor(idx, frame, isSermax) {
   if (!frame) return isSermax ? '#D9AB56' : '#e28532';
   const { left, right, pivot, low, high, op } = frame;
   if (op === 'done') return '#10b981';
-  if (idx === pivot) return '#38bdf8';
-  if (op === 'swap' && (idx === left || idx === right)) return '#fb7185';
+  if (idx === pivot) return '#22d3ee';
+  if (op === 'swap' && (idx === left || idx === right)) return '#f43f5e';
   if (idx === left || idx === right) return '#fbbf24';
   if (low !== -1 && idx >= low && idx <= high) return isSermax ? '#D9AB56' : '#e28532';
   return '#30121c';
@@ -1843,20 +1847,37 @@ function renderVisBars(containerId, frameArr, isSermax) {
   const baselineKey = document.getElementById('vis-baseline-algo')?.value || 'trad';
   const algoName = isSermax ? 'SerMax Hybrid QuickSort' : (baselineKey === 'median3' ? 'Median-of-Three QuickSort' : (baselineKey === 'random' ? 'Randomized QuickSort' : 'Traditional QuickSort'));
 
+  // Consistent vertical scale across both panels
   const span = Math.max(1, visGlobalMax - visGlobalMin);
   const hasNegative = visGlobalMin < 0;
   const zeroPercent = hasNegative ? Math.max(5, Math.min(95, ((0 - visGlobalMin) / span) * 100)) : 0;
 
+  // Adaptive label density based on array size and zoom factor:
+  // - 5 to 20 elements: show all values and indices (if toggled on)
+  // - 21 to 50 elements: show labels when sufficient space exists (step = 2; zoom >= 1.5 shows all)
+  // - 51 to 100 elements: step = Math.ceil(n / 20); zoom >= 2.0 shows all
+  // - > 100 elements: step = Math.ceil(n / 15); zoom >= 3.0 shows all
   let valStep = 1;
   let idxStep = 1;
-  if (n > 25 && zoom < 1.5) {
-    valStep = n <= 50 ? 2 : Math.ceil(n / 25);
-    idxStep = n <= 50 ? 2 : Math.ceil(n / 25);
+
+  if (n <= 20) {
+    valStep = 1;
+    idxStep = 1;
+  } else if (n <= 50) {
+    valStep = zoom >= 1.5 ? 1 : 2;
+    idxStep = zoom >= 1.5 ? 1 : 2;
+  } else if (n <= 100) {
+    valStep = zoom >= 2.0 ? 1 : Math.ceil(n / 20);
+    idxStep = zoom >= 2.0 ? 1 : Math.ceil(n / 20);
+  } else {
+    valStep = zoom >= 3.0 ? 1 : Math.ceil(n / 15);
+    idxStep = zoom >= 3.0 ? 1 : Math.ceil(n / 15);
   }
 
-  let html = '<div class="bar-stage-inner" style="transform: scale(' + zoom + ');">';
+  const innerWidth = zoom > 1 ? 'calc(100% * ' + zoom + ')' : '100%';
+  let html = '<div class="bar-stage-inner" style="width:' + innerWidth + '; min-width:100%;">';
   if (hasNegative) {
-    html += '<div class="zero-baseline" style="bottom:' + zeroPercent + '%;" title="Zero Baseline (0)"></div>';
+    html += '<div class="zero-baseline" style="bottom:' + zeroPercent + '%;" title="Zero Baseline (0)"><span class="zero-label">0</span></div>';
   }
 
   for (let i = 0; i < arr.length; i++) {
@@ -1864,22 +1885,39 @@ function renderVisBars(containerId, frameArr, isSermax) {
     const col = getBarColor(i, frame, isSermax);
     const isPinned = pinnedElementInfo && pinnedElementInfo.algoName === algoName && pinnedElementInfo.idx === i;
     const isSwapping = frame && frame.op === 'swap' && (i === frame.left || i === frame.right);
+    const isPivot = frame && frame.pivot === i;
+    const isLeft = frame && frame.left === i;
+    const isRight = frame && frame.right === i;
+
+    // Pointer tags displayed prominently above the bar
+    let pointerTag = '';
+    if (isPivot) {
+      pointerTag = '<span class="bar-tag bar-tag-pivot">p=' + v + '</span>';
+    } else if (isLeft && isRight) {
+      pointerTag = '<span class="bar-tag bar-tag-both">i,j</span>';
+    } else if (isLeft) {
+      pointerTag = '<span class="bar-tag bar-tag-l">i</span>';
+    } else if (isRight) {
+      pointerTag = '<span class="bar-tag bar-tag-r">j</span>';
+    }
 
     let barStyle = '';
     if (hasNegative) {
       if (v >= 0) {
-        const h = Math.max(4, (v / span) * 76);
+        const h = Math.max(4, (v / span) * 72);
         barStyle = 'bottom:' + zeroPercent + '%; height:' + h + '%;';
       } else {
-        const h = Math.max(4, (Math.abs(v) / span) * 76);
+        const h = Math.max(4, (Math.abs(v) / span) * 72);
         barStyle = 'top:' + (100 - zeroPercent) + '%; height:' + h + '%; border-radius:0 0 3px 3px;';
       }
     } else {
-      const h = Math.max(6, ((v - Math.min(0, visGlobalMin)) / span) * 76 + 5);
+      const h = Math.max(6, ((v - Math.min(0, visGlobalMin)) / span) * 72 + 5);
       barStyle = 'bottom:0px; height:' + h + '%;';
     }
 
-    const shouldShowVal = showValues && (i % valStep === 0 || i === 0 || i === n - 1 || isPinned);
+    // Always show numerical value on pinned, hovered, or critical operational elements
+    const isCritical = isPivot || isLeft || isRight || isSwapping || isPinned;
+    const shouldShowVal = showValues && (i % valStep === 0 || i === 0 || i === n - 1 || isCritical);
     const shouldShowIdx = showIndices && (i % idxStep === 0 || i === 0 || i === n - 1 || isPinned);
 
     const valLabel = shouldShowVal ? '<span class="bar-val">' + v + '</span>' : '';
@@ -1889,6 +1927,7 @@ function renderVisBars(containerId, frameArr, isSermax) {
             'onmouseenter="handleBarHover(event, ' + i + ', ' + v + ', \'' + algoName + '\', ' + isSermax + ')" ' +
             'onmouseleave="handleBarLeave()" ' +
             'onclick="handleBarClick(event, ' + i + ', ' + v + ', \'' + algoName + '\', ' + isSermax + ')">' +
+            pointerTag +
             '<div class="bar-body ' + (isSwapping ? 'swap-pulse' : '') + '" style="' + barStyle + ' background-color:' + col + ';">' +
               valLabel +
             '</div>' +
@@ -1903,11 +1942,16 @@ function handleBarHover(event, idx, val, algoName, isSermax) {
   const snaps = isSermax ? sermaxSnaps : tradSnaps;
   const frame = snaps[Math.min(frameIdx, snaps.length - 1)];
   showBarTooltip(event, idx, val, algoName, frame);
+  highlightElementInArrayState(idx, isSermax);
 }
 
 function handleBarLeave() {
   const tt = document.getElementById('bar-tooltip');
   if (tt) tt.classList.remove('active');
+  // Clear hover highlight from array state table if not pinned
+  if (!pinnedElementInfo) {
+    document.querySelectorAll('.array-cell-row').forEach(r => r.classList.remove('highlight-selected'));
+  }
 }
 
 function handleBarClick(event, idx, val, algoName, isSermax) {
@@ -1917,6 +1961,7 @@ function handleBarClick(event, idx, val, algoName, isSermax) {
     unpinBarElement();
   } else {
     pinBarElement(idx, val, algoName, frame);
+    highlightElementInArrayState(idx, isSermax);
   }
 }
 
@@ -1936,7 +1981,7 @@ function showBarTooltip(e, idx, val, algoName, frame) {
 
   tt.innerHTML = '<div style="font-weight:700; color:var(--up-gold); margin-bottom:4px;">' + algoName + '</div>' +
     '<div><b>Current Index:</b> <span class="mono">' + idx + '</span></div>' +
-    '<div><b>Integer Value:</b> <span class="mono">' + val + '</span></div>' +
+    '<div><b>Actual Integer Value:</b> <span class="mono">' + val + '</span></div>' +
     '<div><b>Current Operation:</b> <span class="mono">' + (frame ? (frame.op || 'idle') : 'initial') + '</span></div>' +
     '<div><b>Pivot Status:</b> ' + pivotDesc + '</div>' +
     '<div><b>Pointer Status:</b> <span class="mono">' + pointerDesc + '</span></div>';
@@ -1953,7 +1998,7 @@ function pinBarElement(idx, val, algoName, frame) {
   const pPanel = document.getElementById('bar-pinned-panel');
   const pText = document.getElementById('bar-pin-text');
   if (pPanel && pText) {
-    pText.innerHTML = '<b>' + algoName + '</b> | Current Index: <b>' + idx + '</b> | Exact Value: <b>' + val + '</b> | Operation: <b>' + (frame ? frame.op : 'idle') + '</b> | Pivot: <b>' + (frame && frame.pivot === idx ? 'YES' : 'NO') + '</b>';
+    pText.innerHTML = '<b>' + algoName + '</b> | Current Index: <b>' + idx + '</b> | Actual Value: <b>' + val + '</b> | Operation: <b>' + (frame ? frame.op : 'idle') + '</b> | Pivot: <b>' + (frame && frame.pivot === idx ? 'YES' : 'NO') + '</b>';
     pPanel.style.display = 'flex';
   }
   renderFrame();
@@ -1963,7 +2008,21 @@ function unpinBarElement() {
   pinnedElementInfo = null;
   const pPanel = document.getElementById('bar-pinned-panel');
   if (pPanel) pPanel.style.display = 'none';
+  document.querySelectorAll('.array-cell-row').forEach(r => r.classList.remove('highlight-selected'));
   renderFrame();
+}
+
+function highlightElementInArrayState(idx, isSermax) {
+  const containerId = isSermax ? 'sermax-array-state-grid' : 'trad-array-state-grid';
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.querySelectorAll('.array-cell-row').forEach(r => r.classList.remove('highlight-selected'));
+  const targetRow = container.querySelector('.array-row-' + idx);
+  if (targetRow) {
+    targetRow.classList.add('highlight-selected');
+    targetRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+  }
 }
 
 function renderFrame() {
@@ -2002,10 +2061,10 @@ function renderFrame() {
     });
   }
 
-  // Update synchronized Current Array State Inspector
+  // Synchronize both Current Array State panels
   updateArrayStateGrid(tf ? tf.array : null, sf ? sf.array : null, tf, sf);
 
-  // If pinned element exists, refresh info from latest frame
+  // If pinned element exists, refresh info from latest frame and re-highlight
   if (pinnedElementInfo) {
     const isSer = pinnedElementInfo.algoName.includes('SerMax');
     const curFrame = isSer ? sf : tf;
@@ -2013,8 +2072,9 @@ function renderFrame() {
       const curVal = curFrame.array[pinnedElementInfo.idx];
       const pText = document.getElementById('bar-pin-text');
       if (pText && curVal !== undefined) {
-        pText.innerHTML = '<b>' + pinnedElementInfo.algoName + '</b> | Current Index: <b>' + pinnedElementInfo.idx + '</b> | Exact Value: <b>' + curVal + '</b> | Operation: <b>' + curFrame.op + '</b> | Pivot: <b>' + (curFrame.pivot === pinnedElementInfo.idx ? 'YES' : 'NO') + '</b>';
+        pText.innerHTML = '<b>' + pinnedElementInfo.algoName + '</b> | Current Index: <b>' + pinnedElementInfo.idx + '</b> | Actual Value: <b>' + curVal + '</b> | Operation: <b>' + curFrame.op + '</b> | Pivot: <b>' + (curFrame.pivot === pinnedElementInfo.idx ? 'YES' : 'NO') + '</b>';
       }
+      highlightElementInArrayState(pinnedElementInfo.idx, isSer);
     }
   }
 
@@ -2028,9 +2088,8 @@ function renderFrame() {
 function updateArrayStateGrid(tradArr, sermaxArr, tradFrame, sermaxFrame) {
   const tradEl = document.getElementById('trad-array-state-grid');
   const sermaxEl = document.getElementById('sermax-array-state-grid');
-  if (!tradEl || !sermaxEl) return;
 
-  const renderTable = (arr, frame) => {
+  const renderTable = (arr, frame, isSermax) => {
     if (!arr || arr.length === 0) return '<div style="padding:8px; color:var(--text-dim);">No array available</div>';
     let rows = '';
     for (let i = 0; i < arr.length; i++) {
@@ -2043,43 +2102,58 @@ function updateArrayStateGrid(tradArr, sermaxArr, tradFrame, sermaxFrame) {
         else if (frame.right === i) { tag = 'POINTER_R'; badgeClass = 'badge-warn'; }
         else if (frame.low !== -1 && i >= frame.low && i <= frame.high) { tag = 'IN_SUB'; badgeClass = 'badge-ghost'; }
       }
-      rows += '<tr data-idx="' + i + '" class="array-row-' + i + '">' +
+      const isPinned = pinnedElementInfo && pinnedElementInfo.idx === i && ((isSermax && pinnedElementInfo.algoName.includes('SerMax')) || (!isSermax && !pinnedElementInfo.algoName.includes('SerMax')));
+      rows += '<tr data-idx="' + i + '" class="array-cell-row array-row-' + i + ' ' + (isPinned ? 'highlight-selected' : '') + '" ' +
+        'onclick="handleArrayRowClick(' + i + ', ' + v + ', ' + isSermax + ')">' +
         '<td><b class="mono">' + i + '</b></td>' +
         '<td><span class="mono" style="font-weight:700;">' + v + '</span></td>' +
         '<td><span class="' + badgeClass + '">' + tag + '</span></td>' +
       '</tr>';
     }
     return '<table class="array-state-table">' +
-      '<thead><tr><th style="width:50px;">Index</th><th style="width:75px;">Value</th><th>Status</th></tr></thead>' +
+      '<thead><tr><th style="width:50px;">Index</th><th style="width:80px;">Actual Value</th><th>Status</th></tr></thead>' +
       '<tbody>' + rows + '</tbody>' +
     '</table>';
   };
 
-  tradEl.innerHTML = renderTable(tradArr, tradFrame);
-  sermaxEl.innerHTML = renderTable(sermaxArr, sermaxFrame);
+  if (tradEl) tradEl.innerHTML = renderTable(tradArr, tradFrame, false);
+  if (sermaxEl) sermaxEl.innerHTML = renderTable(sermaxArr, sermaxFrame, true);
+}
 
-  const searchInput = document.getElementById('vis-search-idx');
-  if (searchInput && searchInput.value !== '') {
-    highlightSearchedIndex(searchInput.value);
+function handleArrayRowClick(idx, val, isSermax) {
+  const baselineKey = document.getElementById('vis-baseline-algo')?.value || 'trad';
+  const algoName = isSermax ? 'SerMax Hybrid QuickSort' : (baselineKey === 'median3' ? 'Median-of-Three QuickSort' : (baselineKey === 'random' ? 'Randomized QuickSort' : 'Traditional QuickSort'));
+  const snaps = isSermax ? sermaxSnaps : tradSnaps;
+  const frame = snaps[Math.min(frameIdx, snaps.length - 1)];
+
+  if (pinnedElementInfo && pinnedElementInfo.algoName === algoName && pinnedElementInfo.idx === idx) {
+    unpinBarElement();
+  } else {
+    pinBarElement(idx, val, algoName, frame);
+    highlightElementInArrayState(idx, isSermax);
   }
 }
 
-function highlightSearchedIndex(val) {
-  document.querySelectorAll('.array-state-table tr').forEach(tr => tr.classList.remove('highlight-search'));
+function highlightSearchedIndex(val, isSermax) {
+  const containerId = isSermax ? 'sermax-array-state-grid' : 'trad-array-state-grid';
+  const container = document.getElementById(containerId);
+  if (!container) return;
+
+  container.querySelectorAll('.array-cell-row').forEach(tr => tr.classList.remove('highlight-search'));
   if (val === '' || val === null || val === undefined) return;
   const idx = parseInt(val, 10);
   if (isNaN(idx)) return;
-  const matched = document.querySelectorAll('.array-state-table tr.array-row-' + idx);
+  const matched = container.querySelectorAll('.array-row-' + idx);
   matched.forEach(tr => {
     tr.classList.add('highlight-search');
     tr.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
   });
 }
 
-function toggleArrayStateCollapse() {
-  const body = document.getElementById('vis-array-state-body');
-  if (body) {
-    body.style.display = (body.style.display === 'none') ? 'block' : 'none';
+function toggleLocalArrayState(wrapId) {
+  const wrap = document.getElementById(wrapId);
+  if (wrap) {
+    wrap.style.display = (wrap.style.display === 'none') ? 'block' : 'none';
   }
 }
 
@@ -2101,25 +2175,47 @@ function populateVisHistory() {
     const tf = tradSnaps[Math.min(s, tradSnaps.length - 1)];
     const sf = sermaxSnaps[Math.min(s, sermaxSnaps.length - 1)];
     const curFrame = sf || tf;
+    const prevFrame = s > 0 ? (sf ? sermaxSnaps[s - 1] : tradSnaps[s - 1]) : curFrame;
     if (!curFrame) continue;
 
     const op = curFrame.op || 'step';
     const left = curFrame.left !== -1 ? curFrame.left : '-';
     const right = curFrame.right !== -1 ? curFrame.right : '-';
     const pivot = curFrame.pivot !== -1 ? curFrame.pivot : '-';
-    const affected = 'L:' + left + ', R:' + right + ', P:' + pivot;
-    const valL = (curFrame.array && curFrame.left !== -1) ? curFrame.array[curFrame.left] : '-';
-    const valR = (curFrame.array && curFrame.right !== -1) ? curFrame.array[curFrame.right] : '-';
-    const values = 'A[' + left + ']=' + valL + ', A[' + right + ']=' + valR;
-    const snippet = curFrame.array ? ('[' + curFrame.array.slice(0, 8).join(', ') + (curFrame.array.length > 8 ? '...' : '') + ']') : '[]';
+    const affected = 'L:' + left + ', R:' + right + (pivot !== '-' ? (', P:' + pivot) : '');
+
+    // Values before the operation
+    let valBefore = '-';
+    if (curFrame.op === 'swap' && prevFrame && prevFrame.array && curFrame.left !== -1 && curFrame.right !== -1) {
+      valBefore = 'A[' + left + ']=' + prevFrame.array[curFrame.left] + ', A[' + right + ']=' + prevFrame.array[curFrame.right];
+    } else if (curFrame.left !== -1 && curFrame.right !== -1 && curFrame.array) {
+      valBefore = 'A[' + left + ']=' + curFrame.array[curFrame.left] + ', A[' + right + ']=' + curFrame.array[curFrame.right];
+    } else if (curFrame.pivot !== -1 && curFrame.array) {
+      valBefore = 'p = ' + curFrame.array[curFrame.pivot];
+    }
+
+    // Values after the operation
+    let valAfter = '-';
+    if (curFrame.op === 'swap' && curFrame.array && curFrame.left !== -1 && curFrame.right !== -1) {
+      valAfter = 'A[' + left + ']=' + curFrame.array[curFrame.left] + ', A[' + right + ']=' + curFrame.array[curFrame.right];
+    } else if (curFrame.op === 'done') {
+      valAfter = 'Sorted Array Verified';
+    } else if (curFrame.left !== -1 && curFrame.right !== -1) {
+      valAfter = 'Pointers at (' + left + ', ' + right + ')';
+    } else {
+      valAfter = curFrame.detail || op;
+    }
+
+    // Resulting array state
+    const snippet = curFrame.array ? ('[' + curFrame.array.slice(0, 8).join(', ') + (curFrame.array.length > 8 ? ', ...' : '') + ']') : '[]';
 
     rows += '<tr style="cursor:pointer;" onclick="jumpToVisFrame(' + s + ')" class="' + (s === frameIdx ? 'highlight-search' : '') + '">' +
       '<td><b class="mono">' + s + '</b></td>' +
-      '<td><span class="' + (sf ? 'badge-pass' : 'badge-warn') + '">' + (sf ? 'SerMax (Proposed)' : 'Baseline') + '</span></td>' +
-      '<td><b class="mono">' + op + '</b></td>' +
+      '<td><span class="' + (sf ? 'badge-pass' : 'badge-warn') + '">' + op + '</span></td>' +
       '<td class="mono" style="font-size:0.68rem;">' + affected + '</td>' +
-      '<td class="mono" style="font-size:0.68rem;">' + values + '</td>' +
-      '<td class="mono" style="font-size:0.68rem;">' + snippet + '</td>' +
+      '<td class="mono" style="font-size:0.68rem;">' + valBefore + '</td>' +
+      '<td class="mono" style="font-size:0.68rem;">' + valAfter + '</td>' +
+      '<td class="mono" style="font-size:0.68rem;" title="' + (curFrame.array ? curFrame.array.join(', ') : '') + '">' + snippet + '</td>' +
     '</tr>';
   }
   tbody.innerHTML = rows;
