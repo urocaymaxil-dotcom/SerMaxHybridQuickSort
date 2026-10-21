@@ -8,7 +8,21 @@
   <link rel="icon" type="image/png" href="sermax-logo.png?v=9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=15" />
+  <!-- Theme bootstrap: applies saved/system theme before first paint to prevent unstyled flash -->
+  <script>
+    (function () {
+      var pref = 'dark';
+      try { pref = localStorage.getItem('sermax-theme-pref') || 'dark'; } catch (e) {}
+      var resolved = pref;
+      if (pref === 'system') {
+        resolved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
+      }
+      document.documentElement.setAttribute('data-theme', resolved === 'light' ? 'light' : 'dark');
+      document.documentElement.setAttribute('data-theme-pref', pref);
+      try { if (localStorage.getItem('sermax-reduced-motion') === '1') document.documentElement.setAttribute('data-reduced-motion', '1'); } catch (e) {}
+    })();
+  </script>
+  <link rel="stylesheet" href="style.css?v=16" />
 </head>
 <body>
 
@@ -61,6 +75,20 @@
         <span class="sp-num">M9</span><span class="sp-txt">Stats &amp; Export</span>
       </button>
     </nav>
+
+    <!-- Right: Appearance (Dark / Light / System Default) -->
+    <div class="theme-switcher" role="radiogroup" aria-label="Website appearance">
+      <button type="button" class="theme-opt" data-theme-opt="dark" role="radio" aria-checked="true" onclick="setThemePreference('dark')" title="Dark Mode" aria-label="Dark Mode">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+      </button>
+      <button type="button" class="theme-opt" data-theme-opt="light" role="radio" aria-checked="false" onclick="setThemePreference('light')" title="Light Mode" aria-label="Light Mode">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+      </button>
+      <button type="button" class="theme-opt" data-theme-opt="system" role="radio" aria-checked="false" onclick="setThemePreference('system')" title="System Default" aria-label="System Default">
+        <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg>
+      </button>
+      <span class="sr-only" id="theme-status-label" aria-live="polite">Appearance: Dark Mode</span>
+    </div>
     <span id="menubar-clock" class="mono" style="display:none;">Oct 2026</span>
   </div>
 </div>
@@ -1586,7 +1614,7 @@
          ════════════════════════════════════════════════════════════════════════ -->
     <section class="view" id="view-s08" style="display:none;">
       <!-- SUB-PANEL 8A: Comparative Execution Visualizer & 8-Stage Algorithmic Workflow -->
-      <div class="subpanel active" data-subpanel="s08-visualizer">
+      <div class="subpanel active" data-subpanel="s08-visualizer" id="s08-vis-fullscreen-zone">
       <!-- Visualizer Controls Bar -->
       <div class="section-card mb-20">
         <div class="card-header">
@@ -1645,7 +1673,32 @@
             </div>
           </div>
 
-          <div id="vis-op-label" class="math-card" style="padding:8px 14px; font-size:0.78rem; color:#fff;">
+          <!-- Live Animation Engine Controls (visualization only — never part of formal benchmark timing) -->
+          <div class="anim-engine-bar" role="toolbar" aria-label="Animation and bar display controls">
+            <label class="anim-ctl">Speed
+              <select id="vis-speed-mult" onchange="setAnimationSpeed(this.value)" aria-label="Playback speed">
+                <option value="0.25">0.25×</option>
+                <option value="0.5">0.5×</option>
+                <option value="1" selected>1×</option>
+                <option value="2">2×</option>
+                <option value="4">4×</option>
+              </select>
+            </label>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="stepBack()">Previous Step</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="resetVis()">Restart</button>
+            <label class="anim-ctl"><input type="checkbox" id="vis-show-values" checked onchange="renderFrame()" /> Show Values</label>
+            <label class="anim-ctl"><input type="checkbox" id="vis-show-indices" onchange="renderFrame()" /> Show Indices</label>
+            <label class="anim-ctl">Zoom
+              <input type="range" id="vis-zoom" min="1" max="4" step="0.5" value="1" oninput="document.getElementById('vis-zoom-lbl').textContent=this.value+'×'; renderFrame();" aria-label="Bar zoom" />
+              <b id="vis-zoom-lbl" class="mono">1×</b>
+            </label>
+            <label class="anim-ctl"><input type="checkbox" id="vis-reduced-motion" onchange="setReducedMotion(this.checked)" /> Reduced Motion</label>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleVisHistory()">Show Operation History</button>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleFullscreenEl('s08-vis-fullscreen-zone')">Fullscreen</button>
+            <button type="button" class="btn btn-gold btn-sm" onclick="exportVisTrace()">Export Trace</button>
+          </div>
+
+          <div id="vis-op-label" class="math-card" style="padding:8px 14px; font-size:0.78rem;" aria-live="polite">
             Press Play to inspect step-by-step execution on identical input arrays
           </div>
 
@@ -1713,7 +1766,87 @@
           </div>
         </div>
       </div>
+      
+      <!-- Floating Interactive Inspection Tooltip -->
+      <div id="bar-tooltip" class="bar-tooltip" role="tooltip" aria-hidden="true"></div>
+
+      <!-- Pinned Element Information Bar -->
+      <div id="bar-pinned-panel" class="bar-pinned-panel" style="display:none;">
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <span class="badge-pass" id="bar-pin-badge">Pinned Element</span>
+          <span id="bar-pin-text" class="mono" style="font-size:0.8rem;"></span>
+        </div>
+        <button type="button" class="btn btn-ghost btn-sm" onclick="unpinBarElement()">✕ Unpin</button>
       </div>
+
+      <!-- Expandable Current Array State Inspector -->
+      <div class="section-card mt-16" id="vis-array-state-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Current Array State &amp; Element Inspector (Synchronized)</h2>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <label style="font-size:0.75rem; color:var(--text-dim);">Find Index:
+              <input type="number" id="vis-search-idx" placeholder="0..n-1" min="0" style="width:75px; padding:3px 6px; font-size:0.75rem;" oninput="highlightSearchedIndex(this.value)" />
+            </label>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleArrayStateCollapse()">Collapse / Expand</button>
+          </div>
+        </div>
+        <div class="card-body" id="vis-array-state-body">
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px;">
+            <div>
+              <div style="font-size:0.75rem; font-weight:700; color:var(--trad); margin-bottom:6px;" id="vis-state-trad-lbl">Baseline QuickSort Array State</div>
+              <div class="array-state-table-wrap" id="trad-array-state-grid"></div>
+            </div>
+            <div>
+              <div style="font-size:0.75rem; font-weight:700; color:var(--up-gold); margin-bottom:6px;">SerMax Hybrid QuickSort Array State</div>
+              <div class="array-state-table-wrap" id="sermax-array-state-grid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Synchronized Operation History Drawer -->
+      <div class="section-card mt-16" id="vis-history-drawer" style="display:none;">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Synchronized Algorithmic Operation History</h2>
+          </div>
+          <div style="display:flex; align-items:center; gap:8px;">
+            <span style="font-size:0.72rem; color:var(--text-dim);">Click any step to jump to that computational state</span>
+            <button type="button" class="btn btn-ghost btn-sm" onclick="toggleVisHistory()">Close Drawer</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="data-table-wrap" style="max-height: 280px; overflow-y:auto;">
+            <table class="data-table" id="vis-history-table">
+              <thead>
+                <tr>
+                  <th style="width:60px;">Step #</th>
+                  <th style="width:140px;">Algorithm</th>
+                  <th style="width:120px;">Operation</th>
+                  <th style="width:120px;">Affected Indices</th>
+                  <th style="width:160px;">Values Involved</th>
+                  <th>Resulting Array State Snippet</th>
+                </tr>
+              </thead>
+              <tbody id="vis-history-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
 
       <!-- SUB-PANEL 8B: Sorted Output Correctness Verification Across All 4 Algorithms -->
       <div class="subpanel" data-subpanel="s08-gatec" style="display:none;">
