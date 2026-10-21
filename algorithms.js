@@ -41,22 +41,26 @@
   }
 
   // ─── 2. SYNTHETIC DATASET GENERATOR (SECTION 4.6.1–4.6.2, TABLE 3) ───
-  function generateDataset(size = 500, category = 'random', seed = 104201, minVal = -100000, maxVal = 100000) {
+  function generateDataset(size = 500, category = 'random', seed = 104201, minVal = -100000, maxVal = 100000, sourceIdx = 1) {
     const n = Math.max(1, parseInt(size, 10) || 500);
     const rng = createRNG(seed);
     const arr = new Array(n);
+    let initialSortedArray = null;
+    const exchangePairs = [];
+    let distinctPool = null;
 
     if (category === 'duplicates') {
       // Table 3: Repeatedly sample from a fixed set of 10 distinct integers within [minVal, maxVal]
       const pool = [];
       const seen = new Set();
-      while (pool.length < 10) {
+      while (pool.length < Math.min(10, Math.max(1, maxVal - minVal + 1))) {
         const v = randInt(rng, minVal, maxVal);
         if (!seen.has(v)) {
           seen.add(v);
           pool.push(v);
         }
       }
+      distinctPool = pool.slice();
       for (let i = 0; i < n; i++) {
         arr[i] = pool[Math.floor(rng() * pool.length)];
       }
@@ -67,13 +71,27 @@
       if (category === 'nearly') {
         // Section 4.6.1 & Table 3: Sort ascending, then introduce ~1% random position exchanges (min 1)
         arr.sort((a, b) => a - b);
+        initialSortedArray = arr.slice(0, Math.min(n, 60));
         const swaps = Math.max(1, Math.round(n * 0.01));
         for (let s = 0; s < swaps; s++) {
           const idx1 = Math.floor(rng() * n);
           const idx2 = Math.floor(rng() * n);
+          const val1Before = arr[idx1];
+          const val2Before = arr[idx2];
           const tmp = arr[idx1];
           arr[idx1] = arr[idx2];
           arr[idx2] = tmp;
+          if (exchangePairs.length < 30) {
+            exchangePairs.push({
+              exchangeNo: s + 1,
+              idx1,
+              idx2,
+              val1Before,
+              val2Before,
+              val1After: arr[idx1],
+              val2After: arr[idx2]
+            });
+          }
         }
       } else if (category === 'reverse') {
         // Section 4.6.1 & Table 3: Descending arrangement
@@ -81,14 +99,29 @@
       }
     }
 
+    const idxInCond = ((Math.abs(Number(seed) || 1) + sourceIdx) % 200) + 1;
+    const assignedSubset = idxInCond <= 140
+      ? 'Training Subset (Arrays 1–140 / 70%)'
+      : (idxInCond <= 170 ? 'Validation Subset (Arrays 141–170 / 15%)' : 'Independent Testing Subset (Arrays 171–200 / 15%)');
+    const isBenchmarkSize = (n === 500 || n === 1000 || n === 10000);
+    const datasetId = `DS-${category.toUpperCase().slice(0, 4)}-N${n}-S${seed}`;
+
     return {
       array: arr,
       metadata: {
+        datasetId,
         size: n,
         category,
         seed,
         minVal,
         maxVal,
+        assignedSubset,
+        isBenchmarkSize,
+        modeRole: isBenchmarkSize ? 'Formal Benchmark Dataset (Table 3)' : 'Functional Verification / Visualization Only (Excluded from Formal Benchmarking)',
+        exchangeCount: category === 'nearly' ? Math.max(1, Math.round(n * 0.01)) : 0,
+        initialSortedArray,
+        exchangePairs,
+        distinctPool,
         checksum: computeChecksum(arr)
       }
     };

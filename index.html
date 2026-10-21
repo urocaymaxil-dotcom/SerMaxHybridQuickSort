@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="sermax-logo.png?v=9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=14" />
+  <link rel="stylesheet" href="style.css?v=15" />
 </head>
 <body>
 
@@ -80,7 +80,45 @@
           <p class="stage-subtitle-compact" id="page-sub">Reproducible synthetic integer arrays • 70:15:15 split</p>
         </div>
       </div>
-      <div class="stage-subtabs" id="stage-subtabs"></div>
+      <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+        <div class="pill-tabs" id="global-mode-switcher" title="Switch between Mode A (Research Execution) and Mode B (Detailed 7-Step Computational Explanation)">
+          <button type="button" class="pill-tab active" id="mode-a-btn" onclick="setGlobalSystemMode('A')">Mode A: Research Execution</button>
+          <button type="button" class="pill-tab" id="mode-b-btn" onclick="setGlobalSystemMode('B')">Mode B: 7-Step Explanation</button>
+        </div>
+        <div class="stage-subtabs" id="stage-subtabs"></div>
+      </div>
+    </div>
+
+    <!-- Module Purpose, Expected Output & Data Classification Strip -->
+    <div class="module-meta-strip" id="module-meta-strip">
+      <div><b style="color:var(--up-gold);">Purpose:</b> <span id="module-purpose-txt">Generate seed-reproducible synthetic integer datasets across 4 categories and 3 benchmark sizes with source-array-level 70:15:15 splitting.</span></div>
+      <div><b style="color:#34d399;">Expected Output:</b> <span id="module-output-txt">Reproducible synthetic datasets with documented generation settings and training/validation/test assignments.</span></div>
+      <div><span class="badge-pass" id="module-data-origin-badge">Calculated &amp; Reproducible</span></div>
+    </div>
+
+    <!-- GLOBAL MODE B: 7-STEP COMPUTATIONAL EXPLANATION PANEL -->
+    <div class="mode-b-inspector" id="global-mode-b-panel" style="display:none;">
+      <div class="mode-b-header">
+        <div>
+          <span class="mono" style="font-size:0.68rem; color:var(--up-gold); font-weight:800;">MODE B — DETAILED 7-STEP COMPUTATIONAL EXPLANATION</span>
+          <h3 id="mode-b-title" style="font-size:0.92rem; color:#fff; margin:2px 0 0;">Step-by-Step Mathematical &amp; Algorithmic Derivation</h3>
+        </div>
+        <div class="mode-b-controls">
+          <button type="button" class="btn btn-ghost btn-sm" onclick="modeBPrevStep()">Previous Step</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="modeBNextStep()">Next Step</button>
+          <button type="button" class="btn btn-gold btn-sm" id="mode-b-play-btn" onclick="modeBTogglePlay()">Play</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="modeBPause()">Pause</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="modeBReset()">Reset</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="mode-b-formula-btn" onclick="modeBToggleFilter('formula')">Show Formula</button>
+          <button type="button" class="btn btn-ghost btn-sm" id="mode-b-subst-btn" onclick="modeBToggleFilter('substitution')">Show Substitution</button>
+          <button type="button" class="btn btn-primary btn-sm" onclick="modeBShowComplete()">Show Complete Solution</button>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="modeBToggleHistory()">View Operation History</button>
+          <button type="button" class="btn btn-gold btn-sm" onclick="exportModeBCalculationTrace()">Export Calculation Trace</button>
+        </div>
+      </div>
+
+      <div id="mode-b-steps-container" class="mode-b-steps-grid"></div>
+      <div id="mode-b-history-drawer" class="math-card" style="display:none; margin-top:10px; max-height:190px; overflow-y:auto; font-size:0.72rem;"></div>
     </div>
   </section>
 
@@ -813,6 +851,22 @@
           </div>
         </div>
       </div>
+
+      <!-- 8-Step Dataset Generation & Condition Verification Trace (Section 4.6.1–4.6.3) -->
+      <div class="section-card" style="margin-top:18px;">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Step-by-Step Dataset Generation Procedure &amp; Condition Verification (Steps 1–8)</h2>
+          </div>
+          <span class="badge-pass" id="s02-verify-cond-badge">All Generation Conditions Verified</span>
+        </div>
+        <div class="card-body" id="s02-generation-steps"></div>
+      </div>
       </div>
 
       <!-- SUB-PANEL 2B: Distribution Histogram & Dataset Preview Registry -->
@@ -956,6 +1010,22 @@
           <div class="card-body" id="s03-math-steps" style="display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;"></div>
         </div>
       </div>
+
+      <!-- Expandable Element-by-Element Calculation Tables for Mean, Std Dev, Skewness & Disorder Ratio -->
+      <div class="section-card" style="margin-top:18px;">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Expandable Element-by-Element Calculation Tables: Mean (μ), Std. Dev. (σ), Skewness (γ) &amp; Disorder Ratio (d)</h2>
+          </div>
+          <button type="button" class="btn btn-ghost btn-sm" onclick="toggleElementTablesS03()" id="s03-toggle-tables-btn">Hide / Expand Element Tables</button>
+        </div>
+        <div class="card-body" id="s03-expandable-tables"></div>
+      </div>
       </div>
 
       <!-- SUB-PANEL 3B: Offline Training-Target Generation: 33-Candidate Imbalance Evaluator -->
@@ -973,9 +1043,12 @@
           <span class="badge-warn" id="s03-target-badge">Target y = i* / (n - 1)</span>
         </div>
         <div class="card-body">
-          <p style="font-size:0.76rem; color:var(--text-sub); margin-bottom:12px;">
+          <p style="font-size:0.76rem; color:var(--text-sub); margin-bottom:8px;">
             During offline training-target generation, if <span class="mono">2 ≤ n ≤ 33</span>, all relative indices <span class="mono">0..n-1</span> are evaluated; if <span class="mono">n &gt; 33</span>, exactly 33 candidate positions <span class="mono">c_k = round[k(n-1)/32]</span> are evaluated using bidirectional partitioning on restored copies. The candidate minimizing <span class="mono">I_i = |L_i - R_i|</span> (Eq. 5) with midpoint-distance tie-breaking (Eq. 6) defines the supervised target <span class="mono">y = i* / (n - 1)</span> (Eq. 7).
           </p>
+          <div class="math-card mb-16" style="font-size:0.74rem; border-left:3px solid var(--up-gold);">
+            <b style="color:var(--up-gold);">Methodological Clarification (Section 4.3.3):</b> The selected target <span class="mono">y = i* / (n - 1)</span> is the best candidate among the evaluated candidate positions and is <b>not necessarily the globally optimal pivot</b> across all possible indices when <span class="mono">n &gt; 33</span>.
+          </div>
           <div class="data-table-wrap" style="max-height:320px; overflow-y:auto;">
             <table class="data-table">
               <thead>
@@ -1097,6 +1170,22 @@
           </div>
         </div>
       </div>
+
+      <!-- Validation Observation Table & Step-by-Step MAE / RMSE Derivation (Section 4.3.7, Eqs. 13–14) -->
+      <div class="section-card" style="margin-top:18px;">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Validation Observations &amp; Step-by-Step MAE / RMSE Calculation vs. Midpoint Heuristic (Section 4.3.7, Eqs. 13–14)</h2>
+          </div>
+          <span class="badge-pass" id="s04-val-comparison-badge">Objective Validation Comparison</span>
+        </div>
+        <div class="card-body" id="s04-val-obs-card"></div>
+      </div>
       </div>
 
       <!-- SUB-PANEL 4B: Training-Derived Standardization Scaler (7 Predictors) + 36 Coefficients Table -->
@@ -1110,7 +1199,7 @@
                 <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
                 <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
               </div>
-              <h2>Training-Derived Standardization Parameters (means[7] &amp; scales[7])</h2>
+              <h2>Predictor Standardization: X_j = (x_j − training_mean_j) / training_std_j</h2>
             </div>
             <span class="badge-pass">Fit on Training Split Only</span>
           </div>
@@ -1120,11 +1209,11 @@
                 <thead>
                   <tr>
                     <th>Predictor</th>
-                    <th>Description</th>
+                    <th>Active x_j</th>
                     <th>Train Mean (μ_train)</th>
-                    <th>Train Scale (σ_train)</th>
-                    <th>Min</th>
-                    <th>Max</th>
+                    <th>Train Std (σ_train)</th>
+                    <th>Substitution (x_j − μ) / σ</th>
+                    <th>Standardized X_j</th>
                   </tr>
                 </thead>
                 <tbody id="s04-scaler-tbody"></tbody>
@@ -1216,9 +1305,16 @@
                 <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
                 <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
               </div>
-              <h2>10-Step Runtime Inference Contract & Equations (10)–(12)</h2>
+              <h2>10-Step Runtime Inference Contract &amp; Equations (10)–(12)</h2>
             </div>
-            <span class="badge-pass" id="s05-fallback-badge">Valid Prediction</span>
+            <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+              <button type="button" class="btn btn-ghost btn-sm" onclick="s05PrevStep()">Previous Step</button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="s05NextStep()">Next Step</button>
+              <button type="button" class="btn btn-gold btn-sm" onclick="s05RunAll()">Run All</button>
+              <button type="button" class="btn btn-ghost btn-sm" onclick="s05ResetSteps()">Reset</button>
+              <button type="button" class="btn btn-primary btn-sm" onclick="s05ViewComplete()">View Complete Calculation</button>
+              <span class="badge-pass" id="s05-fallback-badge">Valid Prediction</span>
+            </div>
           </div>
           <div class="card-body" id="s05-ten-steps"></div>
         </div>
@@ -1638,15 +1734,14 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Condition #</th>
-                  <th>Dataset Category &amp; Verification Case</th>
+                  <th>Case #</th>
+                  <th>Verification Case &amp; Edge Condition</th>
                   <th>n</th>
-                  <th>Identical Input Checksum</th>
-                  <th>SerMax Hybrid</th>
-                  <th>Traditional (First)</th>
-                  <th>Median-of-Three</th>
-                  <th>Randomized-Pivot</th>
-                  <th>Sorted Output Verification</th>
+                  <th>Input Array</th>
+                  <th>Expected Sorted Output</th>
+                  <th>Actual Sorted Output (All 4 Algos)</th>
+                  <th>Frequency &amp; Order Check (SerMax / Trad / Med3 / Rand)</th>
+                  <th>Verification Result</th>
                 </tr>
               </thead>
               <tbody id="s08-verify-tbody"></tbody>
@@ -1717,7 +1812,7 @@
             <label><input type="checkbox" checked onchange="toggleLeaderboardCol('swp', this.checked)" /> (3) Swaps</label>
             <label><input type="checkbox" checked onchange="toggleLeaderboardCol('dep', this.checked)" /> (4) Logical Partition Depth</label>
             <label><input type="checkbox" checked onchange="toggleLeaderboardCol('bal', this.checked)" /> (5) Partition Balance</label>
-            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('mem', this.checked)" /> (6) Memory (bytes) + Max PQ Occupancy</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('mem', this.checked)" /> (6) Sorting-Thread Heap Allocation (Bytes) + Max PQ Occupancy</label>
           </div>
         </div>
       </div>
@@ -1731,7 +1826,7 @@
               <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
               <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
             </div>
-            <h2>Comparative Evaluation Results: SerMax Hybrid vs. Three Baselines (Table 4)</h2>
+            <h2>Dataset-Level Summary: SerMax Hybrid vs. Three Baselines (Table 4)</h2>
           </div>
           <span class="badge-pass" id="s09-condition-badge">Identical Input Array • Isolated Instrumentation</span>
         </div>
@@ -1743,17 +1838,57 @@
                   <th>#</th>
                   <th>Algorithm</th>
                   <th>Pivot Selection &amp; Subproblem Management</th>
-                  <th>Sorted Check</th>
+                  <th>Correctness Status</th>
                   <th class="col-time">Execution Time (ms)</th>
                   <th class="col-cmp">Comparisons</th>
                   <th class="col-swp">Swaps</th>
                   <th class="col-dep">Logical Depth</th>
                   <th class="col-bal">Partition Balance (B)</th>
-                  <th class="col-mem">Memory (Bytes) / Max PQ</th>
-                  <th>Speedup vs. Trad</th>
+                  <th class="col-mem">Thread Heap Allocation (Bytes) / Max PQ</th>
+                  <th>Speedup Ratio (vs. Trad)</th>
                 </tr>
               </thead>
               <tbody id="s09-leaderboard-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Individual Trial Records Table (Sections 4.6.4–4.6.6) -->
+      <div class="section-card" style="margin-top:18px;">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Individual Measured Trial Records (After 10 Unmeasured Warm-Up Executions)</h2>
+          </div>
+          <span class="mono" style="font-size:0.7rem; color:var(--up-gold);">Array Generation, Copying &amp; Verification Outside Measured Interval</span>
+        </div>
+        <div class="card-body">
+          <div class="data-table-wrap" style="max-height:280px; overflow-y:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Dataset ID</th>
+                  <th>Category</th>
+                  <th>n</th>
+                  <th>Seed</th>
+                  <th>Algorithm</th>
+                  <th>Warm-Up Status</th>
+                  <th>Measured Trial #</th>
+                  <th>Elapsed Time (ms)</th>
+                  <th>Comparisons</th>
+                  <th>Swaps</th>
+                  <th>Logical Depth</th>
+                  <th>Balance B</th>
+                  <th>Thread Heap Alloc (B)</th>
+                  <th>Correctness</th>
+                </tr>
+              </thead>
+              <tbody id="s09-trials-tbody"></tbody>
             </table>
           </div>
         </div>
@@ -1879,12 +2014,50 @@
                     <th>n = 500</th>
                     <th>n = 1,000</th>
                     <th>n = 10,000</th>
-                    <th>Mean Swap Reduction</th>
+                    <th>Mean Swap Difference</th>
                   </tr>
                 </thead>
                 <tbody id="s10-heatmap-tbody"></tbody>
               </table>
             </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Grouped Descriptive Statistics Table (Category × Size × Algorithm × Metric) -->
+      <div class="section-card" style="margin-top:18px;">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Descriptive Statistics Grouped by Category, Size, Algorithm &amp; Metric (Section 4.6.7)</h2>
+          </div>
+          <span class="badge-pass">Dataset-Level Summarized Units</span>
+        </div>
+        <div class="card-body">
+          <div class="data-table-wrap" style="max-height:280px; overflow-y:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Category</th>
+                  <th>Size (n)</th>
+                  <th>Algorithm</th>
+                  <th>Mean Time (ms)</th>
+                  <th>SD Time (ms)</th>
+                  <th>Median Time (ms)</th>
+                  <th>IQR Time (ms)</th>
+                  <th>Comparisons</th>
+                  <th>Swaps</th>
+                  <th>Logical Depth</th>
+                  <th>Balance B</th>
+                  <th>Thread Heap (B)</th>
+                </tr>
+              </thead>
+              <tbody id="s10-descriptive-tbody"></tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -1923,7 +2096,7 @@
               </table>
             </div>
             <div class="math-card" style="margin-top:12px; font-size:0.73rem;">
-              <b style="color:var(--up-gold);">Thesis Statistical Protocol (Section 4.6.7):</b> Conducts paired comparisons using the Wilcoxon signed-rank test (when symmetry assumptions hold) and the paired sign test alternative, applies the Holm step-down adjustment across the family of 36 comparisons, and computes 95% confidence intervals using 2,000 paired bootstrap resamples.
+              <b style="color:var(--up-gold);">Thesis Statistical Protocol (Section 4.6.7):</b> Summarizes repeated trials at the independent test-array level before conducting paired comparisons using the Wilcoxon signed-rank test (and paired sign test alternative), applies the Holm step-down adjustment across the family of 36 comparisons, and computes 95% confidence intervals using 2,000 paired bootstrap resamples. Statistical significance is evaluated strictly against <span class="mono">p_Holm &lt; 0.05</span> without automatic claims of superiority.
             </div>
           </div>
         </div>
@@ -1953,6 +2126,22 @@
             <div id="s10-exec-summary" class="math-card"></div>
           </div>
         </div>
+      </div>
+
+      <!-- 10-Point Detailed Statistical Comparison Explanation Panel (Section 4.6.7) -->
+      <div class="section-card" style="margin-top:18px;">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Complete 10-Point Statistical Comparison Derivation &amp; Objective Interpretation (Section 4.6.7)</h2>
+          </div>
+          <span class="badge-pass">Holm-Adjusted α = 0.05</span>
+        </div>
+        <div class="card-body" id="s10-ten-point-explanation"></div>
       </div>
       </div>
     </section>
@@ -2000,7 +2189,7 @@
 
 <div id="toast" class="toast" style="display:none;"></div>
 
-<script src="algorithms.js?v=14"></script>
-<script src="app.js?v=14"></script>
+<script src="algorithms.js?v=15"></script>
+<script src="app.js?v=15"></script>
 </body>
 </html>

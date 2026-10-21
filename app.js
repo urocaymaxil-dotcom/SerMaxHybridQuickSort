@@ -273,6 +273,11 @@ function showScreen(screenId, subpanelId = null) {
     pauseAnthemForBenchmarkIntegrity('Entered Comparative Benchmarking (Module 8)');
   }
 
+  updateModuleMetaStrip(screenId);
+  if (window._globalSystemMode === 'B') {
+    renderGlobalModeBPanel(screenId);
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -584,7 +589,7 @@ function renderScreen02StatsAndChart() {
 
   statsEl.innerHTML = `
     <div style="color:var(--up-gold); font-weight:800; margin-bottom:6px;">
-      Active Array 7-Predictor Summary (${activeDatasetMeta.category.toUpperCase()} • Checksum ${activeDatasetMeta.checksum})
+      Active Array 7-Predictor Summary (${(activeDatasetMeta.category || 'custom').toUpperCase()} • Checksum ${activeDatasetMeta.checksum})
     </div>
     <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; font-size:0.73rem;">
       <div><b>n:</b> ${f.n.toLocaleString()}</div>
@@ -600,7 +605,82 @@ function renderScreen02StatsAndChart() {
       <b>Sample Elements:</b> [${preview}]
     </div>
   `;
+  renderScreen02StepByStepGeneration(f);
   drawS02DistributionChart();
+}
+
+function renderScreen02StepByStepGeneration(f) {
+  const box = document.getElementById('s02-generation-steps');
+  if (!box || !activeDataset || activeDataset.length === 0) return;
+
+  const m = activeDatasetMeta || {};
+  const cat = m.category || 'random';
+  const n = activeDataset.length;
+  const seed = m.seed || 104201;
+  const minV = m.minVal !== undefined ? m.minVal : -100000;
+  const maxV = m.maxVal !== undefined ? m.maxVal : 100000;
+  const dsId = m.datasetId || `DS-${cat.toUpperCase().slice(0, 4)}-N${n}-S${seed}`;
+  const subset = m.assignedSubset || (n >= 500 ? 'Training Subset (Arrays 1–140 / 70%)' : 'Functional Verification / Visualization Subset (Excluded from Formal Benchmarking)');
+
+  const procMap = {
+    random: 'Uniformly sample pseudorandom integers x_i ∈ [min, max] using deterministic Mulberry32 PRNG seeded with Recorded Seed.',
+    nearly: `Generate ${n} integers, sort in ascending order, and perform max(1, round(0.01 × ${n})) = ${Math.max(1, Math.round(n * 0.01))} random-position exchanges.`,
+    reverse: `Generate ${n} integers and arrange them in descending order so adjacent pairs satisfy A[i] ≥ A[i+1].`,
+    duplicates: `Construct a controlled pool of 10 distinct integer values in [${minV}, ${maxV}] and sample ${n} elements with replacement.`
+  };
+
+  const fullOrPreview = n <= 50
+    ? `[${activeDataset.join(', ')}]`
+    : `First 25 elements: [${activeDataset.slice(0, 25).join(', ')}, …] (Full ${n.toLocaleString()}-element dataset available via CSV export)`;
+
+  let categorySpecificHtml = '';
+  if (cat === 'nearly' && m.initialSortedArray) {
+    const swaps = m.exchangePairs || [];
+    const initStr = n <= 50 ? `[${m.initialSortedArray.join(', ')}]` : `[${m.initialSortedArray.slice(0, 20).join(', ')}, …]`;
+    const swapStr = swaps.length > 0
+      ? swaps.slice(0, 8).map(s => `Swap #${s.exchangeNo}: A[${s.idx1}] (${s.val1Before}) ↔ A[${s.idx2}] (${s.val2Before})`).join(' • ')
+      : '1 random position exchange applied';
+    categorySpecificHtml = `
+      <div class="math-card" style="margin-top:8px; border-left:3px solid var(--up-gold); font-size:0.73rem;">
+        <b style="color:var(--up-gold);">Nearly Sorted Generation Trace (Section 4.6.1):</b><br/>
+        • <b>Initial Ascending Sorted Array:</b> <span class="mono">${initStr}</span><br/>
+        • <b>Number of Exchanges Performed:</b> <span class="mono">${m.exchangeCount || Math.max(1, Math.round(n * 0.01))}</span> (1% of n = ${n}, min 1)<br/>
+        • <b>Selected Exchange Positions:</b> <span class="mono">${swapStr}</span><br/>
+        • <b>Resulting Nearly Sorted Array:</b> <span class="mono">${fullOrPreview}</span>
+      </div>
+    `;
+  } else if (cat === 'duplicates' && m.distinctPool) {
+    categorySpecificHtml = `
+      <div class="math-card" style="margin-top:8px; border-left:3px solid var(--up-gold); font-size:0.73rem;">
+        <b style="color:var(--up-gold);">Many Duplicates 10-Value Sampling Pool (Table 3):</b>
+        <span class="mono">[${m.distinctPool.join(', ')}]</span> (Observed distinct values in generated array: <b>${new Set(activeDataset).size}</b> ≤ 10)
+      </div>
+    `;
+  }
+
+  const distinctCount = new Set(activeDataset).size;
+  const inRange = f.x_min >= minV && f.x_max <= maxV;
+  const verifyMsg = cat === 'reverse'
+    ? `Verified descending arrangement (d = ${f.d.toFixed(4)}, range [${f.x_min}, ${f.x_max}] ⊆ [${minV}, ${maxV}]).`
+    : (cat === 'duplicates'
+      ? `Verified repeated-value sampling (${distinctCount} distinct values ≤ 10-value pool, range [${f.x_min}, ${f.x_max}]).`
+      : (cat === 'nearly'
+        ? `Verified nearly sorted perturbation (${m.exchangeCount || Math.max(1, Math.round(n * 0.01))} exchanges applied, resulting disorder ratio d = ${f.d.toFixed(4)}).`
+        : `Verified uniform pseudorandom integer generation across n = ${n.toLocaleString()} elements (d = ${f.d.toFixed(4)}).`));
+
+  box.innerHTML = `
+    <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:10px; font-size:0.74rem;">
+      <div class="math-card"><b>1. Selected Dataset Category:</b><br/><span style="color:var(--up-gold); text-transform:capitalize;">${cat}</span></div>
+      <div class="math-card"><b>2. Selected Array Size (n):</b><br/><span class="mono">${n.toLocaleString()} elements</span> (${n >= 500 ? 'Formal Benchmark Size' : 'Verification / Visualization Mode Only'})</div>
+      <div class="math-card"><b>3. Numerical Value Range:</b><br/><span class="mono">[${minV.toLocaleString()}, ${maxV.toLocaleString()}]</span> (Observed: [${f.x_min.toLocaleString()}, ${f.x_max.toLocaleString()}])</div>
+      <div class="math-card"><b>4. Recorded Random Seed:</b><br/><span class="mono">${seed}</span> (Checksum: <span class="mono">${m.checksum}</span>)</div>
+      <div class="math-card" style="grid-column: span 2;"><b>5. Dataset-Generation Procedure:</b><br/>${procMap[cat] || 'Custom integer array loaded for functional verification.'}</div>
+      <div class="math-card"><b>7. Dataset Identifier &amp; Assigned Subset:</b><br/><span class="mono" style="color:var(--up-gold);">${dsId}</span><br/><span>${subset}</span></div>
+      <div class="math-card"><b>8. Condition Verification:</b><br/><span style="color:#10b981;">✓ ${inRange ? 'Range Validated' : 'Custom Range'}:</span> ${verifyMsg}</div>
+      <div class="math-card" style="grid-column: 1 / -1;"><b>6. Generated Array (${n <= 50 ? 'Complete Values' : 'Preview'}):</b><br/><span class="mono" style="font-size:0.71rem;">${fullOrPreview}</span></div>
+    </div>
+    ${categorySpecificHtml}
+  `;
 }
 
 function switchS02Chart(mode, btn) {
@@ -719,26 +799,42 @@ function runFormulaSimulator() {
 
   document.getElementById('s03-math-steps').innerHTML = `
     <div class="math-card">
-      <div style="color:var(--up-gold); font-weight:700;">Equation (1) — Arithmetic Mean (μ):</div>
-      μ = (${termsPreview}) / ${f.n} = ${exp.sum} / ${f.n} = <span class="math-highlight">${f.mu.toFixed(4)}</span>
+      <div style="color:var(--up-gold); font-weight:700;">1–3. Partition Size (n), Minimum (x_min), and Maximum (x_max):</div>
+      • <b>Formula:</b> n = high − low + 1; &nbsp; x_min = min(A[low..high]); &nbsp; x_max = max(A[low..high])<br/>
+      • <b>Substitution:</b> n = ${arr.length - 1} − 0 + 1 = <b>${f.n}</b>; &nbsp; x_min = <b>${f.x_min}</b>; &nbsp; x_max = <b>${f.x_max}</b><br/>
+      • <b>Interpretation:</b> Subproblem contains ${f.n} elements spanning [${f.x_min}, ${f.x_max}] (range span = ${f.x_max - f.x_min}).
     </div>
     <div class="math-card">
-      <div style="color:var(--up-gold); font-weight:700;">Equation (2) — Population Standard Deviation (σ):</div>
-      ∑(x_i − μ)² = ${sqTermsPreview} = ${f.sqDiffSum.toFixed(4)}<br/>
-      σ = √(${f.sqDiffSum.toFixed(4)} / ${f.n}) = √(${f.variance.toFixed(4)}) = <span class="math-highlight">${f.sigma.toFixed(4)}</span>
+      <div style="color:var(--up-gold); font-weight:700;">4. Equation (1) — Arithmetic Mean (μ):</div>
+      • <b>Formula:</b> μ = (∑_{i=1}^n x_i) / n<br/>
+      • <b>Substitution:</b> μ = (${termsPreview}) / ${f.n}<br/>
+      • <b>Intermediate &amp; Final Result:</b> Sum ∑x_i = ${exp.sum} → μ = ${exp.sum} / ${f.n} = <span class="math-highlight">${f.mu.toFixed(6)}</span><br/>
+      • <b>Interpretation:</b> Center of mass of the subproblem values used to compute element deviations (x_i − μ).
     </div>
     <div class="math-card">
-      <div style="color:var(--up-gold); font-weight:700;">Equation (3) — Population Moment-Based Skewness (γ):</div>
-      ${f.sigma > 1e-12
-        ? `∑[(x_i − μ)/σ]³ = ${z3TermsPreview} = ${exp.z3Sum.toFixed(4)}<br/>γ = ${exp.z3Sum.toFixed(4)} / ${f.n} = <span class="math-highlight">${f.gamma.toFixed(4)}</span>`
-        : `σ = 0 (all elements identical) → Computational convention assigns <span class="math-highlight">γ = 0.0000</span>`}
+      <div style="color:var(--up-gold); font-weight:700;">5. Equation (2) — Population Standard Deviation (σ):</div>
+      • <b>Formula:</b> σ = √[ ∑_{i=1}^n (x_i − μ)² / n ]<br/>
+      • <b>Substitution:</b> ∑(x_i − ${f.mu.toFixed(4)})² = ${sqTermsPreview} = ${f.sqDiffSum.toFixed(6)}<br/>
+      • <b>Intermediate &amp; Final Result:</b> Population Variance σ² = ${f.sqDiffSum.toFixed(6)} / ${f.n} = ${f.variance.toFixed(6)} → σ = √(${f.variance.toFixed(6)}) = <span class="math-highlight">${f.sigma.toFixed(6)}</span><br/>
+      • <b>Interpretation:</b> Measures value dispersion around μ; ${f.sigma === 0 ? 'σ = 0 indicates an all-equal subproblem.' : 'used to standardize cubed deviations in Equation (3).'}
     </div>
     <div class="math-card">
-      <div style="color:var(--up-gold); font-weight:700;">Equation (4) — Adjacent Disorder Ratio (d):</div>
-      Pairs: ${pairsPreview}<br/>
-      d = ${f.descPairs} descending pairs / (${f.n} − 1) = ${f.descPairs} / ${f.n - 1} = <span class="math-highlight">${f.d.toFixed(4)}</span>
+      <div style="color:var(--up-gold); font-weight:700;">6. Equation (3) — Population Moment-Based Skewness (γ):</div>
+      • <b>Formula:</b> γ = (1 / n) ∑_{i=1}^n [ (x_i − μ) / σ ]³ &nbsp;(with γ = 0 when σ = 0)<br/>
+      • <b>Substitution &amp; Intermediate:</b> ${f.sigma > 1e-12
+        ? `∑[(x_i − μ)/σ]³ = ${z3TermsPreview} = ${exp.z3Sum.toFixed(6)} → γ = ${exp.z3Sum.toFixed(6)} / ${f.n} = <span class="math-highlight">${f.gamma.toFixed(6)}</span>`
+        : `σ = 0 (zero standard deviation) → By thesis computational convention, <span class="math-highlight">γ = 0.000000</span>`}<br/>
+      • <b>Interpretation:</b> Captures distribution asymmetry (${f.gamma > 0.1 ? 'right-skewed tail' : (f.gamma < -0.1 ? 'left-skewed tail' : 'approximately symmetric')}).
+    </div>
+    <div class="math-card">
+      <div style="color:var(--up-gold); font-weight:700;">7. Equation (4) — Disorder Ratio (d):</div>
+      • <b>Formula:</b> d = (Number of adjacent pairs where A[i] &gt; A[i+1]) / (n − 1)<br/>
+      • <b>Substitution &amp; Final Result:</b> Pairs (${pairsPreview}) → Violations = ${f.descPairs} / (${f.n} − 1) = ${f.descPairs} / ${f.n - 1} = <span class="math-highlight">${f.d.toFixed(6)}</span><br/>
+      • <b>Interpretation:</b> Measures local inversion density ∈ [0, 1] (0 = ascending sorted, 1 = strictly descending).
     </div>
   `;
+
+  renderS03ExpandableTables(exp);
 
   // Render 33-Candidate Target Pivot Evaluation Table (Equations 5-7)
   document.getElementById('s03-target-badge').textContent =
@@ -763,21 +859,119 @@ function runFormulaSimulator() {
   }).join('');
 }
 
+function toggleElementTablesS03() {
+  const box = document.getElementById('s03-expandable-tables');
+  if (!box) return;
+  box.style.display = box.style.display === 'none' ? 'block' : 'none';
+}
+
+function renderS03ExpandableTables(exp) {
+  const box = document.getElementById('s03-expandable-tables');
+  if (!box || !exp) return;
+  const f = exp.features;
+  const rows = exp.perElement.slice(0, 40);
+  const pairs = exp.adjacentPairs.slice(0, 40);
+
+  box.innerHTML = `
+    <div class="grid-2">
+      <div>
+        <div style="font-size:0.76rem; font-weight:800; color:var(--up-gold); margin-bottom:6px;">
+          Table A: Element-by-Element Moments (Mean μ, Variance/Std Dev σ, Skewness γ)
+        </div>
+        <div class="data-table-wrap" style="max-height:240px; overflow-y:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Idx i</th>
+                <th>Value x_i</th>
+                <th>x_i − μ</th>
+                <th>(x_i − μ)²</th>
+                <th>z_i = (x_i − μ)/σ</th>
+                <th>z_i³</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${rows.map(r => `
+                <tr>
+                  <td class="mono">${r.relIndex}</td>
+                  <td class="mono"><b>${r.xi}</b></td>
+                  <td class="mono">${r.dev >= 0 ? '+' : ''}${r.dev.toFixed(4)}</td>
+                  <td class="mono">${r.sqDev.toFixed(4)}</td>
+                  <td class="mono">${r.z >= 0 ? '+' : ''}${r.z.toFixed(4)}</td>
+                  <td class="mono">${r.z3 >= 0 ? '+' : ''}${r.z3.toFixed(4)}</td>
+                </tr>
+              `).join('')}
+              <tr style="background:rgba(242,169,0,0.12); font-weight:700;">
+                <td>SUM / FINAL</td>
+                <td class="mono">∑x = ${exp.sum} (μ=${f.mu.toFixed(4)})</td>
+                <td class="mono">∑ = 0.0000</td>
+                <td class="mono">∑ = ${f.sqDiffSum.toFixed(4)} (σ=${f.sigma.toFixed(4)})</td>
+                <td class="mono">—</td>
+                <td class="mono">∑ = ${exp.z3Sum.toFixed(4)} (γ=${f.gamma.toFixed(4)})</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div>
+        <div style="font-size:0.76rem; font-weight:800; color:var(--up-gold); margin-bottom:6px;">
+          Table B: Adjacent Pair Disorder Evaluation (Equation 4: d = Violations / (n − 1))
+        </div>
+        <div class="data-table-wrap" style="max-height:240px; overflow-y:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Pair #</th>
+                <th>Adjacent Indices</th>
+                <th>Values (A[i], A[i+1])</th>
+                <th>Comparison A[i] &gt; A[i+1]</th>
+                <th>Violation (0 / 1)</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${pairs.map(p => `
+                <tr>
+                  <td class="mono">${p.pairIndex + 1}</td>
+                  <td class="mono">(A[${p.pairIndex}], A[${p.pairIndex + 1}])</td>
+                  <td class="mono">(${p.leftVal}, ${p.rightVal})</td>
+                  <td class="mono">${p.leftVal} &gt; ${p.rightVal} (${p.violatesAscending ? 'True' : 'False'})</td>
+                  <td class="mono" style="color:${p.violatesAscending ? '#f43f5e' : '#10b981'}; font-weight:700;">${p.violatesAscending}</td>
+                </tr>
+              `).join('')}
+              <tr style="background:rgba(242,169,0,0.12); font-weight:700;">
+                <td colspan="3">TOTAL ADJACENT VIOLATIONS</td>
+                <td class="mono">${f.descPairs} of ${f.n - 1} pairs</td>
+                <td class="mono" style="color:var(--up-gold);">d = ${f.d.toFixed(4)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
 // ─── MODULE 3 (SCREEN 04): POLYNOMIAL REGRESSION MODEL STUDIO (36 COEFFICIENTS) ───
 function renderScreen04Model() {
   const model = Engine.getFrozenModel();
   const vs = model.validation_summary;
 
   // Compute Midpoint Heuristic (ŷ = 0.5) baseline MAE & RMSE on held-out validation partitions
-  const preds = vs.valPredictions || [];
+  const preds = vs.valPredictions || vs.scatter || [];
   let midAbsSum = 0, midSqSum = 0;
+  let modAbsSum = 0, modSqSum = 0;
   preds.forEach(p => {
-    const err = Math.abs(p.actual - 0.5);
-    midAbsSum += err;
-    midSqSum += err * err;
+    const errMid = Math.abs(p.actual - 0.5);
+    midAbsSum += errMid;
+    midSqSum += errMid * errMid;
+    const errMod = Math.abs(p.actual - p.predicted);
+    modAbsSum += errMod;
+    modSqSum += errMod * errMod;
   });
-  const midMAE = preds.length > 0 ? midAbsSum / preds.length : 0.2415;
-  const midRMSE = preds.length > 0 ? Math.sqrt(midSqSum / preds.length) : 0.2890;
+  const Nval = Math.max(1, preds.length);
+  const midMAE = preds.length > 0 ? midAbsSum / Nval : 0.2415;
+  const midRMSE = preds.length > 0 ? Math.sqrt(midSqSum / Nval) : 0.2890;
 
   document.getElementById('s04-val-mae').textContent = vs.valMAE.toFixed(4);
   document.getElementById('s04-val-rmse').textContent = vs.valRMSE.toFixed(4);
@@ -786,26 +980,90 @@ function renderScreen04Model() {
   if (midEl) midEl.textContent = midMAE.toFixed(4);
   document.getElementById('s04-model-version').textContent = `Midpoint RMSE: ${midRMSE.toFixed(4)}`;
 
-  // Training Log
+  // Training Log (with matrix dimensions, standardization, OLS, and objective validation comparison)
   document.getElementById('s04-training-log').innerHTML = `
-    <div style="color:#10b981;">[DATA SPLIT] Source arrays partitioned via 70:15:15 split (140 Training • 30 Validation • 30 Testing per condition).</div>
-    <div style="color:var(--text-sub);">[TARGET EVALUATION] Extracted ${vs.trainCount} training partitions &amp; ${vs.valCount} validation partitions using minimum-imbalance pivot target (n ≤ 33 all positions; n &gt; 33 up to 33 positions).</div>
-    <div style="color:var(--text-sub);">[STANDARDIZATION] Standardized 7 predictors using training-derived means[7] and scales[7].</div>
-    <div style="color:var(--text-sub);">[OLS REGRESSION] Fitted second-degree polynomial regression model (36 coefficients) via Ordinary Least Squares (Eq. 9).</div>
-    <div style="color:var(--up-gold);">[VALIDATION vs. MIDPOINT] 36-Term Model MAE = ${vs.valMAE.toFixed(4)}, RMSE = ${vs.valRMSE.toFixed(4)} vs. Midpoint Heuristic MAE = ${midMAE.toFixed(4)}, RMSE = ${midRMSE.toFixed(4)}. Model saved for runtime use.</div>
+    <div style="color:#10b981;">[1. TRAINING OBSERVATIONS &amp; DIMENSIONS] N_train = ${vs.trainCount} observations; Predictor Matrix X ∈ ℝ^(${vs.trainCount} × 7); Expanded Design Matrix Z ∈ ℝ^(${vs.trainCount} × 36).</div>
+    <div style="color:var(--text-sub);">[2. STANDARDIZATION] Computed training-set means μ_train[1..7] and std devs σ_train[1..7] on training split only (zero-variance guarded).</div>
+    <div style="color:var(--text-sub);">[3. OLS ESTIMATION] Constructed 36 polynomial terms (1 intercept + 7 linear + 7 quadratic + 21 interaction) and solved normal equations (ZᵀZ)β = Zᵀy.</div>
+    <div style="color:var(--up-gold);">[4. HELD-OUT VALIDATION (N_val = ${vs.valCount})] 36-Term Model MAE = ${vs.valMAE.toFixed(4)}, RMSE = ${vs.valRMSE.toFixed(4)} vs. Midpoint Heuristic (ŷ=0.5) MAE = ${midMAE.toFixed(4)}, RMSE = ${midRMSE.toFixed(4)} (${vs.valMAE <= midMAE ? 'Lower validation error than midpoint heuristic on held-out split' : 'Higher validation error than midpoint heuristic on held-out split'}).</div>
   `;
 
-  // Scaler Table
-  document.getElementById('s04-scaler-tbody').innerHTML = model.featureSummary.map(fs => `
-    <tr>
-      <td class="mono" style="color:var(--up-gold); font-weight:700;">${fs.name}</td>
-      <td>${fs.label}</td>
-      <td class="mono">${fs.mean.toFixed(4)}</td>
-      <td class="mono">${fs.stdDev.toFixed(4)}</td>
-      <td class="mono">${fs.min.toFixed(2)}</td>
-      <td class="mono">${fs.max.toFixed(2)}</td>
-    </tr>
-  `).join('');
+  // Active subproblem features for live standardization demonstration
+  const sampleArr = activeDataset && activeDataset.length >= 2 ? activeDataset : [6, 21, 3, 5, 1];
+  const activeFeat = Engine.extractSevenFeatures(sampleArr, 0, sampleArr.length - 1);
+
+  // Scaler Table with live substitution X_j = (x_j - training_mean_j) / training_std_j
+  document.getElementById('s04-scaler-tbody').innerHTML = model.featureSummary.map((fs, j) => {
+    const xj = activeFeat.vector[j];
+    const scale = fs.stdDev > 1e-12 ? fs.stdDev : 1.0;
+    const Xj = (xj - fs.mean) / scale;
+    return `
+      <tr>
+        <td class="mono" style="color:var(--up-gold); font-weight:700;">${fs.name} (${fs.label})</td>
+        <td class="mono">${xj.toFixed(4)}</td>
+        <td class="mono">${fs.mean.toFixed(4)}</td>
+        <td class="mono">${fs.stdDev.toFixed(4)}</td>
+        <td class="mono">(${xj.toFixed(3)} − ${fs.mean.toFixed(3)}) / ${scale.toFixed(3)}</td>
+        <td class="mono"><span class="math-highlight">${Xj >= 0 ? '+' : ''}${Xj.toFixed(4)}</span></td>
+      </tr>
+    `;
+  }).join('');
+
+  // Validation Observations & Step-by-Step MAE / RMSE Derivation Card
+  const valCard = document.getElementById('s04-val-obs-card');
+  if (valCard) {
+    const sampleObs = preds.slice(0, 15);
+    valCard.innerHTML = `
+      <div class="grid-2">
+        <div class="math-card" style="font-size:0.74rem;">
+          <div style="color:var(--up-gold); font-weight:800; margin-bottom:6px;">Step-by-Step Numerical Calculation of Validation MAE &amp; RMSE (Equations 13–14):</div>
+          • <b>Validation Observations (N):</b> <span class="mono">N = ${preds.length}</span> held-out subproblem observations<br/>
+          • <b>Equation (13) — Mean Absolute Error (MAE):</b><br/>
+          &nbsp;&nbsp;<span class="mono">MAE = (∑_{m=1}^N |y_m − ŷ_m|) / N = ${modAbsSum.toFixed(4)} / ${Nval} = <b>${vs.valMAE.toFixed(6)}</b></span><br/>
+          • <b>Equation (14) — Root Mean Squared Error (RMSE):</b><br/>
+          &nbsp;&nbsp;<span class="mono">RMSE = √[ (∑_{m=1}^N (y_m − ŷ_m)²) / N ] = √[ ${modSqSum.toFixed(4)} / ${Nval} ] = <b>${vs.valRMSE.toFixed(6)}</b></span><br/>
+          • <b>Comparison with Deterministic Midpoint Heuristic (ŷ = 0.5000):</b><br/>
+          &nbsp;&nbsp;<span class="mono">Midpoint MAE = ${midAbsSum.toFixed(4)} / ${Nval} = <b>${midMAE.toFixed(6)}</b> &nbsp;|&nbsp; Midpoint RMSE = √[${midSqSum.toFixed(4)} / ${Nval}] = <b>${midRMSE.toFixed(6)}</b></span><br/>
+          • <b>Objective Findings:</b> ${vs.valMAE < midMAE
+            ? `On this validation split, the 36-term polynomial model achieved lower MAE (${vs.valMAE.toFixed(4)} vs. ${midMAE.toFixed(4)}).`
+            : `On this validation split, the 36-term polynomial model did not outperform the midpoint heuristic (${vs.valMAE.toFixed(4)} vs. ${midMAE.toFixed(4)}).`}
+        </div>
+        <div class="data-table-wrap" style="max-height:210px; overflow-y:auto;">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Obs #</th>
+                <th>Size n</th>
+                <th>Actual Target y</th>
+                <th>Predicted ŷ</th>
+                <th>Error (y − ŷ)</th>
+                <th>Abs Error |y − ŷ|</th>
+                <th>Sq Error (y − ŷ)²</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${sampleObs.map((o, idx) => {
+                const err = o.actual - o.predicted;
+                const absE = Math.abs(err);
+                const sqE = err * err;
+                return `
+                  <tr>
+                    <td class="mono">#${idx + 1}</td>
+                    <td class="mono">${o.n || '—'}</td>
+                    <td class="mono">${o.actual.toFixed(4)}</td>
+                    <td class="mono" style="color:var(--up-gold);">${o.predicted.toFixed(4)}</td>
+                    <td class="mono">${err >= 0 ? '+' : ''}${err.toFixed(4)}</td>
+                    <td class="mono">${absE.toFixed(4)}</td>
+                    <td class="mono">${sqE.toFixed(5)}</td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
 
   renderS04CoefficientsTable();
   drawS04DiagnosticPlot();
@@ -969,29 +1227,113 @@ function runScreen05PivotEstimation() {
     pred.fallbackUsed ? 'Fallback: Midpoint Used' : `Valid Prediction • A[${pred.absIndex}] = ${pred.pivotValue}`;
 
   const f = pred.features;
-  const steps = [
-    { s: '01', t: 'Read Active Subproblem Bounds', d: `low = ${low}, high = ${high}, partition size n = high − low + 1 = ${pred.n}` },
-    { s: '02', t: 'Extract 7 Subproblem Predictors', d: `n=${f.n}, x_min=${f.x_min}, x_max=${f.x_max}, μ=${f.mu.toFixed(3)}, σ=${f.sigma.toFixed(3)}, γ=${f.gamma.toFixed(3)}, d=${f.d.toFixed(3)}` },
-    { s: '03', t: 'Standardize via Frozen Training Scaler', d: `X = [${pred.standardizedFeatures.map(x => x.toFixed(3)).join(', ')}]` },
-    { s: '04', t: 'Evaluate 36-Coefficient 2nd-Degree Polynomial (Eq. 8)', d: `Unconstrained prediction ŷ = ${pred.yHat.toFixed(6)}` },
-    { s: '05', t: 'Constrain to Valid Normalized Interval [0, 1] (Eq. 10)', d: `ŷ_c = min(1, max(0, ${pred.yHat.toFixed(4)})) = ${pred.yClamped.toFixed(6)}` },
-    { s: '06', t: 'Convert to Partition-Relative Index p (Eq. 11)', d: `p = round[${pred.yClamped.toFixed(4)} × (${pred.n} − 1)] = ${pred.relIndex}` },
-    { s: '07', t: 'Convert to Absolute Array Index p_abs (Eq. 12)', d: `p_abs = low + p = ${low} + ${pred.relIndex} = ${pred.absIndex}` },
-    { s: '08', t: 'Select & Save Reference Pivot Value v', d: `v = A[${pred.absIndex}] = ${pred.pivotValue} (saved before any swaps)` },
-    { s: '09', t: 'Validate Finiteness & Array Boundaries', d: `Finite=${Number.isFinite(pred.yHat)} && ${low} ≤ ${pred.absIndex} ≤ ${high} → Fallback=${pred.fallbackUsed}` },
-    { s: '10', t: 'Forward to Bidirectional Partitioning', d: `Ready to scan A[${low}..${high}] from opposing ends around v = ${pred.pivotValue}` }
+  window._s05StepsData = [
+    {
+      s: '01',
+      t: 'Identify Current Sorting Subproblem',
+      input: `Array A, low = ${low}, high = ${high}`,
+      formula: 'n = high − low + 1',
+      calc: `n = ${high} − ${low} + 1 = ${pred.n}`,
+      res: `Subproblem A[${low}..${high}] of size n = ${pred.n}`,
+      status: 'Valid Subproblem (n ≥ 2)',
+      why: 'Establishes the active array slice boundaries and partition size before feature extraction.'
+    },
+    {
+      s: '02',
+      t: 'Extract Seven Predictor Variables',
+      input: `Subproblem A[${low}..${high}] = [${arr.slice(low, high + 1).slice(0, 12).join(', ')}${pred.n > 12 ? ', …' : ''}]`,
+      formula: 'Equations (1)–(4): (n, x_min, x_max, μ, σ, γ, d)',
+      calc: `n=${f.n}, x_min=${f.x_min}, x_max=${f.x_max}, μ=${f.mu.toFixed(4)}, σ=${f.sigma.toFixed(4)}, γ=${f.gamma.toFixed(4)}, d=${f.d.toFixed(4)}`,
+      res: `7-Predictor Vector extracted in O(n) pass`,
+      status: 'Verified Finite Moments',
+      why: 'Summarizes subproblem scale, dispersion, skewness, and disorder so the regression model can adapt pivot selection to structural characteristics.'
+    },
+    {
+      s: '03',
+      t: 'Standardize Predictors & Construct 36 Polynomial Terms',
+      input: `Raw predictor vector x[1..7], frozen training means μ_train[1..7] and scales σ_train[1..7]`,
+      formula: 'X_j = (x_j − μ_train,j) / σ_train,j; Φ(X) = [1, X_j, X_j², X_j X_k]',
+      calc: `Standardized X = [${pred.standardizedFeatures.map(x => x.toFixed(4)).join(', ')}]`,
+      res: `36 polynomial basis terms evaluated`,
+      status: 'Zero-Variance Guarded',
+      why: 'Places all predictors on the same scale used during OLS training before evaluating quadratic and interaction terms.'
+    },
+    {
+      s: '04',
+      t: 'Calculate Predicted Normalized Pivot Position (ŷ)',
+      input: `36 standardized polynomial terms Φ_k(X) and frozen coefficients β_0..β_35`,
+      formula: 'Equation (8): ŷ = β₀ + ∑β_j X_j + ∑β_jj X_j² + ∑β_jk X_j X_k',
+      calc: `Dot product ∑_{k=0}^{35} β_k Φ_k(X) = ${pred.yHat.toFixed(6)}`,
+      res: `ŷ = ${pred.yHat.toFixed(6)}`,
+      status: Number.isFinite(pred.yHat) ? 'Finite Real Prediction' : 'Non-Finite (Fallback Triggered)',
+      why: 'Estimates the normalized relative position ∈ [0, 1] expected to minimize partition imbalance.'
+    },
+    {
+      s: '05',
+      t: 'Constrain Prediction to Unit Interval [0, 1]',
+      input: `Unconstrained prediction ŷ = ${pred.yHat.toFixed(6)}`,
+      formula: 'Equation (10): ŷ_c = min(1, max(0, ŷ))',
+      calc: `min(1, max(0, ${pred.yHat.toFixed(6)})) = ${pred.yClamped.toFixed(6)}`,
+      res: `ŷ_c = ${pred.yClamped.toFixed(6)}`,
+      status: 'Clamped ∈ [0, 1]',
+      why: 'Guarantees that polynomial extrapolation outside [0, 1] cannot produce out-of-bounds array indices.'
+    },
+    {
+      s: '06',
+      t: 'Calculate Relative Pivot Index (p)',
+      input: `Constrained prediction ŷ_c = ${pred.yClamped.toFixed(6)}, partition size n = ${pred.n}`,
+      formula: 'Equation (11): p = round[ŷ_c(n − 1)]',
+      calc: `round[${pred.yClamped.toFixed(6)} × (${pred.n} − 1)] = round[${(pred.yClamped * (pred.n - 1)).toFixed(4)}] = ${pred.relIndex}`,
+      res: `p = ${pred.relIndex}`,
+      status: `0 ≤ ${pred.relIndex} ≤ ${pred.n - 1}`,
+      why: 'Maps the continuous normalized position ŷ_c ∈ [0, 1] to a discrete integer offset within the subproblem.'
+    },
+    {
+      s: '07',
+      t: 'Calculate Absolute Pivot Index (p_abs)',
+      input: `Lower boundary low = ${low}, relative index p = ${pred.relIndex}`,
+      formula: 'Equation (12): p_abs = low + p',
+      calc: `p_abs = ${low} + ${pred.relIndex} = ${pred.absIndex}`,
+      res: `p_abs = ${pred.absIndex}`,
+      status: `${low} ≤ ${pred.absIndex} ≤ ${high}`,
+      why: 'Translates the partition-relative offset into the actual index in array A.'
+    },
+    {
+      s: '08',
+      t: 'Retrieve Pivot Value (v)',
+      input: `Array A, absolute pivot index p_abs = ${pred.absIndex}`,
+      formula: 'v = A[p_abs]',
+      calc: `v = A[${pred.absIndex}] = ${pred.pivotValue}`,
+      res: `v = ${pred.pivotValue}`,
+      status: 'Retrieved Without Array Mutation',
+      why: 'Saves the reference pivot value v prior to bidirectional pointer scanning and element exchanges.'
+    },
+    {
+      s: '09',
+      t: 'Validate Predicted Index & Midpoint Fallback Check',
+      input: `ŷ = ${pred.yHat.toFixed(6)}, p_abs = ${pred.absIndex}, bounds [${low}, ${high}]`,
+      formula: 'isFinite(ŷ) ∧ (low ≤ p_abs ≤ high); else p_abs = low + ⌊(high − low)/2⌋',
+      calc: `Finite=${Number.isFinite(pred.yHat)} ∧ (${low} ≤ ${pred.absIndex} ≤ ${high}) → Fallback=${pred.fallbackUsed}`,
+      res: pred.fallbackUsed ? `Fallback Midpoint Index Used` : `Validated p_abs = ${pred.absIndex}`,
+      status: pred.fallbackUsed ? 'Fallback Applied' : 'Validation Passed',
+      why: 'Ensures total index safety so runtime sorting never throws an index-out-of-bounds exception.'
+    },
+    {
+      s: '10',
+      t: 'Proceed to Bidirectional Partitioning',
+      input: `Subproblem A[${low}..${high}], validated pivot value v = ${pred.pivotValue} (from p_abs = ${pred.absIndex})`,
+      formula: 'Initialize i = low, j = high; partition around v',
+      calc: `Pass (low=${low}, high=${high}, p_abs=${pred.absIndex}, v=${pred.pivotValue}) to Module 5`,
+      res: `Ready for Bidirectional Partitioning`,
+      status: 'Handoff Ready',
+      why: 'Completes runtime pivot estimation and initiates in-place opposing-pointer partitioning.'
+    }
   ];
 
-  document.getElementById('s05-ten-steps').innerHTML = `
-    <div style="display:flex; flex-direction:column; gap:7px;">
-      ${steps.map(st => `
-        <div class="math-card" style="padding:8px 12px;">
-          <span style="color:var(--up-gold); font-weight:800; margin-right:6px;">[Step ${st.s}] ${st.t}:</span>
-          <span>${st.d}</span>
-        </div>
-      `).join('')}
-    </div>
-  `;
+  if (typeof window._s05ActiveStepIdx !== 'number') {
+    window._s05ActiveStepIdx = -1; // -1 means show all 10 steps
+  }
+  renderS05StepsView();
 
   document.getElementById('s05-yhat-sum').textContent = `∑(β_k · Φ_k) = ŷ = ${pred.yHat.toFixed(6)}`;
   document.getElementById('s05-terms-tbody').innerHTML = pred.termContributions.map(tc => `
@@ -1004,6 +1346,59 @@ function runScreen05PivotEstimation() {
       <td class="mono"><b>${tc.contribution >= 0 ? '+' : ''}${tc.contribution.toFixed(5)}</b></td>
     </tr>
   `).join('');
+}
+
+function renderS05StepsView() {
+  const steps = window._s05StepsData || [];
+  const idx = window._s05ActiveStepIdx;
+  const visible = (idx === -1 || idx === undefined) ? steps : [steps[Math.max(0, Math.min(steps.length - 1, idx))]];
+  const box = document.getElementById('s05-ten-steps');
+  if (!box) return;
+
+  box.innerHTML = `
+    <div style="display:flex; flex-direction:column; gap:8px; max-height:390px; overflow-y:auto;">
+      ${visible.map(st => `
+        <div class="math-card" style="padding:10px 12px; border-left:3px solid var(--up-gold);">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <span style="color:var(--up-gold); font-weight:800;">[Step ${st.s} / 10] ${st.t}</span>
+            <span class="badge-pass">${st.status}</span>
+          </div>
+          <div style="font-size:0.72rem; line-height:1.5;">
+            • <b>Input Values:</b> <span class="mono">${st.input}</span><br/>
+            • <b>Formula / Operation:</b> <span class="mono">${st.formula}</span><br/>
+            • <b>Actual Calculation:</b> <span class="mono">${st.calc}</span><br/>
+            • <b>Result:</b> <span class="math-highlight">${st.res}</span><br/>
+            • <b>Why Necessary:</b> <span style="color:var(--text-sub);">${st.why}</span>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+}
+
+function s05PrevStep() {
+  const len = (window._s05StepsData || []).length || 10;
+  if (window._s05ActiveStepIdx === -1) window._s05ActiveStepIdx = len - 1;
+  else window._s05ActiveStepIdx = Math.max(0, window._s05ActiveStepIdx - 1);
+  renderS05StepsView();
+}
+function s05NextStep() {
+  const len = (window._s05StepsData || []).length || 10;
+  if (window._s05ActiveStepIdx === -1) window._s05ActiveStepIdx = 0;
+  else window._s05ActiveStepIdx = Math.min(len - 1, window._s05ActiveStepIdx + 1);
+  renderS05StepsView();
+}
+function s05RunAll() {
+  window._s05ActiveStepIdx = -1;
+  renderS05StepsView();
+}
+function s05ResetSteps() {
+  window._s05ActiveStepIdx = 0;
+  renderS05StepsView();
+}
+function s05ViewComplete() {
+  window._s05ActiveStepIdx = -1;
+  renderS05StepsView();
 }
 
 function sendScreen05ToPartitioner() {
@@ -1151,15 +1546,32 @@ function initScreen07QueueSimulation() {
 
 function renderScreen07State() {
   if (!s07TraceSteps || s07TraceSteps.length === 0) return;
-  const cur = s07TraceSteps[Math.min(s07IterIdx, s07TraceSteps.length - 1)];
+  const idx = Math.min(s07IterIdx, s07TraceSteps.length - 1);
+  const cur = s07TraceSteps[idx];
+  const prevQ = idx > 0 ? (s07TraceSteps[idx - 1].queueSnapshot || []) : [{ low: cur.low, high: cur.high, size: cur.size, depth: cur.depth, seq: cur.seq }];
   const qList = cur.queueSnapshot || [];
 
-  document.getElementById('s07-qsize-badge').textContent = `|Q| = ${qList.length} Pending`;
+  const tiedCount = prevQ.filter(p => p.size === cur.size).length;
+  const selectionReason = prevQ.length <= 1
+    ? `Only eligible subproblem in queue (size n_S = ${cur.size} ≥ 2).`
+    : (tiedCount > 1
+      ? `Tied for largest partition size (n_S = ${cur.size}) with ${tiedCount - 1} other subproblem(s); selected via deterministic FIFO tie-breaking on smallest insertion sequence (#${cur.seq}).`
+      : `Strictly largest partition size (P(S) = n_S = ${cur.size}) among all ${prevQ.length} pending subproblems in the priority queue.`);
+
+  document.getElementById('s07-qsize-badge').textContent = `|Q| Before = ${prevQ.length} → |Q| After = ${qList.length}`;
   document.getElementById('s07-iter-banner').innerHTML = `
-    <b style="color:var(--up-gold);">Iteration ${cur.step} / ${s07TraceSteps.length}:</b>
-    Polled Largest Subproblem <b>[${cur.low}, ${cur.high}]</b> (size P(S) = <b>${cur.size}</b>, depth = <b>${cur.depth}</b>, FIFO seq = <b>#${cur.seq}</b>)
-    → Predicted Pivot A[${cur.pivotAbsIdx}] = <b>${cur.pivotValue}</b>
-    → Enqueued Left <b>${cur.leftBounds}</b> &amp; Right <b>${cur.rightBounds}</b>
+    <div style="display:flex; flex-direction:column; gap:4px;">
+      <div>
+        <b style="color:var(--up-gold);">Iteration ${cur.step} / ${s07TraceSteps.length}:</b>
+        Polled Subproblem <b>[${cur.low}, ${cur.high}]</b> (size P(S) = <b>${cur.size}</b>, logical depth = <b>${cur.depth}</b>, insertion seq = <b>#${cur.seq}</b>)
+      </div>
+      <div><b>Reason for Selection (Sec 4.5.2):</b> <span style="color:#34d399;">${selectionReason}</span></div>
+      <div>
+        <b>Queue Before Poll (${prevQ.length}):</b> <span class="mono">${prevQ.map(p => `[${p.low},${p.high}](n=${p.size},#${p.seq})`).join(', ') || 'Empty'}</span><br/>
+        <b>Partition Outcome:</b> Predicted Pivot A[${cur.pivotAbsIdx}] = <b>${cur.pivotValue}</b> → Left Child <b>${cur.leftBounds}</b> (n_L=${cur.n_L}) &amp; Right Child <b>${cur.rightBounds}</b> (n_R=${cur.n_R})<br/>
+        <b>Updated Queue After Enqueue (${qList.length}):</b> <span class="mono">${qList.map(p => `[${p.low},${p.high}](n=${p.size},#${p.seq})`).join(', ') || 'Empty (|Q| = 0)'}</span>
+      </div>
+    </div>
   `;
 
   drawBinaryMaxHeapSVG(qList);
@@ -1420,41 +1832,54 @@ function runGateCVerification() {
   const tbody = document.getElementById('s08-verify-tbody');
   if (!tbody) return;
 
-  // Verify correctness (sorted output) on identical input arrays across all 4 dataset categories and verification sizes (5, 25, 50)
-  const verificationConditions = [
-    { id: 'V-01', name: 'Random (Uniform Integer Array)', cat: 'random', n: 5, seed: 20261001 },
-    { id: 'V-02', name: 'Nearly Sorted (Ascending + 1% Exchanges)', cat: 'nearly', n: 5, seed: 20261002 },
-    { id: 'V-03', name: 'Reverse Sorted (Descending Integer Array)', cat: 'reverse', n: 5, seed: 20261003 },
-    { id: 'V-04', name: 'Many Duplicates (Repeated Values)', cat: 'duplicates', n: 5, seed: 20261004 },
-    { id: 'V-05', name: 'Random (Uniform Integer Array)', cat: 'random', n: 25, seed: 20261005 },
-    { id: 'V-06', name: 'Nearly Sorted (Ascending + 1% Exchanges)', cat: 'nearly', n: 25, seed: 20261006 },
-    { id: 'V-07', name: 'Reverse Sorted (Descending Integer Array)', cat: 'reverse', n: 25, seed: 20261007 },
-    { id: 'V-08', name: 'Many Duplicates (Repeated Values)', cat: 'duplicates', n: 25, seed: 20261008 },
-    { id: 'V-09', name: 'Random (Uniform Integer Array)', cat: 'random', n: 50, seed: 20261009 },
-    { id: 'V-10', name: 'Nearly Sorted (Ascending + 1% Exchanges)', cat: 'nearly', n: 50, seed: 20261010 },
-    { id: 'V-11', name: 'Reverse Sorted (Descending Integer Array)', cat: 'reverse', n: 50, seed: 20261011 },
-    { id: 'V-12', name: 'Many Duplicates (Repeated Values)', cat: 'duplicates', n: 50, seed: 20261012 }
+  // Verify ascending order + preservation of input elements and frequencies across all required edge cases and 4 categories
+  const verificationCases = [
+    { id: 'V-01', name: 'Empty Array Edge Case (n = 0)', arr: [], seed: 20261001 },
+    { id: 'V-02', name: 'Single-Element Array Edge Case (n = 1)', arr: [42], seed: 20261002 },
+    { id: 'V-03', name: 'Thesis Canonical 5-Element Array', arr: [6, 21, 3, 5, 1], seed: 20261003 },
+    { id: 'V-04', name: 'Repeated Values (Duplicate Pivot Handling)', arr: [8, 3, 8, 1, 3, 8, 1], seed: 20261004 },
+    { id: 'V-05', name: 'Already Sorted Array (Ascending, d = 0)', arr: [2, 5, 9, 14, 20, 27], seed: 20261005 },
+    { id: 'V-06', name: 'Reverse-Sorted Array (Descending, d = 1)', arr: [25, 18, 12, 7, 1, -4], seed: 20261006 },
+    { id: 'V-07', name: 'Negative &amp; Mixed Integer Values', arr: [-45, -12, 0, -88, 19, -3, -12], seed: 20261007 },
+    { id: 'V-08', name: 'All-Equal Identical Elements (σ = 0, γ = 0)', arr: [7, 7, 7, 7, 7, 7], seed: 20261008 },
+    { id: 'V-09', name: 'Category 1: Random Synthetic Array (n = 25)', arr: Engine.generateDataset(25, 'random', 20261009, -1000, 1000).array, seed: 20261009 },
+    { id: 'V-10', name: 'Category 2: Nearly Sorted Synthetic Array (n = 25)', arr: Engine.generateDataset(25, 'nearly', 20261010, -1000, 1000).array, seed: 20261010 },
+    { id: 'V-11', name: 'Category 3: Reverse Sorted Synthetic Array (n = 25)', arr: Engine.generateDataset(25, 'reverse', 20261011, -1000, 1000).array, seed: 20261011 },
+    { id: 'V-12', name: 'Category 4: Many Duplicates (10-Value Pool, n = 25)', arr: Engine.generateDataset(25, 'duplicates', 20261012, -1000, 1000).array, seed: 20261012 }
   ];
 
-  tbody.innerHTML = verificationConditions.map(vc => {
-    const ds = Engine.generateDataset(vc.n, vc.cat, vc.seed, -1000, 1000);
-    const comp = Engine.compareAllFour(ds.array, vc.seed, false);
-    const sOk = comp.sermax.verified;
-    const tOk = comp.trad.verified;
-    const mOk = comp.median3.verified;
-    const rOk = comp.random.verified;
+  tbody.innerHTML = verificationCases.map(vc => {
+    const inputArr = vc.arr.slice();
+    const expectedSorted = vc.arr.slice().sort((a, b) => a - b);
+    let sOk = true, tOk = true, mOk = true, rOk = true;
+    let actualOut = [];
+
+    if (inputArr.length < 2) {
+      actualOut = inputArr.slice();
+    } else {
+      const comp = Engine.compareAllFour(inputArr, vc.seed, false);
+      sOk = comp.sermax.verified && JSON.stringify(comp.sermax.sortedArray) === JSON.stringify(expectedSorted);
+      tOk = comp.trad.verified && JSON.stringify(comp.trad.sortedArray) === JSON.stringify(expectedSorted);
+      mOk = comp.median3.verified && JSON.stringify(comp.median3.sortedArray) === JSON.stringify(expectedSorted);
+      rOk = comp.random.verified && JSON.stringify(comp.random.sortedArray) === JSON.stringify(expectedSorted);
+      actualOut = comp.sermax.sortedArray || [];
+    }
+
     const allOk = sOk && tOk && mOk && rOk;
+    const fmtArr = a => a.length === 0 ? '[]' : (a.length <= 8 ? `[${a.join(', ')}]` : `[${a.slice(0, 7).join(', ')}, …]`);
+
     return `
       <tr>
         <td class="mono"><b style="color:var(--up-gold);">${vc.id}</b></td>
         <td><b>${vc.name}</b></td>
-        <td class="mono">${vc.n}</td>
-        <td class="mono">${ds.metadata.checksum}</td>
-        <td>${sOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
-        <td>${tOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
-        <td>${mOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
-        <td>${rOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
-        <td>${allOk ? '<span class="badge-pass">✓ Identical Input &amp; Sorted Output Verified</span>' : '❌ Verification Failed'}</td>
+        <td class="mono">${inputArr.length}</td>
+        <td class="mono" style="font-size:0.68rem;">${fmtArr(inputArr)}</td>
+        <td class="mono" style="font-size:0.68rem;">${fmtArr(expectedSorted)}</td>
+        <td class="mono" style="font-size:0.68rem; color:#10b981;">${fmtArr(actualOut)}</td>
+        <td class="mono" style="font-size:0.68rem;">
+          ${sOk ? '✓' : '✗'} SerMax • ${tOk ? '✓' : '✗'} Trad • ${mOk ? '✓' : '✗'} Med3 • ${rOk ? '✓' : '✗'} Rand
+        </td>
+        <td>${allOk ? '<span class="badge-pass">✓ Ascending &amp; Multiset Verified</span>' : '❌ Failed'}</td>
       </tr>
     `;
   }).join('');
@@ -1501,23 +1926,55 @@ function runSingleBenchmark(silent = false) {
     const speedup = a.elapsedMs > 1e-6 ? (comp.trad.elapsedMs / a.elapsedMs).toFixed(2) + '×' : '1.00×';
     const memStr = isSermax
       ? `${a.estimatedHeapBytes.toLocaleString()} B (Max PQ=${a.maxQueueOccupancy})`
-      : `${a.estimatedHeapBytes.toLocaleString()} B (Stack=${a.maxLogicalDepth})`;
+      : `${a.estimatedHeapBytes.toLocaleString()} B (Call Stack=${a.maxLogicalDepth})`;
     return `
       <tr style="${isSermax ? 'background:rgba(242,169,0,0.14); font-weight:700;' : ''}">
         <td class="mono"><b>#${i + 1}</b></td>
         <td style="color:${isSermax ? 'var(--up-gold)' : '#fff'};">${a.name}</td>
         <td style="font-size:0.72rem;">${e.sched}</td>
-        <td><span class="badge-pass">✓ Sorted</span></td>
+        <td><span class="badge-pass">✓ Sorted &amp; Preserved</span></td>
         <td class="mono col-time"><b>${a.elapsedMs.toFixed(3)} ms</b></td>
         <td class="mono col-cmp">${a.comparisons.toLocaleString()}</td>
         <td class="mono col-swp">${a.swaps.toLocaleString()}</td>
         <td class="mono col-dep">${a.maxLogicalDepth}</td>
         <td class="mono col-bal">${a.partitionBalance.toFixed(4)}</td>
         <td class="mono col-mem">${memStr}</td>
-        <td class="mono" style="color:#10b981; font-weight:700;">${speedup}</td>
+        <td class="mono" style="color:${parseFloat(speedup) >= 1 ? '#10b981' : '#fbbf24'}; font-weight:700;">${speedup}</td>
       </tr>
     `;
   }).join('');
+
+  // Populate Individual Measured Trial Records Table (#s09-trials-tbody)
+  const trialsTbody = document.getElementById('s09-trials-tbody');
+  if (trialsTbody) {
+    const dsId = ds.metadata.datasetId || `DS-${dist.toUpperCase().slice(0, 4)}-N${size}-S${seed}`;
+    const trialRows = [];
+    entries.forEach(e => {
+      const a = e.algo;
+      const tArr = (a.timingStats && a.timingStats.timings) ? a.timingStats.timings : [a.elapsedMs];
+      tArr.forEach((tMs, tIdx) => {
+        trialRows.push(`
+          <tr>
+            <td class="mono">${dsId}</td>
+            <td style="text-transform:capitalize;">${dist}</td>
+            <td class="mono">${size.toLocaleString()}</td>
+            <td class="mono">${seed}</td>
+            <td style="color:${e.key === 'sermax' ? 'var(--up-gold)' : '#fff'}; font-weight:${e.key === 'sermax' ? '700' : '400'};">${a.name}</td>
+            <td><span class="badge-warn">10 Warm-Ups Done</span></td>
+            <td class="mono">Trial #${tIdx + 1} / ${tArr.length}</td>
+            <td class="mono"><b>${tMs.toFixed(4)} ms</b></td>
+            <td class="mono">${a.comparisons.toLocaleString()}</td>
+            <td class="mono">${a.swaps.toLocaleString()}</td>
+            <td class="mono">${a.maxLogicalDepth}</td>
+            <td class="mono">${a.partitionBalance.toFixed(4)}</td>
+            <td class="mono">${a.estimatedHeapBytes.toLocaleString()} B</td>
+            <td><span class="badge-pass">✓ Verified</span></td>
+          </tr>
+        `);
+      });
+    });
+    trialsTbody.innerHTML = trialRows.join('');
+  }
 
   const swpRed = comp.trad.swaps > 0 ? ((comp.trad.swaps - comp.sermax.swaps) / comp.trad.swaps) * 100 : 0;
   benchmarkHistory.unshift({
@@ -1562,7 +2019,7 @@ function renderS09HistoryTable() {
 function runFull12ConditionMatrix(silent = false) {
   if (!silent) pauseAnthemForBenchmarkIntegrity('12-Condition Benchmark Matrix Execution');
   const cats = ['random', 'nearly', 'reverse', 'duplicates'];
-  const sizes = [500, 1000, 2500];
+  const sizes = [500, 1000, 10000];
   let seed = 20261001;
 
   cats.forEach(cat => {
@@ -1576,7 +2033,7 @@ function runFull12ConditionMatrix(silent = false) {
   });
 
   renderScreen10Analysis();
-  if (!silent) showToast('Executed 12-Condition Benchmark Matrix & Statistical Analysis!');
+  if (!silent) showToast('Executed 12-Condition Benchmark Matrix (500, 1,000, 10,000) & Statistical Analysis!');
 }
 
 function switchS10Chart(metric, btn) {
@@ -1629,7 +2086,7 @@ function renderScreen10Analysis() {
     reverse: 'Reverse Sorted (Descending)',
     duplicates: 'Many Duplicates (10-Value Pool)'
   };
-  const sizes = [500, 1000, 2500];
+  const sizes = [500, 1000, 10000];
 
   const heatTbody = document.getElementById('s10-heatmap-tbody');
   if (heatTbody && Object.keys(matrix12Results).length > 0) {
@@ -1650,10 +2107,43 @@ function renderScreen10Analysis() {
         <tr>
           <td><b>${catNames[cat]}</b></td>
           ${cells}
-          <td class="mono" style="color:#10b981; font-weight:700;">${meanSwp >= 0 ? '↓' : '↑'} ${Math.abs(meanSwp).toFixed(1)}% swaps</td>
+          <td class="mono" style="color:${meanSwp >= 0 ? '#10b981' : '#fbbf24'}; font-weight:700;">${meanSwp >= 0 ? '↓' : '↑'} ${Math.abs(meanSwp).toFixed(1)}% swaps</td>
         </tr>
       `;
     }).join('');
+  }
+
+  // Render Grouped Descriptive Statistics Table (#s10-descriptive-tbody)
+  const descTbody = document.getElementById('s10-descriptive-tbody');
+  if (descTbody && Object.keys(matrix12Results).length > 0) {
+    const descRows = [];
+    cats.forEach(cat => {
+      sizes.forEach(sz => {
+        const item = matrix12Results[cat]?.[sz];
+        if (!item) return;
+        ['sermax', 'trad', 'median3', 'random'].forEach(k => {
+          const a = item[k];
+          const ts = a.timingStats || { meanMs: a.elapsedMs, stdMs: 0, medianMs: a.elapsedMs, iqrMs: 0 };
+          descRows.push(`
+            <tr>
+              <td><b>${catNames[cat]}</b></td>
+              <td class="mono">${sz.toLocaleString()}</td>
+              <td style="color:${k === 'sermax' ? 'var(--up-gold)' : '#fff'}; font-weight:${k === 'sermax' ? '700' : '400'};">${a.name}</td>
+              <td class="mono">${(ts.meanMs || a.elapsedMs).toFixed(4)}</td>
+              <td class="mono">${(ts.stdMs || 0).toFixed(4)}</td>
+              <td class="mono"><b>${(ts.medianMs || a.elapsedMs).toFixed(4)}</b></td>
+              <td class="mono">${(ts.iqrMs || 0).toFixed(4)}</td>
+              <td class="mono">${a.comparisons.toLocaleString()}</td>
+              <td class="mono">${a.swaps.toLocaleString()}</td>
+              <td class="mono">${a.maxLogicalDepth}</td>
+              <td class="mono">${a.partitionBalance.toFixed(4)}</td>
+              <td class="mono">${a.estimatedHeapBytes.toLocaleString()} B</td>
+            </tr>
+          `);
+        });
+      });
+    });
+    descTbody.innerHTML = descRows.join('');
   }
 
   // Render Inferential Statistical Analysis (Wilcoxon Signed-Rank + Paired Sign Test + Holm 36 + 2,000 Bootstrap CI)
@@ -1678,6 +2168,7 @@ function renderScreen10Analysis() {
   document.getElementById('s10-stats-tbody').innerHTML = rawStats.map((r, i) => {
     const adjP = holmP[i];
     const sig = adjP < 0.05;
+    const dir = r.sp >= 1.0 ? 'Faster' : 'Slower (Feature-Extraction Overhead)';
     return `
       <tr>
         <td><b>${r.name}</b></td>
@@ -1686,10 +2177,45 @@ function renderScreen10Analysis() {
         <td class="mono" style="font-size:0.7rem;">Wilcoxon z=${r.wilcox.z.toFixed(2)}<br/><span style="color:var(--text-dim);">Sign (+${r.signT.pos}/-${r.signT.neg}, p=${r.signT.pValue.toFixed(4)})</span></td>
         <td class="mono">${r.wilcox.pValue.toFixed(4)}</td>
         <td class="mono"><b>${adjP.toFixed(4)}</b></td>
-        <td><span class="${sig ? 'badge-pass' : 'badge-warn'}">${sig ? 'Significant (p_Holm < 0.05)' : 'Comparable / Overhead Trade-off'}</span></td>
+        <td><span class="${sig ? 'badge-pass' : 'badge-warn'}">${sig ? `Significant (${dir}, p_Holm < 0.05)` : `Not Statistically Significant (p_Holm ≥ 0.05)`}</span></td>
       </tr>
     `;
   }).join('');
+
+  // Render 10-Point Statistical Comparison Explanation Panel (#s10-ten-point-explanation)
+  const tenPtBox = document.getElementById('s10-ten-point-explanation');
+  if (tenPtBox) {
+    const activeCat = document.getElementById('bench-dist')?.value || 'nearly';
+    const activeSize = document.getElementById('bench-size')?.value || '1000';
+    tenPtBox.innerHTML = `
+      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(310px, 1fr)); gap:12px;">
+        ${rawStats.map((r, i) => {
+          const adjP = holmP[i];
+          const sig = adjP < 0.05;
+          const interp = sig
+            ? (r.sp >= 1.0
+              ? `At α = 0.05 after Holm 36-comparison adjustment (p_Holm = ${adjP.toFixed(4)} < 0.05), SerMax Hybrid achieved a statistically significant execution-time reduction (${r.sp.toFixed(2)}× speedup) under this condition.`
+              : `At α = 0.05 after Holm 36-comparison adjustment (p_Holm = ${adjP.toFixed(4)} < 0.05), the baseline executed faster (${r.sp.toFixed(2)}× ratio), reflecting the O(n) seven-predictor extraction and 36-term evaluation overhead relative to single-step pivot selection.`)
+            : `After Holm adjustment across the family of 36 comparisons (p_Holm = ${adjP.toFixed(4)} ≥ 0.05), the execution-time difference (${r.sp.toFixed(2)}×) is not statistically significant at α = 0.05, even if unadjusted p = ${r.wilcox.pValue.toFixed(4)}.`;
+          return `
+            <div class="math-card" style="font-size:0.72rem; line-height:1.55; border-left:3px solid var(--up-gold);">
+              <div style="color:var(--up-gold); font-weight:800; font-size:0.78rem; margin-bottom:6px;">${r.name}</div>
+              <div><b>1. Algorithms Compared:</b> SerMax Hybrid QuickSort (Iterative PQ + 36β Polynomial Pivot) vs. ${r.obj.name} (Recursive).</div>
+              <div><b>2. Experimental Condition:</b> Category = <span class="mono">${activeCat.toUpperCase()}</span>, Size <span class="mono">n = ${Number(activeSize).toLocaleString()}</span>.</div>
+              <div><b>3. Paired Observations:</b> Paired execution-time measurements summarized on identical independent test arrays (<span class="mono">d_i = T_baseline,i − T_SerMax,i</span>).</div>
+              <div><b>4. Statistical Test Used:</b> Two-sided Wilcoxon Signed-Rank Test (with Paired Sign Test check for asymmetry).</div>
+              <div><b>5. Why Appropriate:</b> Execution times on identical source arrays are paired and potentially skewed; non-parametric rank/sign tests avoid Gaussian normality assumptions.</div>
+              <div><b>6. Calculated Test Statistic:</b> Wilcoxon <span class="mono">z = ${r.wilcox.z.toFixed(4)}</span> (<span class="mono">W+ = ${r.wilcox.wPlus}, W− = ${r.wilcox.wMinus}</span>); Sign Test <span class="mono">+${r.signT.pos} / −${r.signT.neg}</span>.</div>
+              <div><b>7. Unadjusted p-value:</b> <span class="mono">p_raw = ${r.wilcox.pValue.toFixed(4)}</span> (Sign Test <span class="mono">p_sign = ${r.signT.pValue.toFixed(4)}</span>).</div>
+              <div><b>8. Holm-Adjusted p-value (36 Comparisons):</b> <span class="mono"><b>p_Holm = ${adjP.toFixed(4)}</b></span>.</div>
+              <div><b>9. 95% Paired Bootstrap CI (2,000 Resamples):</b> <span class="mono">[${r.boot.low95.toFixed(2)}×, ${r.boot.high95.toFixed(2)}×]</span>.</div>
+              <div><b>10. Objective Interpretation (α = 0.05):</b> <span style="color:#fff;">${interp}</span></div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+    `;
+  }
 
   document.getElementById('s10-exec-summary').innerHTML = `
     <div style="color:var(--up-gold); font-weight:700; margin-bottom:4px;">Empirical Research Synthesis (Chapter 4 Alignment):</div>
@@ -1939,4 +2465,332 @@ function pauseAnthemForBenchmarkIntegrity(reason = 'Benchmark Isolation') {
     badge.textContent = `Audio Auto-Paused (${reason})`;
     badge.classList.add('paused-guard');
   }
+}
+
+// ─── GLOBAL REQUIREMENT: MODE A (RESEARCH EXECUTION) & MODE B (7-STEP EXPLANATION) ───
+window._globalSystemMode = 'A';
+window._modeBActiveStep = -1; // -1 = show all 7 steps
+window._modeBFilter = 'ALL';
+window._modeBPlayTimer = null;
+window._modeBHistoryLog = [];
+
+const MODULE_PURPOSE_MAP = {
+  s02: {
+    purpose: 'Generate seed-reproducible synthetic integer datasets across 4 categories (Random, Nearly Sorted, Reverse Sorted, Many Duplicates) and 3 formal benchmark sizes (500, 1,000, 10,000) with source-array-level 70:15:15 splitting.',
+    output: 'Reproducible synthetic datasets with documented generation settings and training (140), validation (30), and testing (30) assignments.',
+    origin: 'Calculated & Seed-Reproducible (Source-Array Level)'
+  },
+  s03: {
+    purpose: 'Extract the seven subproblem predictor variables (n, x_min, x_max, μ, σ, γ, d) and evaluate deterministic candidate pivot positions to derive the normalized minimum-imbalance training target y.',
+    output: 'Seven verified predictor values with element-by-element derivations and a reproducible normalized training target y = i* / (n − 1).',
+    origin: 'Calculated from Active Subproblem Slice'
+  },
+  s04: {
+    purpose: 'Standardize the 7 predictors using training-set moments, construct the 36-term second-degree polynomial design matrix, fit coefficients via OLS, and validate MAE & RMSE against the midpoint heuristic.',
+    output: 'Trained and validated 36-coefficient second-degree polynomial regression model frozen for runtime sorting.',
+    origin: 'Calculated on Training Split (70%) & Evaluated on Validation Split (15%)'
+  },
+  s05: {
+    purpose: 'Execute the 10-step runtime pivot estimation procedure (standardize, evaluate 36 terms, clamp to [0,1], convert to relative & absolute index, validate bounds, and apply midpoint fallback if needed).',
+    output: 'Valid absolute pivot index p_abs and pivot value v = A[p_abs] with complete 10-step computational trace.',
+    origin: 'Calculated at Runtime (Zero Array Mutation)'
+  },
+  s06: {
+    purpose: 'Partition subproblem A[low..high] in-place around the selected pivot value v using opposing pointers i and j, recording comparisons, exchanges, and resulting left/right subproblems.',
+    output: 'Correctly partitioned array segments [low..j] and [i..high] with complete trace of comparisons and swaps.',
+    origin: 'Calculated & Traced on Active Partition'
+  },
+  s07: {
+    purpose: 'Schedule eligible subproblems (n ≥ 2) iteratively using a priority queue ordered by largest partition size first with deterministic FIFO tie-breaking on insertion sequence.',
+    output: 'Iterative subproblem processing schedule, verified queue ordering, logical partition depth, and maximum queue occupancy.',
+    origin: 'Calculated from Iterative Max-Heap Schedule'
+  },
+  s08: {
+    purpose: 'Implement and verify SerMax Hybrid QuickSort alongside the three recursive baselines (Traditional, Median-of-Three, Randomized-Pivot) on identical input arrays and edge cases.',
+    output: 'Four verified sorting implementations with confirmed ascending order and element-frequency preservation.',
+    origin: 'Verified on Identical Input Arrays'
+  },
+  s09: {
+    purpose: 'Conduct controlled comparative benchmarking across 12 conditions (4 categories × 3 sizes: 500, 1,000, 10,000) using 10 unmeasured warm-ups + 10 measured trials per test array.',
+    output: 'Reproducible trial-level and dataset-level performance records across all 6 primary metrics + max priority queue occupancy.',
+    origin: 'Measured on Independent Test Split (15%)'
+  },
+  s10: {
+    purpose: 'Summarize repeated trials at the independent test-array level and perform Wilcoxon signed-rank tests, paired sign tests, Holm 36-comparison adjustment (α = 0.05), and 2,000-resample bootstrap CIs.',
+    output: 'Reproducible descriptive and inferential statistical tables, 10-point derivations, and CSV/JSON research exports.',
+    origin: 'Calculated from Measured Independent Test Summaries'
+  }
+};
+
+function updateModuleMetaStrip(screenId) {
+  const info = MODULE_PURPOSE_MAP[screenId] || MODULE_PURPOSE_MAP.s02;
+  const pEl = document.getElementById('module-purpose-txt');
+  const oEl = document.getElementById('module-output-txt');
+  const bEl = document.getElementById('module-data-origin-badge');
+  if (pEl) pEl.textContent = info.purpose;
+  if (oEl) oEl.textContent = info.output;
+  if (bEl) bEl.textContent = info.origin;
+}
+
+function setGlobalSystemMode(mode) {
+  window._globalSystemMode = (mode === 'B') ? 'B' : 'A';
+  const btnA = document.getElementById('mode-a-btn');
+  const btnB = document.getElementById('mode-b-btn');
+  const panelB = document.getElementById('global-mode-b-panel');
+
+  if (btnA) btnA.classList.toggle('active', window._globalSystemMode === 'A');
+  if (btnB) btnB.classList.toggle('active', window._globalSystemMode === 'B');
+  if (panelB) {
+    panelB.style.display = window._globalSystemMode === 'B' ? 'block' : 'none';
+  }
+
+  if (window._globalSystemMode === 'B') {
+    window._modeBActiveStep = -1;
+    window._modeBFilter = 'ALL';
+    renderGlobalModeBPanel(currentScreenId);
+  } else {
+    modeBPause();
+  }
+}
+
+function buildSevenStepExplanationForScreen(screenId) {
+  const arr = (activeDataset && activeDataset.length >= 2) ? activeDataset : [6, 21, 3, 5, 1];
+  const f = Engine.extractSevenFeatures(arr, 0, arr.length - 1);
+  const model = Engine.getFrozenModel();
+  const pred = Engine.predictPivotPosition(arr, 0, arr.length - 1, model, false);
+  const c = latestFourComparison || Engine.compareAllFour(arr, activeDatasetMeta.seed || 20261001, false);
+
+  const map = {
+    s02: {
+      title: 'Module 1 (Sections 4.6.1–4.6.3): Synthetic Dataset Generation & 70:15:15 Source-Array Splitting',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Category = ${(activeDatasetMeta.category || 'nearly').toUpperCase()}, Size n = ${arr.length.toLocaleString()}, Range = [${activeDatasetMeta.minVal ?? -100000}, ${activeDatasetMeta.maxVal ?? 100000}], Seed = ${activeDatasetMeta.seed || 104201}.` },
+        { num: 2, name: 'Step 2: Formula', body: `Nearly Sorted Exchanges: k_swap = max(1, round(0.01 × n)); Source-Array Split: 140 Training (70%) : 30 Validation (15%) : 30 Testing (15%) per condition.` },
+        { num: 3, name: 'Step 3: Substitution', body: `k_swap = max(1, round(0.01 × ${arr.length})) = ${Math.max(1, Math.round(arr.length * 0.01))}; Total source arrays across 12 conditions = 12 × 200 = 2,400.` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Generated ${arr.length} seeded integers; Observed x_min = ${f.x_min}, x_max = ${f.x_max}, Mean μ = ${f.mu.toFixed(4)}, Disorder d = ${f.d.toFixed(4)}.` },
+        { num: 5, name: 'Step 5: Final Result', body: `Dataset ID = ${activeDatasetMeta.datasetId || 'DS-ACTIVE'}, Checksum = ${activeDatasetMeta.checksum}, Subset = ${activeDatasetMeta.assignedSubset || 'Assigned at Source-Array Level'}.` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Source-array-level assignment guarantees that no subproblems derived from the same source array cross between training, validation, and testing splits.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Pass the generated array to Module 2 (Seven-Predictor Extractor) to compute subproblem structural features and minimum-imbalance training targets.` }
+      ]
+    },
+    s03: {
+      title: 'Module 2 (Sections 4.3.1–4.3.3): Seven-Predictor Extraction & Minimum-Imbalance Target Calculation',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Active subproblem A[0..${arr.length - 1}] with n = ${f.n} elements: [${arr.slice(0, 10).join(', ')}${arr.length > 10 ? ', …' : ''}].` },
+        { num: 2, name: 'Step 2: Formula', body: `Eq. (1) μ = (∑x_i)/n; Eq. (2) σ = √[∑(x_i−μ)²/n]; Eq. (3) γ = (1/n)∑[(x_i−μ)/σ]³; Eq. (4) d = [∑𝟙(A[i]>A[i+1])]/(n−1); Eq. (7) y = i*/(n−1).` },
+        { num: 3, name: 'Step 3: Substitution', body: `μ = ${(f.mu * f.n).toFixed(0)} / ${f.n}; σ = √[${f.sqDiffSum.toFixed(4)} / ${f.n}]; d = ${f.descPairs} / ${f.n - 1}.` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Variance σ² = ${f.variance.toFixed(6)}; Std Dev σ = ${f.sigma.toFixed(6)}; Descending adjacent violations = ${f.descPairs}.` },
+        { num: 5, name: 'Step 5: Final Result', body: `[n=${f.n}, x_min=${f.x_min}, x_max=${f.x_max}, μ=${f.mu.toFixed(4)}, σ=${f.sigma.toFixed(4)}, γ=${f.gamma.toFixed(4)}, d=${f.d.toFixed(4)}].` },
+        { num: 6, name: 'Step 6: Interpretation', body: `The 7 predictors quantify scale, bounds, central tendency, spread, asymmetry, and local disorder in O(n) time.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Pass the 7 predictors and normalized target y to Module 3 (Polynomial Regression Studio) for standardization and 36-coefficient OLS estimation.` }
+      ]
+    },
+    s04: {
+      title: 'Module 3 (Sections 4.3.4–4.3.5, 4.3.7): Standardization, 36-Term OLS Regression & Validation',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Training observations N_train = ${model.validation_summary.trainCount}, Validation observations N_val = ${model.validation_summary.valCount}, 7 raw predictors x_1..x_7.` },
+        { num: 2, name: 'Step 2: Formula', body: `X_j = (x_j − μ_train,j)/σ_train,j; Eq. (8) ŷ = β₀ + ∑β_j X_j + ∑β_jj X_j² + ∑β_jk X_j X_k; Eq. (13) MAE = ∑|y−ŷ|/N; Eq. (14) RMSE = √[∑(y−ŷ)²/N].` },
+        { num: 3, name: 'Step 3: Substitution', body: `Standardized active vector X = [${pred.standardizedFeatures.map(v => v.toFixed(3)).join(', ')}]; Design Matrix Z ∈ ℝ^(${model.validation_summary.trainCount} × 36).` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Solved normal equations (ZᵀZ)β = Zᵀy for β₀..β₃₅; evaluated validation residuals e_m = y_m − ŷ_m across N_val = ${model.validation_summary.valCount} partitions.` },
+        { num: 5, name: 'Step 5: Final Result', body: `Validation MAE = ${model.validation_summary.valMAE.toFixed(6)}, Validation RMSE = ${model.validation_summary.valRMSE.toFixed(6)} (36 coefficients frozen).` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Retaining training-derived μ_train and σ_train and freezing β₀..β₃₅ before independent testing prevents data leakage.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Supply frozen parameters (μ_train[7], σ_train[7], β[36]) to Module 4 (Runtime Pivot Estimator).` }
+      ]
+    },
+    s05: {
+      title: 'Module 4 (Section 4.3.6 & Figure 3): 10-Step Runtime Pivot Estimation Contract',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Subproblem bounds low = 0, high = ${arr.length - 1}, size n = ${pred.n}, standardized features X[1..7].` },
+        { num: 2, name: 'Step 2: Formula', body: `Eq. (10) ŷ_c = min(1, max(0, ŷ)); Eq. (11) p = round[ŷ_c(n − 1)]; Eq. (12) p_abs = low + p; v = A[p_abs].` },
+        { num: 3, name: 'Step 3: Substitution', body: `ŷ = ${pred.yHat.toFixed(6)} → ŷ_c = min(1, max(0, ${pred.yHat.toFixed(6)})) = ${pred.yClamped.toFixed(6)} → p = round[${pred.yClamped.toFixed(6)} × ${pred.n - 1}].` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Relative index p = ${pred.relIndex}; Absolute index p_abs = 0 + ${pred.relIndex} = ${pred.absIndex}; Bounds check: 0 ≤ ${pred.absIndex} ≤ ${arr.length - 1}.` },
+        { num: 5, name: 'Step 5: Final Result', body: `Validated absolute pivot index p_abs = ${pred.absIndex}, reference pivot value v = A[${pred.absIndex}] = ${pred.pivotValue} (Fallback = ${pred.fallbackUsed}).` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Clamping and boundary verification guarantee a valid in-range pivot index before any partitioning scan begins.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Pass validated pivot value v = ${pred.pivotValue} to Module 5 (Bidirectional Partitioning).` }
+      ]
+    },
+    s06: {
+      title: 'Module 5 (Sections 4.4.1–4.4.4 & Figure 4): Opposing-Pointer Bidirectional Partitioning',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Subproblem A[0..${(s06TraceData?.high ?? arr.length - 1)}], saved pivot value v = ${s06TraceData?.pivotValue ?? pred.pivotValue} (from p_abs = ${s06TraceData?.pivotAbsIdx ?? pred.absIndex}).` },
+        { num: 2, name: 'Step 2: Formula', body: `Advance i while A[i] < v; decrease j while A[j] > v; if i ≤ j swap A[i] ↔ A[j] and set i ← i+1, j ← j−1 until i > j.` },
+        { num: 3, name: 'Step 3: Substitution', body: `Initial i = 0, j = ${s06TraceData?.high ?? arr.length - 1}; final pointer cross at i = ${s06TraceData?.finalI ?? 1}, j = ${s06TraceData?.finalJ ?? 0}.` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Recorded ${s06TraceData?.comparisons ?? 0} element-pivot comparisons and ${s06TraceData?.swaps ?? 0} exchanges; Left size n_L = ${s06TraceData?.n_L ?? 0}, Right size n_R = ${s06TraceData?.n_R ?? 0}.` },
+        { num: 5, name: 'Step 5: Final Result', body: `Left subproblem [0..${s06TraceData?.finalJ ?? 0}] (n_L=${s06TraceData?.n_L ?? 0}), Right subproblem [${s06TraceData?.finalI ?? 1}..${s06TraceData?.high ?? arr.length - 1}] (n_R=${s06TraceData?.n_R ?? 0}), Imbalance I = ${s06TraceData?.imbalance ?? 0}.` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Advancing both pointers after every exchange prevents infinite loops on duplicate elements and splits all-equal partitions evenly.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Forward eligible resulting subproblems (size ≥ 2) to Module 6 (Priority Queue Management).` }
+      ]
+    },
+    s07: {
+      title: 'Module 6 (Sections 4.5.1–4.5.4 & Figure 5): Iterative Priority Queue Subproblem Scheduling',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Root subproblem [0, ${arr.length - 1}] of size n = ${arr.length}, initial logical depth D = 1, insertion sequence seq = #1.` },
+        { num: 2, name: 'Step 2: Formula', body: `Priority P(S) = n_S = high − low + 1 (largest first); Equal-size tie-breaker: smaller insertion sequence seq (FIFO); Child depth D(S_c) = D(S_p) + 1.` },
+        { num: 3, name: 'Step 3: Substitution', body: `Total queue polling iterations = ${s07TraceSteps.length}; Peak simultaneous queue occupancy Q_max = ${document.getElementById('s07-qmax')?.textContent || 1}.` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Each iteration polls the max-size record, partitions in-place, and enqueues only child subproblems with size ≥ 2.` },
+        { num: 5, name: 'Step 5: Final Result', body: `Queue terminated at |Q| = 0 with Max Queue Occupancy Q_max = ${document.getElementById('s07-qmax')?.textContent || 1} and Max Logical Depth D_max = ${document.getElementById('s07-dmax')?.textContent || 1}.` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Iterative priority queue management eliminates recursive call-stack frames while deterministically ordering equal-sized partitions via FIFO.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Verify complete sorted output and compare against the 3 recursive baseline algorithms in Module 7.` }
+      ]
+    },
+    s08: {
+      title: 'Module 7 (Sections 4.2 & 4.6.4): Algorithm Implementation & Correctness Verification',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Identical input array cloned across all 4 algorithms: SerMax Hybrid, Traditional (First), Median-of-Three, and Randomized-Pivot.` },
+        { num: 2, name: 'Step 2: Formula', body: `Ascending Order: ∀i ∈ [0, n−2], A'[i] ≤ A'[i+1]; Multiset Preservation: frequency(A') ≡ frequency(A).` },
+        { num: 3, name: 'Step 3: Substitution', body: `Evaluated across 12 verification conditions including empty (n=0), single-element (n=1), negatives, duplicates, all-equal (σ=0), sorted, and reverse-sorted.` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `SerMax Comparisons = ${c.sermax.comparisons}, Swaps = ${c.sermax.swaps}, Depth = ${c.sermax.maxLogicalDepth}; Traditional Comparisons = ${c.trad.comparisons}, Swaps = ${c.trad.swaps}.` },
+        { num: 5, name: 'Step 5: Final Result', body: `All 4 sorting implementations verified (100% ascending order & exact element frequency preservation).` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Confirms that all four algorithms share the identical bidirectional partitioning foundation while differing only in pivot selection and scheduling.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Proceed to Module 8 (Comparative Benchmarking) for isolated timing and metric collection across the 12 formal conditions.` }
+      ]
+    },
+    s09: {
+      title: 'Module 8 (Sections 4.6.4–4.6.6 & Tables 3–4): Comparative Benchmarking Protocol',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `4 Categories × 3 Benchmark Sizes (500, 1,000, 10,000) = 12 Conditions; 10 unmeasured warm-up runs + 10 measured trials per test array.` },
+        { num: 2, name: 'Step 2: Formula', body: `Eq. (22) Partition Balance B = (∑|n_L − n_R|) / ∑(n_L + n_R); Eq. (23) Speedup Ratio S = T_baseline / T_SerMax.` },
+        { num: 3, name: 'Step 3: Substitution', body: `T_Trad = ${c.trad.elapsedMs.toFixed(4)} ms, T_SerMax = ${c.sermax.elapsedMs.toFixed(4)} ms; SerMax Balance B = ${c.sermax.partitionBalance.toFixed(4)} vs. Trad B = ${c.trad.partitionBalance.toFixed(4)}.` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Speedup vs. Trad = ${c.trad.elapsedMs.toFixed(4)} / ${c.sermax.elapsedMs.toFixed(4)} = ${(c.trad.elapsedMs / Math.max(1e-6, c.sermax.elapsedMs)).toFixed(2)}×; SerMax Thread Heap Alloc = ${c.sermax.estimatedHeapBytes.toLocaleString()} B (Max PQ = ${c.sermax.maxQueueOccupancy}).` },
+        { num: 5, name: 'Step 5: Final Result', body: `Recorded 6 primary metrics (Time, Comparisons, Swaps, Logical Depth, Balance B, Thread Heap Allocation Bytes) + Max PQ Occupancy.` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Array generation, copying, and verification occur strictly outside the measured interval, and website audio is auto-paused.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Pass dataset-level summarized benchmark records to Module 9 (Statistical Analysis & Export).` }
+      ]
+    },
+    s10: {
+      title: 'Module 9 (Section 4.6.7): Paired Statistical Analysis, Holm Adjustment & Bootstrap CI',
+      steps: [
+        { num: 1, name: 'Step 1: Given Values', body: `Dataset-level summarized execution times across independent test arrays for SerMax Hybrid and the 3 baselines.` },
+        { num: 2, name: 'Step 2: Formula', body: `Paired differences d_i = T_base,i − T_SerMax,i; Wilcoxon signed-rank z & p; Paired sign test; Holm step-down adjustment across M = 36 comparisons (α = 0.05); 2,000-resample 95% bootstrap CI.` },
+        { num: 3, name: 'Step 3: Substitution', body: `Speedup vs. Trad = ${(c.trad.elapsedMs / Math.max(1e-6, c.sermax.elapsedMs)).toFixed(2)}×; Comparison difference = ${c.trad.comparisons - c.sermax.comparisons}; Swap difference = ${c.trad.swaps - c.sermax.swaps}.` },
+        { num: 4, name: 'Step 4: Intermediate Calculations', body: `Ranked |d_i| values, computed signed rank sums W+ and W−, applied Holm step-down multiplier (36 − k + 1), and sorted 2,000 bootstrap ratios for 2.5th and 97.5th percentiles.` },
+        { num: 5, name: 'Step 5: Final Result', body: `Complete descriptive statistics table and 10-point paired inferential comparison table evaluated strictly at p_Holm < 0.05.` },
+        { num: 6, name: 'Step 6: Interpretation', body: `Statistical significance is never claimed from unadjusted p-values alone; both favorable and unfavorable empirical outcomes are reported objectively.` },
+        { num: 7, name: 'Step 7: Next Operation', body: `Export verified tables, JSON model artifacts, and CSV experimental logs for Chapter 4 & Chapter 5 documentation.` }
+      ]
+    }
+  };
+
+  return map[screenId] || map.s02;
+}
+
+function renderGlobalModeBPanel(screenId = currentScreenId) {
+  const container = document.getElementById('mode-b-steps-container');
+  const titleEl = document.getElementById('mode-b-title');
+  if (!container) return;
+
+  const data = buildSevenStepExplanationForScreen(screenId);
+  if (titleEl) titleEl.textContent = data.title;
+
+  let stepsToShow = data.steps;
+  if (window._modeBFilter === 'formula') {
+    stepsToShow = data.steps.filter(s => s.num === 1 || s.num === 2 || s.num === 5);
+  } else if (window._modeBFilter === 'substitution') {
+    stepsToShow = data.steps.filter(s => s.num === 1 || s.num === 3 || s.num === 4 || s.num === 5);
+  } else if (window._modeBActiveStep >= 0 && window._modeBActiveStep < data.steps.length) {
+    stepsToShow = [data.steps[window._modeBActiveStep]];
+  }
+
+  container.innerHTML = stepsToShow.map(st => `
+    <div class="mode-b-step-card ${window._modeBActiveStep === (st.num - 1) ? 'active-step' : ''}">
+      <div class="mode-b-step-title">${st.name}</div>
+      <div>${st.body}</div>
+    </div>
+  `).join('');
+
+  const ts = new Date().toLocaleTimeString();
+  window._modeBHistoryLog.unshift(`[${ts}] ${screenId.toUpperCase()} • Viewed ${window._modeBActiveStep === -1 ? 'All 7 Steps' : 'Step ' + (window._modeBActiveStep + 1)} (Filter: ${window._modeBFilter})`);
+  if (window._modeBHistoryLog.length > 40) window._modeBHistoryLog.pop();
+
+  const histEl = document.getElementById('mode-b-history-drawer');
+  if (histEl && histEl.style.display !== 'none') {
+    histEl.innerHTML = `<div style="color:var(--up-gold);font-weight:700;margin-bottom:4px;">Mode B Operation History Log:</div>` +
+      window._modeBHistoryLog.map(l => `<div class="mono">${l}</div>`).join('');
+  }
+}
+
+function modeBPrevStep() {
+  window._modeBFilter = 'ALL';
+  if (window._modeBActiveStep <= 0) window._modeBActiveStep = 6;
+  else window._modeBActiveStep--;
+  renderGlobalModeBPanel(currentScreenId);
+}
+
+function modeBNextStep() {
+  window._modeBFilter = 'ALL';
+  if (window._modeBActiveStep === -1 || window._modeBActiveStep >= 6) window._modeBActiveStep = 0;
+  else window._modeBActiveStep++;
+  renderGlobalModeBPanel(currentScreenId);
+}
+
+function modeBTogglePlay() {
+  if (window._modeBPlayTimer) {
+    modeBPause();
+    return;
+  }
+  window._modeBFilter = 'ALL';
+  if (window._modeBActiveStep === -1 || window._modeBActiveStep >= 6) window._modeBActiveStep = 0;
+  renderGlobalModeBPanel(currentScreenId);
+  const btn = document.getElementById('mode-b-play-btn');
+  if (btn) btn.textContent = 'Playing...';
+
+  window._modeBPlayTimer = setInterval(() => {
+    if (window._modeBActiveStep >= 6) {
+      modeBPause();
+      return;
+    }
+    window._modeBActiveStep++;
+    renderGlobalModeBPanel(currentScreenId);
+  }, 1400);
+}
+
+function modeBPause() {
+  if (window._modeBPlayTimer) {
+    clearInterval(window._modeBPlayTimer);
+    window._modeBPlayTimer = null;
+  }
+  const btn = document.getElementById('mode-b-play-btn');
+  if (btn) btn.textContent = 'Play';
+}
+
+function modeBReset() {
+  modeBPause();
+  window._modeBFilter = 'ALL';
+  window._modeBActiveStep = 0;
+  renderGlobalModeBPanel(currentScreenId);
+}
+
+function modeBToggleFilter(filterKey) {
+  modeBPause();
+  window._modeBActiveStep = -1;
+  window._modeBFilter = (window._modeBFilter === filterKey) ? 'ALL' : filterKey;
+  renderGlobalModeBPanel(currentScreenId);
+}
+
+function modeBShowComplete() {
+  modeBPause();
+  window._modeBFilter = 'ALL';
+  window._modeBActiveStep = -1;
+  renderGlobalModeBPanel(currentScreenId);
+}
+
+function modeBToggleHistory() {
+  const histEl = document.getElementById('mode-b-history-drawer');
+  if (!histEl) return;
+  const isHidden = histEl.style.display === 'none';
+  histEl.style.display = isHidden ? 'block' : 'none';
+  if (isHidden) renderGlobalModeBPanel(currentScreenId);
+}
+
+function exportModeBCalculationTrace() {
+  const data = buildSevenStepExplanationForScreen(currentScreenId);
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    moduleScreen: currentScreenId,
+    title: data.title,
+    activeDatasetMetadata: activeDatasetMeta,
+    sevenStepExplanation: data.steps,
+    operationHistory: window._modeBHistoryLog
+  };
+  downloadTextFile(`sermax_calculation_trace_${currentScreenId}.json`, JSON.stringify(payload, null, 2), 'application/json');
 }

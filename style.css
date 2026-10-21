@@ -2233,3 +2233,79 @@ input[type="range"] {
   line-height: 1.55;
   color: #f3f4f6;
 }
+
+/* ─── MODULE METADATA STRIP & MODE B 7-STEP COMPUTATIONAL EXPLANATION PANEL ─── */
+.module-meta-strip {
+  margin-top: 10px;
+  padding: 8px 14px;
+  background: rgba(18, 4, 8, 0.72);
+  border: 1px solid rgba(242, 169, 0, 0.22);
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 0.73rem;
+  color: var(--text-sub);
+}
+
+.mode-b-inspector {
+  margin-top: 12px;
+  background: linear-gradient(145deg, rgba(42, 9, 16, 0.96), rgba(18, 4, 8, 0.98));
+  border: 1px solid rgba(242, 169, 0, 0.45);
+  border-radius: 14px;
+  padding: 14px 18px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.5);
+}
+
+.mode-b-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(242, 169, 0, 0.22);
+  margin-bottom: 12px;
+}
+
+.mode-b-controls {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.mode-b-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+
+.mode-b-step-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.09);
+  border-left: 3px solid rgba(242, 169, 0, 0.4);
+  border-radius: 10px;
+  padding: 10px 12px;
+  font-size: 0.74rem;
+  line-height: 1.5;
+  color: #f3f4f6;
+}
+
+.mode-b-step-card.active-step {
+  background: rgba(242, 169, 0, 0.14);
+  border-color: var(--up-gold);
+  border-left: 3px solid var(--up-gold);
+  box-shadow: 0 0 16px rgba(242, 169, 0, 0.2);
+}
+
+.mode-b-step-title {
+  font-size: 0.68rem;
+  font-weight: 800;
+  color: var(--up-gold);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
