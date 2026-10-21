@@ -3,618 +3,1940 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SerMax Hybrid QuickSort: Optimizing Efficiency through Bidirectional Partitioning, Priority Queues, and Polynomial Regression-Based Pivot Estimation</title>
-  <meta name="description" content="Interactive comparison of Traditional QuickSort vs SerMaxHybridQuickSort featuring bidirectional partitioning, priority queue management, and polynomial regression-based pivot estimation." />
+  <title>SerMax Hybrid QuickSort Research System — University of the Philippines Cebu</title>
+  <meta name="description" content="SerMax Hybrid QuickSort: An Adaptive Algorithm with Bidirectional Partitioning, Priority Queue Management, and Polynomial Regression-Based Pivot Estimation — UP Cebu MSCS Thesis Research System by Maxil S. Urocay." />
+  <link rel="icon" type="image/png" href="sermax-logo.png?v=9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css?v=10" />
 </head>
 <body>
 
-<!-- ═══════════ UP CEBU BANNER ═══════════ -->
-<div class="up-banner">
-  <div class="up-banner-logos-left">
-    <img src="up-system-logo.jpg" alt="University of the Philippines System Logo" class="up-logo" onerror="this.style.display='none'" />
-    <img src="up-cebu-logo.png" alt="University of the Philippines Cebu Logo" class="up-logo" onerror="this.style.display='none'" />
-  </div>
-  <div class="up-text">
-    <div class="up-title">University of the Philippines, Cebu</div>
-    <div class="up-subtitle">College of Science • Department of Computer Science</div>
-    <div class="up-address">Gorordo Avenue, Cebu City, 6000 Cebu</div>
-    <div class="up-thesis">SerMax Hybrid QuickSort: Optimizing Efficiency through Bidirectional Partitioning, Priority Queues, and Polynomial Regression-Based Pivot Estimation</div>
-  </div>
-  <div class="up-banner-logos-right">
-    <img src="college-science-logo.png" alt="College of Science Logo" class="up-logo" onerror="this.style.display='none'" />
-    <img src="cs-logo.png" alt="Computer Science Logo" class="up-logo" onerror="this.style.display='none'" />
+<!-- ════════════════════════════════════════════════════════════════════════════
+     1. SINGLE COMPACT FLOATING NAVBAR (ONLY BAR ON SUB-SCREENS 02–10!)
+     ════════════════════════════════════════════════════════════════════════════ -->
+<div class="floating-nav-shell">
+  <div class="floating-pill-navbar">
+    <!-- Left: Enlargeable SerMax Emblem + Home Trigger -->
+    <div class="nav-brand-cluster">
+      <div class="sermax-brand-pill" onclick="showScreen('s01')" title="Return to Main Dashboard (Screen 01)">
+        <img src="sermax-logo.png?v=8" alt="SerMax Logo" class="sermax-mini-logo" onclick="event.stopPropagation(); openLogoLightbox(0);" title="Click logo to enlarge" />
+        <div class="sermax-brand-text">
+          <span class="brand-name">SerMax <span class="gold-grad">OS</span></span>
+          <span class="brand-sub">UP Cebu • MSCS</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Center: Clean 10-Stage Pill Selector -->
+    <nav class="pill-stage-bar" aria-label="10 Thesis Stages">
+      <button class="stage-pill active" data-screen="s01" onclick="showScreen('s01')" title="01 • Main Dashboard & Architecture">
+        <span class="sp-num">01</span><span class="sp-txt">Dashboard</span>
+      </button>
+      <button class="stage-pill" data-screen="s02" onclick="showScreen('s02')" title="02 • Dataset Generation & 70:15:15 Split">
+        <span class="sp-num">02</span><span class="sp-txt">Datasets</span>
+      </button>
+      <button class="stage-pill" data-screen="s03" onclick="showScreen('s03')" title="03 • 7 Predictor Variables & Formula Simulator">
+        <span class="sp-num">03</span><span class="sp-txt">7 Features</span>
+      </button>
+      <button class="stage-pill" data-screen="s04" onclick="showScreen('s04')" title="04 • 36-Coefficient Polynomial OLS Regression">
+        <span class="sp-num">04</span><span class="sp-txt">OLS (36β)</span>
+      </button>
+      <button class="stage-pill" data-screen="s05" onclick="showScreen('s05')" title="05 • 10-Step Runtime Pivot Estimator">
+        <span class="sp-num">05</span><span class="sp-txt">Pivot Est.</span>
+      </button>
+      <button class="stage-pill" data-screen="s06" onclick="showScreen('s06')" title="06 • Bidirectional Partitioning Animator">
+        <span class="sp-num">06</span><span class="sp-txt">Partition</span>
+      </button>
+      <button class="stage-pill" data-screen="s07" onclick="showScreen('s07')" title="07 • Priority Queue (Binary Max-Heap)">
+        <span class="sp-num">07</span><span class="sp-txt">Max-Heap</span>
+      </button>
+      <button class="stage-pill" data-screen="s08" onclick="showScreen('s08')" title="08 • Side-by-Side Visualizer & Gate C Verification">
+        <span class="sp-num">08</span><span class="sp-txt">Visualizer</span>
+      </button>
+      <button class="stage-pill" data-screen="s09" onclick="showScreen('s09')" title="09 • 4-Algorithm Benchmarking Lab">
+        <span class="sp-num">09</span><span class="sp-txt">Benchmarks</span>
+      </button>
+      <button class="stage-pill" data-screen="s10" onclick="showScreen('s10')" title="10 • Statistical Tests (Wilcoxon/Holm/CI) & Exports">
+        <span class="sp-num">10</span><span class="sp-txt">Stats &amp; Export</span>
+      </button>
+    </nav>
+    <span id="menubar-clock" class="mono" style="display:none;">Oct 2026</span>
   </div>
 </div>
 
-<!-- ═══════════ SIDEBAR ═══════════ -->
-<aside class="sidebar" id="sidebar">
-  <div class="sidebar-logo">
-    <div class="sidebar-logo-card">
-      <img src="sermax-logo.png" alt="SerMaxHybridQuickSort Logo" onerror="this.style.display='none'" />
-    </div>
-    <span class="logo-text" style="text-align: center; width: 100%; display: block; margin-top: 10px;">SerMaxHybridQuickSort</span>
-  </div>
-
-  <nav class="sidebar-nav">
-    <div class="nav-label">Algorithms</div>
-    <a class="nav-item active" href="#" onclick="showView('dashboard'); return false;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-      Dashboard
-    </a>
-    <a class="nav-item" href="#" onclick="showView('visualizer'); return false;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-      Live Visualizer
-    </a>
-    <a class="nav-item" href="#" onclick="showView('benchmark'); return false;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-      Benchmark
-    </a>
-    <a class="nav-item" href="#" onclick="showView('manual'); return false;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-      Manual Input
-    </a>
-
-    <div class="nav-label" style="margin-top:16px;">Learn</div>
-    <a class="nav-item" href="#" onclick="showView('howit'); return false;">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-      How SerMaxHybridQuickSort Works
-    </a>
-  </nav>
-
-  <div class="sidebar-footer" style="flex-direction: column; align-items: flex-start; gap: 4px;">
-    <div class="algo-pill trad" style="width: 100%; text-align: center;">Traditional QuickSort</div>
-    <span style="color:var(--text-dim);font-size:0.65rem; width: 100%; text-align: center;">vs</span>
-    <div class="algo-pill sermax" style="width: 100%; text-align: center;">SerMaxHybridQuickSort</div>
-  </div>
-</aside>
-
-<!-- ═══════════ MAIN ═══════════ -->
+<!-- ════════════════════════════════════════════════════════════════════════════
+     2. MAIN WORKSPACE CONTAINER
+     ════════════════════════════════════════════════════════════════════════════ -->
 <div class="layout">
-  <header class="topbar">
-    <div class="topbar-left">
-      <h1 id="page-title">Dashboard</h1>
-      <p id="page-sub">Overview of both algorithms and current dataset</p>
+  <!-- Compact Stage Header Bar (Hidden on Screen 01 Dashboard; shown on Screens 02–10!) -->
+  <section class="stage-hero" id="subscreen-stage-header" style="display:none;">
+    <div class="stage-hero-compact-row">
+      <div class="stage-hero-left">
+        <button class="btn btn-ghost btn-sm" onclick="showScreen('s01')" title="Back to Main Dashboard">← Main Hub</button>
+        <span class="screen-badge" id="topbar-screen-badge">SCREEN 02</span>
+        <div>
+          <h1 class="stage-headline-compact" id="page-title">Dataset Generation &amp; Management</h1>
+          <p class="stage-subtitle-compact" id="page-sub">Reproducible synthetic integer arrays • 70:15:15 split</p>
+        </div>
+      </div>
+      <div class="stage-subtabs" id="stage-subtabs"></div>
     </div>
-    <div class="topbar-right">
-      <div class="dataset-info" id="dataset-info">No dataset loaded</div>
-      <button class="btn btn-ghost" onclick="showView('manual')">+ New Array</button>
-      <button class="btn btn-primary" onclick="quickGenerate()">🎲 Generate</button>
-    </div>
-  </header>
+  </section>
 
   <main id="main-content">
 
-    <!-- ═══ DASHBOARD ═══ -->
-    <div class="view" id="view-dashboard">
-      <!-- Array preview -->
-      <div class="section-card" style="margin-bottom:20px;">
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 01: MAIN INTERACTIVE HUB DASHBOARD (UP CEBU HERO + HOVER LAUNCHER)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s01">
+
+      <!-- 1. UP CEBU INSTITUTIONAL & SERMAX HERO SHOWCASE (ONLY ON MAIN DASHBOARD!) -->
+      <div class="up-dashboard-hero">
+        <div class="spotlight-beam"></div>
+
+        <!-- Top Institutional Seal Row -->
+        <div class="up-hero-top-row">
+          <div class="up-banner-logos-left">
+            <div class="up-logo-wrap" onclick="openLogoLightbox(1)" title="Click to enlarge University of the Philippines System Seal">
+              <img src="up-system-logo.jpg" alt="UP System Seal" class="up-logo" onerror="this.style.display='none'" />
+            </div>
+            <div class="up-logo-wrap" onclick="openLogoLightbox(2)" title="Click to enlarge University of the Philippines Cebu Seal">
+              <img src="up-cebu-logo.png" alt="UP Cebu Seal" class="up-logo" onerror="this.style.display='none'" />
+            </div>
+          </div>
+
+          <div class="up-text">
+            <div class="up-title">University of the Philippines Cebu</div>
+            <div class="up-subtitle">College of Science • Department of Computer Science</div>
+            <div class="up-address">Gorordo Avenue, Cebu City, 6000 Cebu, Philippines &nbsp;•&nbsp; <i style="color:var(--up-gold-soft);">“Honor • Excellence • Service”</i></div>
+          </div>
+
+          <div class="up-banner-logos-right">
+            <div class="up-logo-wrap" onclick="openLogoLightbox(3)" title="Click to enlarge College of Science Seal">
+              <img src="college-science-logo.png" alt="College of Science Seal" class="up-logo" onerror="this.style.display='none'" />
+            </div>
+            <div class="up-logo-wrap" onclick="openLogoLightbox(4)" title="Click to enlarge Department of Computer Science Seal">
+              <img src="cs-logo.png" alt="Department of Computer Science Seal" class="up-logo" onerror="this.style.display='none'" />
+            </div>
+          </div>
+        </div>
+
+        <!-- Centerpiece SerMax Emblem + Thesis Title + Researcher Credit -->
+        <div class="up-hero-centerpiece">
+          <div class="sermax-hero-emblem-pedestal" onclick="openLogoLightbox(0)" title="SerMax Hybrid QuickSort Official Emblem">
+            <img src="sermax-logo.png?v=9" alt="SerMax Official Emblem" />
+          </div>
+
+          <div class="up-hero-thesis-info">
+            <h2 class="hero-thesis-headline">
+              SerMax Hybrid QuickSort: <span class="gold-grad">An Adaptive Algorithm with Bidirectional Partitioning, Priority Queue Management, and Polynomial Regression-Based Pivot Estimation</span>
+            </h2>
+            <div class="hero-researcher-bar">
+              <span class="hero-author-chip" onclick="document.getElementById('researcher-profile-section').scrollIntoView({behavior:'smooth'})" title="View Researcher Academic Profile">
+                <img src="researcher-maxil-urocay.jpg" alt="Maxil S. Urocay" class="hero-author-mini-img" />
+                <span><b>Author:</b> Maxil S. Urocay, MSCS Candidate</span>
+              </span>
+              <span class="sep-dot">•</span>
+              <span><b>Adviser:</b> Dr. Robert Roxas</span>
+              <span class="sep-dot">•</span>
+              <span><b>Program:</b> Master of Science in Computer Science (UP Cebu)</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. INTERACTIVE BENTO MODULE LAUNCHPAD (HOVER ANIMATION + CLICK TO LAUNCH ANY SECTION) -->
+      <div class="launchpad-section-header">
+        <div>
+          <h3 class="launchpad-title">✦ System Architecture &amp; Interactive Research Modules</h3>
+          <p class="launchpad-sub">Select any module card below to open its interactive simulator, mathematical model, or experimental benchmark view.</p>
+        </div>
+      </div>
+
+      <div class="interactive-launchpad-grid">
+        <!-- Module 02 -->
+        <div class="launch-card" onclick="showScreen('s02')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 02</span>
+            <span class="lc-tag">Sec 4.6.1 • Table 3</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">🎲</div>
+            <div>
+              <h4 class="lc-title">Dataset Generator &amp; 70:15:15 Split</h4>
+              <p class="lc-desc">Generate seeded Random, Nearly Sorted (1% swaps), Reverse, and Many-Duplicates arrays across n ∈ {5, 500, 1,000, 10,000}.</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">2,400 Source Arrays • FNV-1a Checksum</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 03 -->
+        <div class="launch-card" onclick="showScreen('s03')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 03</span>
+            <span class="lc-tag">Eqs. (1)–(7) • Table 1</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">🧮</div>
+            <div>
+              <h4 class="lc-title">7-Predictor Extractor &amp; Formula Lab</h4>
+              <p class="lc-desc">Step-by-step arithmetic derivation of (n, x_min, x_max, μ, σ, γ, d) and 33-candidate minimum-imbalance target y = i*/(n-1).</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">Canonical [6, 21, 3, 5, 1] Verified</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 04 -->
+        <div class="launch-card" onclick="showScreen('s04')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 04</span>
+            <span class="lc-tag">Eqs. (8)–(9), (13)–(14)</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">🧠</div>
+            <div>
+              <h4 class="lc-title">36-Term Polynomial OLS Studio</h4>
+              <p class="lc-desc">Train &amp; freeze the 2nd-degree multivariate polynomial model (1 intercept + 7 linear + 7 quad + 21 interaction terms).</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">MAE / RMSE + Java Code Export</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 05 -->
+        <div class="launch-card" onclick="showScreen('s05')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 05</span>
+            <span class="lc-tag">Eqs. (10)–(12) • Fig 3</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">🎯</div>
+            <div>
+              <h4 class="lc-title">10-Step Runtime Pivot Estimator</h4>
+              <p class="lc-desc">Inspect live standardization, 36-term dot product ŷ, [0,1] clamping ŷ_c, index mapping p_abs, and midpoint fallback.</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">p_abs = low + round[ŷ_c(n-1)]</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 06 -->
+        <div class="launch-card" onclick="showScreen('s06')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 06</span>
+            <span class="lc-tag">Eqs. (15)–(16) • Fig 4</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">⇄</div>
+            <div>
+              <h4 class="lc-title">Bidirectional Partitioning Animator</h4>
+              <p class="lc-desc">Step-by-step Hoare two-pointer scan (i, j) around saved pivot value v = A[p_abs] with synchronized code line tracer.</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">Left [low..j] • Right [i..high]</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 07 -->
+        <div class="launch-card" onclick="showScreen('s07')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 07</span>
+            <span class="lc-tag">Eqs. (17)–(21) • Fig 5</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">🌳</div>
+            <div>
+              <h4 class="lc-title">Priority Queue (Max-Heap) Scheduler</h4>
+              <p class="lc-desc">Interactive Binary Max-Heap scheduling largest partition first P(S)=n_S with deterministic FIFO seq tie-breaking.</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">Tracks D_max &amp; Q_max</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 08 -->
+        <div class="launch-card" onclick="showScreen('s08')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 08</span>
+            <span class="lc-tag">Sec 4.2 &amp; Gate C</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">🎬</div>
+            <div>
+              <h4 class="lc-title">Side-by-Side Visualizer &amp; Gate C</h4>
+              <p class="lc-desc">Watch SerMax Hybrid race against Traditional/Median-3/Random in real time + run the 12-family Gate C correctness suite.</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">8-Stage Timeline + 12/12 Gate C</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 09 -->
+        <div class="launch-card" onclick="showScreen('s09')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 09</span>
+            <span class="lc-tag">Sec 4.6.4–4.6.6 • Table 4</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">🏆</div>
+            <div>
+              <h4 class="lc-title">4-Algorithm Sort Battle Leaderboard</h4>
+              <p class="lc-desc">Paired benchmarking with 10 warm-up + 10 measured runs, isolated instrumentation, and 12-condition matrix execution.</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">Time • Cmp • Swp • D_max • Balance B</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+
+        <!-- Module 10 -->
+        <div class="launch-card" onclick="showScreen('s10')">
+          <div class="lc-glow"></div>
+          <div class="lc-top">
+            <span class="lc-num">MODULE 10</span>
+            <span class="lc-tag">Sec 4.6.7 • Eqs. (22)–(23)</span>
+          </div>
+          <div class="lc-icon-row">
+            <div class="lc-icon">📊</div>
+            <div>
+              <h4 class="lc-title">Statistical Analysis &amp; Report Exports</h4>
+              <p class="lc-desc">Wilcoxon signed-rank test, Holm 36-comparison adjustment, 2,000-resample 95% Bootstrap CI, and CSV/JSON/Java exports.</p>
+            </div>
+          </div>
+          <div class="lc-footer">
+            <span class="mono">α = 0.05 • Chapter 4/5 Ready</span>
+            <span class="lc-arrow">Open Lab →</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. ABOUT THE RESEARCHER (CURATED COMPUTER SCIENCE & ALGORITHMIC RESEARCH PROFILE) -->
+      <div class="launchpad-section-header" id="researcher-profile-section" style="margin-top:28px;">
+        <div>
+          <h3 class="launchpad-title">✦ About the Researcher &amp; Academic Profile</h3>
+          <p class="launchpad-sub">Computer Science background, algorithmic &amp; data science research portfolio, and peer-review credentials relevant to this study.</p>
+        </div>
+      </div>
+
+      <div class="researcher-showcase-card">
+        <!-- Left Identity & Portrait Pedestal -->
+        <div class="researcher-identity-col">
+          <div class="researcher-portrait-frame" onclick="openLogoLightbox(5)" title="Maxil S. Urocay, MSCS Candidate">
+            <img src="researcher-maxil-urocay.jpg" alt="Maxil S. Urocay — MSCS Researcher" class="researcher-portrait-img" />
+          </div>
+
+          <div class="researcher-identity-meta">
+            <span class="researcher-role-pill">MSCS CANDIDATE • COLLEGE INSTRUCTOR</span>
+            <h4 class="researcher-name">Maxil S. Urocay</h4>
+            <p class="researcher-affiliation">
+              <b>University of the Philippines Cebu</b><br/>
+              Department of Computer Science • College of Science
+            </p>
+            <p class="researcher-adviser-note">
+              <span><b>Thesis Adviser:</b> Dr. Robert Roxas</span>
+            </p>
+          </div>
+
+          <!-- Scholarly & Academic Profile Links -->
+          <div class="researcher-links-grid">
+            <a href="https://orcid.org/0009-0004-8938-8511" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="ORCID iD: 0009-0004-8938-8511">
+              <span class="sc-ico">iD</span><span>ORCID</span>
+            </a>
+            <a href="https://scholar.google.com/citations?user=CQy-SaMAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="Google Scholar Citations Profile">
+              <span class="sc-ico">🎓</span><span>Google Scholar</span>
+            </a>
+            <a href="https://www.webofscience.com/wos/author/record/QYQ-9861-2026" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="Web of Science ResearcherID: QYQ-9861-2026">
+              <span class="sc-ico">🌐</span><span>Web of Science</span>
+            </a>
+            <a href="https://github.com/urocaymaxil-dotcom" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="GitHub Research Repositories">
+              <span class="sc-ico">💻</span><span>GitHub</span>
+            </a>
+            <a href="https://www.linkedin.com/in/maxilurocay143/" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="LinkedIn Academic &amp; Professional Profile">
+              <span class="sc-ico">in</span><span>LinkedIn</span>
+            </a>
+            <a href="mailto:urocaymaxil@gmail.com" class="scholar-chip" title="Email: urocaymaxil@gmail.com">
+              <span class="sc-ico">✉️</span><span>Email</span>
+            </a>
+          </div>
+        </div>
+
+        <!-- Right Interactive Tabbed Academic Dossier -->
+        <div class="researcher-dossier-col">
+          <div class="researcher-tabs-bar">
+            <button class="res-tab-btn active" onclick="switchResearcherTab('bio', this)">🎓 CS Education &amp; Instruction</button>
+            <button class="res-tab-btn" onclick="switchResearcherTab('research', this)">🔬 Computing &amp; AI Researches (8)</button>
+            <button class="res-tab-btn" onclick="switchResearcherTab('credentials', this)">🏅 Peer Review &amp; Data Science</button>
+          </div>
+
+          <!-- Tab 1: CS Education & Relevant Instruction -->
+          <div class="res-tab-pane active" id="res-pane-bio">
+            <p class="res-bio-lead">
+              Computer Science educator and graduate researcher specializing in <b>adaptive sorting algorithms, priority-queue scheduling, statistical modeling, and machine learning</b>. Currently pursuing the Master of Science in Computer Science at the <b>University of the Philippines Cebu</b> while serving as a College Instructor in Computer Science and Information Technology.
+            </p>
+
+            <div class="res-timeline-grid">
+              <div class="res-timeline-item">
+                <div class="res-tl-year">2024 – Present</div>
+                <div class="res-tl-body">
+                  <div class="res-tl-title">Master of Science in Computer Science (MSCS)</div>
+                  <div class="res-tl-org">University of the Philippines Cebu • College of Science</div>
+                  <div class="res-tl-desc">Graduate thesis research on <i>SerMax Hybrid QuickSort</i> under the supervision of Dr. Robert Roxas.</div>
+                </div>
+              </div>
+
+              <div class="res-timeline-item">
+                <div class="res-tl-year">May – Jul 2026</div>
+                <div class="res-tl-body">
+                  <div class="res-tl-title">Data Science &amp; Artificial Intelligence (GCI World 2026)</div>
+                  <div class="res-tl-org">Matsuo Lab, The University of Tokyo</div>
+                  <div class="res-tl-desc">3-month intensive program in Data Science, Machine Learning, and Artificial Intelligence.</div>
+                </div>
+              </div>
+
+              <div class="res-timeline-item">
+                <div class="res-tl-year">2023 – Present</div>
+                <div class="res-tl-body">
+                  <div class="res-tl-title">College Instructor — Computer Science &amp; Information Technology</div>
+                  <div class="res-tl-org">University of Negros Occidental-Recoletos (College of Information Technology)</div>
+                  <div class="res-tl-desc">Handles undergraduate computing instruction, algorithm design, data science mentorship, and student research consultations.</div>
+                </div>
+              </div>
+
+              <div class="res-timeline-item">
+                <div class="res-tl-year">2018 – 2022</div>
+                <div class="res-tl-body">
+                  <div class="res-tl-title">Bachelor of Science in Computer Science (BSCS)</div>
+                  <div class="res-tl-org">Negros Oriental State University — Main Campus, Dumaguete City</div>
+                  <div class="res-tl-desc">Presidential Awardee (4th Year) • Dean’s Lister (1st–3rd Year) • Computer Science Organization President (3rd–4th Year).</div>
+                </div>
+              </div>
+            </div>
+
+            <div class="res-courses-box">
+              <div class="res-courses-label">CORE COMPUTING &amp; ALGORITHMIC COURSES HANDLED:</div>
+              <div class="res-courses-tags">
+                <span class="res-course-pill">Algorithms &amp; Complexity</span>
+                <span class="res-course-pill">Data Structures &amp; Algorithms</span>
+                <span class="res-course-pill">Automata &amp; Compiler Theory</span>
+                <span class="res-course-pill">Discrete Structures</span>
+                <span class="res-course-pill">Operations Research / Management Science</span>
+                <span class="res-course-pill">Introduction to Data Science</span>
+                <span class="res-course-pill">Natural Language Processing</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 2: Relevant Computing, Algorithms & AI Researches -->
+          <div class="res-tab-pane" id="res-pane-research" style="display:none;">
+            <div class="res-papers-list">
+              <div class="res-paper-item featured">
+                <span class="res-paper-badge">2026 MSCS THESIS</span>
+                <div>
+                  <div class="res-paper-title">SerMax Hybrid QuickSort: Optimizing Efficiency through Bidirectional Partitioning, Priority Queues, and Polynomial Regression-Based Pivot Estimation</div>
+                  <div class="res-paper-meta">University of the Philippines Cebu • Master of Science in Computer Science (Adviser: Dr. Robert Roxas)</div>
+                </div>
+              </div>
+
+              <div class="res-paper-item">
+                <span class="res-paper-badge">ALGORITHMS &amp; PQ</span>
+                <div>
+                  <div class="res-paper-title">SerMax SYNAPSE: A Dynamic Constraint-Aware Scheduling System for Student–Faculty Academic Consultations Using Priority Queues and Adaptive Rescheduling</div>
+                  <div class="res-paper-meta">Priority Queue Scheduling &amp; Adaptive Optimization Research</div>
+                </div>
+              </div>
+
+              <div class="res-paper-item">
+                <span class="res-paper-badge">2026 MSCS</span>
+                <div>
+                  <div class="res-paper-title">A Comparative Critique of Optimization and Bayesian Network Approaches: EFJSP with Parallel Operations and Neurocognitive Disorder Screening</div>
+                  <div class="res-paper-meta">Combinatorial Optimization &amp; Probabilistic Graphical Models</div>
+                </div>
+              </div>
+
+              <div class="res-paper-item">
+                <span class="res-paper-badge">2026 MSCS</span>
+                <div>
+                  <div class="res-paper-title">Deep Learning Approaches to DNA Sequence Classification: A Systematic Review of CNN, LSTM, and Transformer Models</div>
+                  <div class="res-paper-meta">Bioinformatics &amp; Deep Neural Sequence Architectures</div>
+                </div>
+              </div>
+
+              <div class="res-paper-item">
+                <span class="res-paper-badge">2025 MSCS</span>
+                <div>
+                  <div class="res-paper-title">Corruption Sentiment Detection in the Philippines: Hybrid SBERT and Association Rule Mining for Subjectivity Awareness</div>
+                  <div class="res-paper-meta">Natural Language Processing &amp; Data Mining</div>
+                </div>
+              </div>
+
+              <div class="res-paper-item">
+                <span class="res-paper-badge">2026 FACULTY</span>
+                <div>
+                  <div class="res-paper-title">Unveiling Patterns of Student Attrition and Persistence in CIT: An ARIMA Forecasting and Qualitative Mixed-Methods Study</div>
+                  <div class="res-paper-meta">Time-Series Statistical Forecasting • UNO-R College of Information Technology</div>
+                </div>
+              </div>
+
+              <div class="res-paper-item">
+                <span class="res-paper-badge">SYSTEMS STUDY</span>
+                <div>
+                  <div class="res-paper-title">Academic Consultation Scheduling in CIT: A Quantitative Assessment of Challenges, Faculty Availability, and System Requirements</div>
+                  <div class="res-paper-meta">Quantitative Systems Analysis &amp; Requirements Engineering</div>
+                </div>
+              </div>
+
+              <div class="res-paper-item">
+                <span class="res-paper-badge">BSCS THESIS</span>
+                <div>
+                  <div class="res-paper-title">Analysis of the Index and Non-Index Crime in the Philippines using K-Means</div>
+                  <div class="res-paper-meta">Unsupervised Machine Learning &amp; Cluster Analysis</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Tab 3: Peer Review, Statistical & Data Science Credentials -->
+          <div class="res-tab-pane" id="res-pane-credentials" style="display:none;">
+            <div class="res-cred-grid">
+              <div class="res-cred-card">
+                <div class="res-cred-header">📖 Journal Peer Reviewer Appointments</div>
+                <ul class="res-cred-list">
+                  <li><b>Peer Reviewer for Computing, Data Science, and Algorithms</b> — <i>International Journal of Research on Multidisciplinary Studies (IJROMS)</i> (Appointed August 2026)</li>
+                  <li><b>Peer Reviewer</b> — <i>ASCEND: Journal of Interdisciplinary Scholarship and Innovation</i> (Appointed October 2026)</li>
+                </ul>
+              </div>
+
+              <div class="res-cred-card">
+                <div class="res-cred-header">🏛️ Scientific Societies &amp; Statistical Practice</div>
+                <ul class="res-cred-list">
+                  <li><b>Computing Society of the Philippines (CSP)</b> — Active Member (2025 – 2026) &amp; Participant, <i>25th Philippine Computing Science Congress (PCSC)</i></li>
+                  <li><b>International Society of Transdisciplinary Researchers, Educators, and Leaders (ISTREL)</b> — Member (2026 – 2027)</li>
+                  <li><b>Certified Research Statistician</b> — Quantitative &amp; Feasibility Research Studies, UNO-R Bacolod (June 2026)</li>
+                </ul>
+              </div>
+
+              <div class="res-cred-card" style="grid-column: 1 / -1;">
+                <div class="res-cred-header">🧬 Relevant Data Science, Statistical Computing &amp; AI Training</div>
+                <div class="res-courses-tags" style="margin-top:6px;">
+                  <span class="res-course-pill">Data Science &amp; AI • Matsuo Lab, Univ. of Tokyo (2026)</span>
+                  <span class="res-course-pill">Intro to Data Science with R • UP SERDAC (June 2026)</span>
+                  <span class="res-course-pill">Python for Data Science • IBM (Nov 2025)</span>
+                  <span class="res-course-pill">Python 101 for Data Science • Cognitive AI (Nov 2025)</span>
+                  <span class="res-course-pill">Intro to Data Science • Cisco Networking Academy (Apr 2026)</span>
+                  <span class="res-course-pill">Programming Design Patterns in TypeScript • Qubit (Oct 2025)</span>
+                  <span class="res-course-pill">Descriptive &amp; Inferential Data Analysis • UNM (June 2026)</span>
+                  <span class="res-course-pill">Research Integrity in the Age of AI • UP Diliman (Mar 2026)</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 02: DATASET GENERATION & MANAGEMENT
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s02" style="display:none;">
+      <div class="subpanel active" data-subpanel="s02-generator">
+      <div class="grid-2">
+        <!-- Dataset Configuration Card -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Synthetic Dataset Generator (Sections 4.6.1–4.6.3, Table 3)</h2>
+            </div>
+            <span class="badge-pass">Seed-Reproducible</span>
+          </div>
+          <div class="card-body">
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:14px;">
+              <div>
+                <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Dataset Category (4 Classes)</label>
+                <select id="s02-cat" style="width:100%;" onchange="generateFromScreen02()">
+                  <option value="random">1. Random (Uniform Pseudorandom)</option>
+                  <option value="nearly">2. Nearly Sorted (Ascending + 1% Exchanges)</option>
+                  <option value="reverse">3. Reverse Sorted (Strictly Descending)</option>
+                  <option value="duplicates">4. Many Duplicates (10-Value Pool)</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Dataset Size (n)</label>
+                <select id="s02-size" style="width:100%;" onchange="generateFromScreen02()">
+                  <option value="5">5 (Functional Verification Size)</option>
+                  <option value="25">25 (Visualizer Trace Size)</option>
+                  <option value="50" selected>50 (Interactive Default)</option>
+                  <option value="500">500 (Thesis Benchmark Size 1)</option>
+                  <option value="1000">1,000 (Thesis Benchmark Size 2)</option>
+                  <option value="10000">10,000 (Thesis Benchmark Size 3)</option>
+                </select>
+              </div>
+              <div>
+                <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Integer Value Range [min, max]</label>
+                <div style="display:flex; gap:6px;">
+                  <input type="number" id="s02-min" value="-100000" style="width:50%;" />
+                  <input type="number" id="s02-max" value="100000" style="width:50%;" />
+                </div>
+              </div>
+              <div>
+                <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Recorded Pseudorandom Seed</label>
+                <input type="number" id="s02-seed" value="104201" style="width:100%;" />
+              </div>
+            </div>
+
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
+              <button class="btn btn-primary" onclick="generateFromScreen02()">🎲 Generate &amp; Register Array</button>
+              <button class="btn btn-gold" onclick="generateBatchRegistry()">📦 Build 12-Condition Split Registry</button>
+              <button class="btn btn-ghost" onclick="exportCurrentDatasetCSV()">↓ Export Array CSV</button>
+            </div>
+
+            <div style="border-top:1px solid var(--border-subtle); padding-top:12px;">
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:6px;">Or Load Custom Manual Integer Array / 5-Element Verification Preset:</label>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-bottom:8px;">
+                <button class="btn btn-ghost btn-sm" onclick="loadVerificationPreset('example')">[6, 21, 3, 5, 1]</button>
+                <button class="btn btn-ghost btn-sm" onclick="loadVerificationPreset('ascending')">Ascending (n=5)</button>
+                <button class="btn btn-ghost btn-sm" onclick="loadVerificationPreset('descending')">Descending (n=5)</button>
+                <button class="btn btn-ghost btn-sm" onclick="loadVerificationPreset('repeated')">Repeated (n=5)</button>
+                <button class="btn btn-ghost btn-sm" onclick="loadVerificationPreset('identical')">Identical σ=0 (n=5)</button>
+              </div>
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="s02-manual-input" placeholder="Enter comma/space separated integers, e.g., 6, 21, 3, 5, 1" style="flex:1;" />
+                <button class="btn btn-green btn-sm" onclick="loadCustomArrayFromScreen02()">✓ Load Custom</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Allocation by Experimental Condition (70:15:15 Split Table) -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Source-Array Allocation &amp; Dataset Statistics (70:15:15 Split)</h2>
+            </div>
+            <span class="mono" style="font-size:0.7rem; color:var(--up-gold);">Section 4.6.3</span>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap mb-16">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Dataset Split Group</th>
+                    <th>Proportion</th>
+                    <th>Arrays / Condition</th>
+                    <th>Total Across 12 Conditions</th>
+                    <th>Role in Thesis Methodology</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><b style="color:var(--up-gold);">Training Split</b></td>
+                    <td class="mono">70%</td>
+                    <td class="mono">140</td>
+                    <td class="mono">1,680</td>
+                    <td>Midpoint-derived subproblems + OLS 36-coefficient fitting &amp; scaler</td>
+                  </tr>
+                  <tr>
+                    <td><b style="color:#38bdf8;">Validation Split</b></td>
+                    <td class="mono">15%</td>
+                    <td class="mono">30</td>
+                    <td class="mono">360</td>
+                    <td>Held-out MAE, RMSE, R², and partition imbalance vs. midpoint</td>
+                  </tr>
+                  <tr>
+                    <td><b style="color:#10b981;">Independent Test Split</b></td>
+                    <td class="mono">15%</td>
+                    <td class="mono">30</td>
+                    <td class="mono">360 (3,600 runs)</td>
+                    <td>Final comparative sorting experiments (10 warm-ups + 10 timed runs)</td>
+                  </tr>
+                  <tr style="background:rgba(242,169,0,0.08); font-weight:700;">
+                    <td>TOTAL SOURCE ARRAYS</td>
+                    <td class="mono">100%</td>
+                    <td class="mono">200</td>
+                    <td class="mono">2,400</td>
+                    <td>Strict source-array isolation prevents information leakage</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <!-- Live 7-Predictor Summary of Active Dataset -->
+            <div id="s02-live-stats" class="math-card"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- SUB-PANEL 2B: Distribution Histogram & Dataset Preview Registry -->
+      <div class="subpanel" data-subpanel="s02-registry" style="display:none;">
+      <div class="grid-2">
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Distribution Preview &amp; Arrangement Profile</h2>
+            </div>
+            <div class="pill-tabs">
+              <button class="pill-tab active" onclick="switchS02Chart('value', this)">Element Profile</button>
+              <button class="pill-tab" onclick="switchS02Chart('hist', this)">Value Histogram</button>
+              <button class="pill-tab" onclick="switchS02Chart('sorted', this)">Sorted Curve</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="s02-chart-box" style="height:260px;"></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Source Array Registry &amp; Reproducibility Log</h2>
+            </div>
+            <span class="badge-pass" id="s02-registry-count">Ready</span>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap" style="max-height:260px; overflow-y:auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Source ID</th>
+                    <th>Category</th>
+                    <th>n</th>
+                    <th>Seed</th>
+                    <th>Split Group</th>
+                    <th>Checksum</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="s02-registry-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 03: FEATURE EXTRACTION, FORMULA SIMULATOR & TRAINING TARGETS
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s03" style="display:none;">
+      <div class="section-card mb-20">
         <div class="card-header">
-          <h2>Current Array</h2>
-          <div class="badge-row" id="array-badge-row">—</div>
-        </div>
-        <div class="mini-bars" id="dash-bars">
-          <div class="empty-hint">Generate or enter an array to begin.</div>
-        </div>
-      </div>
-
-      <!-- Quick action cards -->
-      <div class="action-grid">
-        <div class="action-card trad-card" onclick="runTraditional()">
-          <div class="action-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
-          <h3>Traditional QuickSort</h3>
-          <p>Run classic Lomuto partition on the current array</p>
-          <span class="action-tag">O(n log n) average</span>
-        </div>
-        <div class="action-card sermax-card" onclick="runSermax()">
-          <div class="action-icon sermax-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
-          <h3>SerMaxHybridQuickSort</h3>
-          <p>Polynomial Regression Pivot + Bidirectional Partitioning + Priority Queue</p>
-          <span class="action-tag sermax-tag">Hybrid · Three Optimizations</span>
-        </div>
-        <div class="action-card compare-card" onclick="runBoth()">
-          <div class="action-icon compare-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-          <h3>Compare Both</h3>
-          <p>Run both simultaneously and compare all metrics</p>
-          <span class="action-tag compare-tag">Side-by-side analysis</span>
-        </div>
-        <div class="action-card vis-card" onclick="showView('visualizer')">
-          <div class="action-icon vis-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/><path d="M12 22V13m0-2V2"/></svg></div>
-          <h3>Live Visualizer</h3>
-          <p>Watch the sorting happen step-by-step with color coding</p>
-          <span class="action-tag vis-tag">Animated · Slow motion</span>
-        </div>
-      </div>
-
-      <!-- Result panels (shown after running) -->
-      <div id="dash-results" style="display:none; margin-top:20px;">
-        <div class="dual-result-grid">
-          <div class="result-panel" id="trad-result-panel">
-            <div class="result-header trad-header">
-              <span class="result-algo-name">Traditional QuickSort</span>
-              <span class="result-badge-trad">LOMUTO</span>
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
             </div>
-            <div class="result-metrics" id="trad-metrics-display"></div>
+            <h2>Interactive Subproblem Formula Simulator (Sections 4.3.1–4.3.3, Table 1, Equations 1–7)</h2>
           </div>
-          <div class="result-panel" id="sermax-result-panel" style="display:none;">
-            <div class="result-header sermax-header">
-              <span class="result-algo-name">✦ SerMaxHybridQuickSort</span>
-              <span class="result-badge-sermax">Polynomial Regression Hybrid</span>
-            </div>
-            <div class="result-metrics" id="sermax-metrics-display"></div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="setFormulaSimArray([6, 21, 3, 5, 1])">Thesis [6, 21, 3, 5, 1]</button>
+            <button class="btn btn-ghost btn-sm" onclick="setFormulaSimArray([2, 5, 9, 14, 20])">Ascending (d=0)</button>
+            <button class="btn btn-ghost btn-sm" onclick="setFormulaSimArray([25, 18, 12, 7, 1])">Descending (d=1)</button>
+            <button class="btn btn-ghost btn-sm" onclick="setFormulaSimArray([7, 7, 7, 7, 7])">All-Equal (σ=0, γ=0)</button>
+            <button class="btn btn-gold btn-sm" onclick="useActiveDatasetInFormulaSim()">Use Active Dataset</button>
           </div>
         </div>
-        <div class="compare-summary" id="compare-summary" style="display:none;"></div>
-        <div class="result-explanation" id="result-explanation-card" style="display:none; margin-top:20px;"></div>
+        <div class="card-body">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+            <label style="font-size:0.78rem; font-weight:700; color:var(--up-gold);">Input Subproblem A[low..high]:</label>
+            <input type="text" id="s03-array-input" value="6, 21, 3, 5, 1" style="flex:1; min-width:240px; font-family:'JetBrains Mono',monospace;" />
+            <button class="btn btn-primary" onclick="runFormulaSimulator()">🧮 Compute 7 Predictors &amp; 33-Candidate Target</button>
+          </div>
+
+          <!-- Indexed Array Cells -->
+          <div id="s03-array-cells" class="array-cells-row"></div>
+        </div>
       </div>
 
-      <!-- Sorted array preview -->
-      <div id="sorted-preview" style="display:none; margin-top:16px;">
+      <!-- SUB-PANEL 3A: Table 1 Seven Predictor Variables + Step-by-Step Worked Math Cards -->
+      <div class="subpanel active" data-subpanel="s03-predictors">
+      <div class="grid-2">
         <div class="section-card">
-          <div class="card-header"><h2>Sorted Result</h2></div>
-          <div class="mini-bars sorted" id="sorted-bars"></div>
-        </div>
-      </div>
-
-      <!-- Academic Context Panel -->
-      <div class="academic-panel" id="academic-dashboard">
-        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
-          <div class="academic-panel-left">
-            <span class="academic-badge">Thesis Context</span>
-            <div>
-              <div class="academic-panel-title">Experimental Setup and Performance Metrics Analysis</div>
-              <div class="academic-panel-ref">Reference: Section 2.3 and Section 2.4 — Experimental Setup and Metrics</div>
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Table 1: Seven Extracted Predictor Variables</h2>
             </div>
+            <span class="mono" style="font-size:0.7rem; color:var(--up-gold);">Equations (1)–(4)</span>
           </div>
-          <div class="academic-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-        </div>
-        <div class="academic-panel-body">
-          <div class="academic-panel-content">
-            <p>This interactive dashboard replicates the <b>experimental execution environment</b> utilized during the validation phase of the research. In the paper, performance metrics are meticulously captured and analyzed to verify the efficiency of the hybrid approach under controlled conditions.</p>
-            <p style="margin-top: 10px;">The metrics displayed above represent the critical performance indicators analyzed in <i>Table 1</i> and <i>Table 2</i> of the thesis:</p>
-            <ul style="margin-left: 20px; margin-top: 5px;">
-              <li><b>Comparisons</b>: The total number of element comparisons made during sorting. Fewer comparisons indicate a more balanced partitioning scheme.</li>
-              <li><b>Swaps</b>: The number of write operations performed to exchange elements. Reducing swaps directly translates to fewer memory writes and lower cache thrashing.</li>
-              <li><b>Execution Time</b>: Measured in <i>microseconds</i> or <i>milliseconds</i> to determine empirical runtime advantages.</li>
-              <li><b>Partition Operations</b>: The count of divide-and-conquer steps executed, indicating recursion tree height and subproblem partitioning health.</li>
-              <li><b>Recursive Calls / Queue Pops</b>: Measures the overhead of control flow execution, demonstrating how the iterative priority queue replaces deep call stacks.</li>
-            </ul>
-            <div class="academic-key-points">
-              <span class="academic-key-point">Comparisons</span>
-              <span class="academic-key-point">Swaps</span>
-              <span class="academic-key-point">Execution Time</span>
-              <span class="academic-key-point">Partition Operations</span>
-              <span class="academic-key-point">Recursive Calls</span>
+          <div class="card-body">
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Predictor Variable</th>
+                    <th>Symbol</th>
+                    <th>Mathematical Formula</th>
+                    <th>Computed Value</th>
+                  </tr>
+                </thead>
+                <tbody id="s03-predictors-tbody"></tbody>
+              </table>
             </div>
           </div>
         </div>
-      </div>
-    </div>
 
-    <!-- ═══ VISUALIZER ═══ -->
-    <div class="view" id="view-visualizer" style="display:none;">
-      <div class="vis-controls section-card" style="margin-bottom:20px;">
-        <div class="controls-row">
-          <div class="ctrl-group">
-            <label>Distribution</label>
-            <select id="vis-dist" onchange="generateForVis()">
-              <option value="random">Random</option>
-              <option value="nearly">Nearly Sorted</option>
-              <option value="reverse">Reverse Sorted</option>
-              <option value="duplicates">Many Duplicates</option>
-            </select>
-          </div>
-          <div class="ctrl-group">
-            <label>Size: <b id="vis-size-lbl">50</b></label>
-            <input type="range" id="vis-size" min="10" max="100" step="5" value="50"
-              oninput="document.getElementById('vis-size-lbl').textContent=this.value"
-              onchange="generateForVis()" />
-          </div>
-          <div class="ctrl-group">
-            <label>Speed: <b id="vis-speed-lbl">50 milliseconds</b></label>
-            <input type="range" id="vis-speed" min="5" max="600" step="10" value="50"
-              oninput="document.getElementById('vis-speed-lbl').textContent=this.value+' milliseconds'" />
-          </div>
-          <div class="ctrl-btns">
-            <button class="btn btn-primary" id="vis-play-btn" onclick="togglePlay()">▶ Play</button>
-            <button class="btn btn-ghost" id="vis-step-btn" onclick="stepOnce()">⏭ Step</button>
-            <button class="btn btn-ghost" onclick="resetVis()">↺ Reset</button>
-            <button class="btn btn-ghost" onclick="generateForVis()">🎲 New</button>
-          </div>
-        </div>
-        <div class="vis-progress-row">
-          <div class="vis-op-label" id="vis-op-label">Press Play to begin</div>
-          <div class="vis-frame-info">Frame <b id="vis-frame-cur">0</b> / <b id="vis-frame-tot">0</b></div>
-        </div>
-      </div>
-
-      <!-- Dual canvas -->
-      <div class="vis-dual">
-        <div class="vis-panel">
-          <div class="vis-panel-header">
-            <span class="vis-algo-name trad-name">Traditional QuickSort</span>
-            <span class="vis-badge trad-b">Lomuto</span>
-          </div>
-          <div class="bar-stage" id="vis-bars-trad"></div>
-          <div class="vis-metrics">
-            <div class="vm"><span class="vml">Comparisons</span><span class="vmv" id="vc-cmp">0</span></div>
-            <div class="vm"><span class="vml">Swaps</span><span class="vmv" id="vc-swp">0</span></div>
-            <div class="vm"><span class="vml">Partitions</span><span class="vmv" id="vc-prt">0</span></div>
-            <div class="vm"><span class="vml">Recursive Calls</span><span class="vmv" id="vc-cal">0</span></div>
-          </div>
-        </div>
-        <div class="vis-panel sermax-panel">
-          <div class="vis-panel-header">
-            <span class="vis-algo-name sermax-name">✦ SerMaxHybridQuickSort</span>
-            <span class="vis-badge sermax-b">Polynomial Regression · Bidirectional</span>
-          </div>
-          <div class="bar-stage" id="vis-bars-sermax"></div>
-          <div class="vis-metrics">
-            <div class="vm"><span class="vml">Comparisons</span><span class="vmv sermax-val" id="vs-cmp">0</span></div>
-            <div class="vm"><span class="vml">Swaps</span><span class="vmv sermax-val" id="vs-swp">0</span></div>
-            <div class="vm"><span class="vml">Partitions</span><span class="vmv sermax-val" id="vs-prt">0</span></div>
-            <div class="vm"><span class="vml">Queue Pops</span><span class="vmv sermax-val" id="vs-cal">0</span></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Legend -->
-      <div class="legend">
-        <div class="leg-item"><div class="leg-dot" style="background:#22d3ee"></div>Pivot</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#fbbf24"></div>Active Pointer</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#f43f5e"></div>Swapping</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#818cf8"></div>Traditional Subarray</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#38bdf8"></div>SerMaxHybridQuickSort Subarray</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#34d399"></div>Sorted</div>
-        <div class="leg-item"><div class="leg-dot" style="background:#1e2d45"></div>Inactive</div>
-      </div>
-
-      <!-- Academic Context Panel -->
-      <div class="academic-panel" id="academic-visualizer">
-        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
-          <div class="academic-panel-left">
-            <span class="academic-badge">Thesis Context</span>
-            <div>
-              <div class="academic-panel-title">Visualizing the Hybrid Algorithmic Framework</div>
-              <div class="academic-panel-ref">Reference: Section 2.2 — Algorithmic Framework and Innovations</div>
-            </div>
-          </div>
-          <div class="academic-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-        </div>
-        <div class="academic-panel-body">
-          <div class="academic-panel-content">
-            <p>The Live Visualizer is designed to visually demonstrate the execution of the three core innovations proposed in the thesis: <b>Polynomial Regression-Based Pivot Estimation</b>, <b>Bidirectional Partitioning</b>, and the <b>Iterative Priority Queue</b> management system.</p>
-            <p style="margin-top: 10px;">By watching the step-by-step color-coded animation, you can observe the physical differences between the Lomuto partition scheme in Traditional QuickSort and the Hoare-style bidirectional partition scheme in SerMaxHybridQuickSort:</p>
-            <ul style="margin-left: 20px; margin-top: 5px;">
-              <li><b>Polynomial Regression-Based Pivot Estimation</b>: The cyan bar represents the pivot selected by statistical analysis of the subarray (mean, variance, skewness) to achieve optimal balance.</li>
-              <li><b>Bidirectional Partitioning</b>: The yellow pointer bars represent the twin pointers scanning from both ends simultaneously, swapping out-of-order elements instantly, minimizing array scanning.</li>
-              <li><b>Iterative Priority Queue</b>: Rather than plunging into recursive depths, the subproblems are pushed onto a queue, maintaining stack safety at a maximum of logarithmic depth.</li>
-            </ul>
-            <div class="academic-key-points">
-              <span class="academic-key-point">Pivot Estimation</span>
-              <span class="academic-key-point">Bidirectional Partitioning</span>
-              <span class="academic-key-point">Priority Queue</span>
-              <span class="academic-key-point">Lomuto vs Hoare</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ BENCHMARK ═══ -->
-    <div class="view" id="view-benchmark" style="display:none;">
-      <div class="section-card" style="margin-bottom:20px;">
-        <div class="card-header"><h2>Benchmark Configuration</h2></div>
-        <div class="controls-row" style="padding-top:4px;">
-          <div class="ctrl-group">
-            <label>Distribution</label>
-            <select id="bench-dist">
-              <option value="random">Random (Uniform)</option>
-              <option value="nearly">Nearly Sorted</option>
-              <option value="reverse">Reverse Sorted</option>
-              <option value="duplicates">Many Duplicates</option>
-            </select>
-          </div>
-          <div class="ctrl-group">
-            <label>Array Size: <b id="bench-size-lbl">3,000</b></label>
-            <input type="range" id="bench-size" min="100" max="10000" step="100" value="3000"
-              oninput="document.getElementById('bench-size-lbl').textContent=Number(this.value).toLocaleString()" />
-          </div>
-          <div class="ctrl-btns">
-            <button class="btn btn-primary" id="bench-run-btn" onclick="runBenchmark()">⚡ Run Benchmark</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Charts + Summary -->
-      <div class="bench-layout">
         <div class="section-card">
-          <div class="card-header"><h2>Performance Charts</h2></div>
-          <div id="bench-chart-area">
-            <div class="bench-empty">
-              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity:.3"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="8" width="4" height="12"/><rect x="17" y="4" width="4" height="16"/></svg>
-              <p>Run a benchmark to see charts</p>
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Step-by-Step Mathematical Substitution Breakdown</h2>
             </div>
+            <span class="badge-pass">Exact Population Moments</span>
           </div>
-        </div>
-        <div class="bench-summary-panel section-card">
-          <div class="card-header"><h2>Results Summary</h2></div>
-          <div id="bench-summary-content">
-            <div class="bench-empty" style="height:200px;"><p>No results yet</p></div>
-          </div>
+          <div class="card-body" id="s03-math-steps" style="display:flex; flex-direction:column; gap:10px; max-height:360px; overflow-y:auto;"></div>
         </div>
       </div>
-
-      <!-- History table -->
-      <div class="section-card" id="bench-history-card" style="display:none; margin-top:20px;">
-        <div class="card-header"><h2>Benchmark History</h2></div>
-        <table class="history-table" id="bench-history-table">
-          <thead>
-            <tr>
-              <th>#</th><th>Size</th><th>Distribution</th>
-              <th>Traditional Time</th><th>SerMaxHybridQuickSort Time</th><th>Speedup</th>
-              <th>Comparisons Difference</th><th>Swaps Difference</th>
-            </tr>
-          </thead>
-          <tbody id="bench-history-body"></tbody>
-        </table>
       </div>
 
-      <!-- Academic Context Panel -->
-      <div class="academic-panel" id="academic-benchmark">
-        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
-          <div class="academic-panel-left">
-            <span class="academic-badge">Thesis Context</span>
-            <div>
-              <div class="academic-panel-title">Empirical Results and Speedup Comparisons</div>
-              <div class="academic-panel-ref">Reference: Section 3 — Empirical Results and Comparative Performance Analysis</div>
-            </div>
-          </div>
-          <div class="academic-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-        </div>
-        <div class="academic-panel-body">
-          <div class="academic-panel-content">
-            <p>This Benchmark Sandbox replicates the exact experimental scenarios and test cases documented in the research paper to compare <i>Traditional QuickSort</i> and <i>SerMaxHybridQuickSort</i> on large datasets. The four distribution types map directly to the benchmark trials in the paper:</p>
-            <ul style="margin-left: 20px; margin-top: 5px;">
-              <li><b>Random Distribution</b>: Evaluates standard efficiency. While both algorithms achieve O(n log n) efficiency, SerMaxHybridQuickSort demonstrates a lower constant factor due to fewer swaps.</li>
-              <li><b>Nearly Sorted Distribution</b>: Highlights the vulnerability of traditional algorithms and demonstrates how the Polynomial Regression model avoids worst-case pivot selection.</li>
-              <li><b>Reverse Sorted Distribution</b>: Verifies resistance to standard quicksort degradation and showcases the symmetry of the bidirectional partitioning scheme.</li>
-              <li><b>Many Duplicates</b>: Demonstrates how the combination of pivot estimation and bidirectional scanning successfully prevents the O(n²) degradation common in basic partition schemes.</li>
-            </ul>
-            <p style="margin-top: 10px;">The speedup factor is calculated as the ratio of <i>Traditional QuickSort Execution Time</i> to <i>SerMaxHybridQuickSort Execution Time</i>, demonstrating real-world acceleration.</p>
-            <div class="academic-key-points">
-              <span class="academic-key-point">Random Distribution</span>
-              <span class="academic-key-point">Nearly Sorted</span>
-              <span class="academic-key-point">Reverse Sorted</span>
-              <span class="academic-key-point">Many Duplicates</span>
-              <span class="academic-key-point">Speedup Factor</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ INTERACTIVE GENERATION (WIZARD) ═══ -->
-    <div class="view" id="view-manual" style="display:none;">
-      <div class="section-card" style="max-width:680px; margin: 0 auto;">
-        <div class="card-header"><h2>Dataset Generator</h2></div>
-        
-        <div id="wizard-step-1" style="padding: 20px;">
-          <label class="field-label">How many elements do you want to sort?</label>
-          <input type="number" id="wizard-size" class="array-textarea" style="min-height: 40px; margin-bottom: 15px;" value="20" min="2" max="10000" />
-          
-          <label class="field-label">How would you like to provide the elements?</label>
-          <div style="display:flex;gap:10px;margin: 0 20px 20px;">
-            <button class="btn btn-primary" onclick="wizardStep2('random')">🎲 Generate Randomly</button>
-            <button class="btn btn-ghost" onclick="wizardStep2('manual')">⌨️ Enter Manually</button>
-          </div>
-        </div>
-
-        <div id="wizard-step-2-random" style="display:none; padding: 20px; border-top: 1px solid var(--border);">
-          <label class="field-label">Select Distribution Type:</label>
-          <div style="margin: 0 20px 20px; display:flex; flex-direction:column; gap:8px;">
-            <label><input type="radio" name="wiz-dist" value="random" checked> 1. Random (uniform)</label>
-            <label><input type="radio" name="wiz-dist" value="nearly"> 2. Nearly sorted</label>
-            <label><input type="radio" name="wiz-dist" value="reverse"> 3. Reverse sorted</label>
-            <label><input type="radio" name="wiz-dist" value="duplicates"> 4. Many duplicates</label>
-          </div>
-          
-          <div style="display:flex;gap:10px;margin: 0 20px;">
-            <button class="btn btn-primary" onclick="wizardGenerateRandom()">Generate Numbers</button>
-            <button class="btn btn-ghost" onclick="wizardBack()">Back</button>
-          </div>
-          
-          <div id="wizard-preview" style="display:none; margin-top: 20px; padding: 15px; background: var(--surface2); border-radius: var(--radius-sm);">
-            <div style="font-size:0.8rem; color:var(--text-dim); margin-bottom:10px;">Generated Array:</div>
-            <div id="wizard-preview-text" style="font-family:'JetBrains Mono',monospace; font-size:0.85rem; word-break:break-all; max-height:100px; overflow-y:auto; margin-bottom:15px;"></div>
-            <div style="display:flex;gap:10px;">
-              <button class="btn btn-primary" onclick="wizardAccept()">✅ Use this Array</button>
-              <button class="btn btn-ghost" onclick="wizardGenerateRandom()">🎲 Generate Again</button>
-            </div>
-          </div>
-        </div>
-
-        <div id="wizard-step-2-manual" style="display:none; padding: 20px; border-top: 1px solid var(--border);">
-          <label class="field-label">Enter <span id="wiz-manual-count"></span> elements (comma or space separated):</label>
-          <textarea id="manual-input" class="array-textarea" placeholder="e.g. 64, 34, 25, 12..."></textarea>
-          <div style="display:flex;gap:10px;margin: 20px 20px 0;">
-            <button class="btn btn-primary" onclick="loadManualArray()">✓ Load Array</button>
-            <button class="btn btn-ghost" onclick="wizardBack()">Back</button>
-          </div>
-          <div id="manual-error" class="field-error" style="display:none;"></div>
-          <div id="manual-success" class="field-success" style="display:none;"></div>
-        </div>
-      </div>
-
-      <!-- Academic Context Panel -->
-      <div class="academic-panel" id="academic-wizard">
-        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
-          <div class="academic-panel-left">
-            <span class="academic-badge">Thesis Context</span>
-            <div>
-              <div class="academic-panel-title">Controlled Input Generation and Experimental Reproducibility</div>
-              <div class="academic-panel-ref">Reference: Section 3.1 — Input Verification Methodology</div>
-            </div>
-          </div>
-          <div class="academic-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
-          </div>
-        </div>
-        <div class="academic-panel-body">
-          <div class="academic-panel-content">
-            <p>The Dataset Generator replicates the input generation methodology built into the original Java test suite of the research project. To guarantee scientific accuracy and reproducibility, the sorting algorithms must be subjected to specific controlled inputs.</p>
-            <p style="margin-top: 10px;">By letting you customize the input size and select from four mathematically structured distributions, this wizard allows validation of the thesis's core performance hypotheses:</p>
-            <ul style="margin-left: 20px; margin-top: 5px;">
-              <li><b>Controlled Input</b>: Standardizes empirical benchmarks to ensure that results are not due to randomized anomalies but are statistically sound.</li>
-              <li><b>Distribution Type</b>: Reflects diverse datasets encountered in database systems, compilers, and operating systems.</li>
-              <li><b>Array Size</b>: Allows testing of scalability and growth in time and space complexity across several orders of magnitude.</li>
-            </ul>
-            <div class="academic-key-points">
-              <span class="academic-key-point">Controlled Input</span>
-              <span class="academic-key-point">Distribution Type</span>
-              <span class="academic-key-point">Array Size</span>
-              <span class="academic-key-point">Reproducibility</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ═══ HOW IT WORKS ═══ -->
-    <div class="view" id="view-howit" style="display:none;">
-      <div class="howit-header section-card">
-        <div class="howit-title-area">
-          <div class="howit-badge">SerMaxHybridQuickSort</div>
-          <h2>Three Innovations Over Traditional QuickSort</h2>
-          <p>SerMaxHybridQuickSort combines three independent algorithmic improvements that together create a more efficient sorting algorithm, especially on real-world (non-random) data distributions.</p>
-        </div>
-      </div>
-
-      <div class="howit-grid">
-        <div class="howit-card">
-          <div class="howit-num">01</div>
-          <h3>Polynomial Regression–Based Pivot Estimation</h3>
-          <div class="howit-tag">Statistical Analysis</div>
-          <p>Traditional QuickSort (Lomuto partition scheme) always picks the last element as pivot — catastrophic on sorted/reverse-sorted input, leading to O(n²) worst case.</p>
-          <p>SerMaxHybridQuickSort analyzes each subarray's statistical properties before selecting a pivot:</p>
-          <ul>
-            <li><b>Mean</b> — central tendency</li>
-            <li><b>Variance</b> — spread of values</li>
-            <li><b>Skewness</b> — distribution asymmetry</li>
-          </ul>
-          <p>A fitted polynomial regression model estimates the optimal pivot position (offset index) to achieve a near-perfect split of elements, minimizing partition imbalance. On small subarrays containing fewer than ten elements, it falls back to the robust Median-of-Three partition method.</p>
-          <div class="formula-box">
-            Position = &beta;<sub>0</sub> + &beta;<sub>1</sub>&middot;&mu; + &beta;<sub>2</sub>&middot;&sigma;<sup>2</sup> + &beta;<sub>3</sub>&middot;&gamma; + &beta;<sub>4</sub>&middot;&mu;<sup>2</sup> + &beta;<sub>5</sub>&middot;&sigma;<sup>4</sup>
-          </div>
-          <div style="font-size: 0.78rem; color: var(--text-sub); margin-top: 10px; line-height: 1.6;">
-            <p style="font-weight: 700; color: var(--sermax); text-transform: uppercase; font-size: 0.65rem; letter-spacing: 0.05em; margin-bottom: 6px;">Variable and Coefficient Definitions:</p>
-            <ul style="margin-left: 15px; list-style-type: square; display: flex; flex-direction: column; gap: 4px;">
-              <li><b>Position (Predicted Pivot Position)</b>: The estimated optimal pivot index, expressed as a normalized ratio between zero and one relative to the subarray boundaries.</li>
-              <li><b>&beta;<sub>0</sub> (Intercept)</b>: The constant baseline index representing the default pivot when all statistical distribution characteristics are balanced.</li>
-              <li><b>&beta;<sub>1</sub>, &beta;<sub>2</sub>, &beta;<sub>3</sub> (Linear Coefficients)</b>: Represent the first-order sensitivity of the pivot selection to the normalized mean (&mu;), normalized variance (&sigma;<sup>2</sup>), and bounded skewness (&gamma;) respectively.</li>
-              <li><b>&beta;<sub>4</sub>, &beta;<sub>5</sub> (Nonlinear Polynomial Coefficients)</b>: Account for high-order interactions, specifically the quadratic behavior of the mean (&mu;<sup>2</sup>) and quartic behavior of the variance (&sigma;<sup>4</sup>) to capture dense clusters and asymmetrical tails.</li>
-              <li><b>&mu; (Normalized Mean)</b>: The first statistical moment, quantifying the central tendency of the subarray elements.</li>
-              <li><b>&sigma;<sup>2</sup> (Normalized Variance)</b>: The second statistical moment, measuring the dispersion and spread of values.</li>
-              <li><b>&gamma; (Bounded Skewness)</b>: The third statistical moment, determining the direction and degree of asymmetry in the dataset.</li>
-            </ul>
-          </div>
-        </div>
-
-        <div class="howit-card">
-          <div class="howit-num">02</div>
-          <h3>Bidirectional Partitioning</h3>
-          <div class="howit-tag">Partition Efficiency</div>
-          <p>Traditional QuickSort's Lomuto partition scheme scans left-to-right only, causing up to <b>n swaps per partition</b> in the worst case. Elements far from their target position get moved multiple times.</p>
-          <p>SerMaxHybridQuickSort uses Hoare-style <b>bidirectional scanning</b>:</p>
-          <ul>
-            <li>Left pointer scans rightward for values ≥ pivot</li>
-            <li>Right pointer scans leftward for values ≤ pivot</li>
-            <li>When both stop, swap and continue</li>
-          </ul>
-          <p>This produces approximately <b>3× fewer swaps</b> on average, which reduces memory writes and cache thrashing on large arrays.</p>
-        </div>
-
-        <div class="howit-card">
-          <div class="howit-num">03</div>
-          <h3>Priority Queue Management</h3>
-          <div class="howit-tag">Stack Optimization</div>
-          <p>Traditional recursive QuickSort pushes both subarrays onto the call stack. On a sorted array of n=100,000 elements with poor pivot selection, call stack depth reaches n — causing <b>StackOverflow</b>.</p>
-          <p>SerMaxHybridQuickSort replaces the recursive call stack with an explicit <b>iterative priority queue</b>:</p>
-          <ul>
-            <li>Smaller subarrays are always processed first</li>
-            <li>Maximum queue depth stays O(log n)</li>
-            <li>No stack overflow risk, even on pathological inputs</li>
-            <li>Better CPU branch prediction due to smaller working sets</li>
-          </ul>
-          <p>This also enables future parallelism — queue items can be dispatched to worker threads.</p>
-        </div>
-      </div>
-
-      <!-- Complexity comparison -->
+      <!-- SUB-PANEL 3B: Offline Training-Target Generation: 33-Candidate Imbalance Evaluator -->
+      <div class="subpanel" data-subpanel="s03-targets" style="display:none;">
       <div class="section-card">
-        <div class="card-header"><h2>Time Complexity Comparison</h2></div>
-        <table class="complexity-table">
-          <thead>
-            <tr><th>Case</th><th>Traditional QuickSort</th><th>SerMaxHybridQuickSort</th><th>Improvement</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>Best case</td><td>O(n log n)</td><td>O(n log n)</td><td>Equivalent</td></tr>
-            <tr><td>Average case</td><td>O(n log n)</td><td>O(n log n)</td><td>Lower constant factor</td></tr>
-            <tr class="highlight-row"><td>Sorted / nearly-sorted input</td><td>O(n²)</td><td>O(n log n)</td><td class="better">Significantly better</td></tr>
-            <tr class="highlight-row"><td>Many duplicates</td><td>O(n²)</td><td>O(n log n)</td><td class="better">Significantly better</td></tr>
-            <tr><td>Space (stack depth)</td><td>O(n) worst case</td><td>O(log n)</td><td class="better">Eliminates overflow risk</td></tr>
-          </tbody>
-        </table>
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Offline Target Pivot Evaluator: Minimum Partition Imbalance (Section 4.3.3, Equations 5–7)</h2>
+          </div>
+          <span class="badge-warn" id="s03-target-badge">Target y = i* / (n - 1)</span>
+        </div>
+        <div class="card-body">
+          <p style="font-size:0.76rem; color:var(--text-sub); margin-bottom:12px;">
+            During offline training-target generation, if <span class="mono">2 ≤ n ≤ 33</span>, all relative indices <span class="mono">0..n-1</span> are evaluated; if <span class="mono">n &gt; 33</span>, exactly 33 candidate positions <span class="mono">c_k = round[k(n-1)/32]</span> are evaluated using bidirectional partitioning on restored copies. The candidate minimizing <span class="mono">I_i = |L_i - R_i|</span> (Eq. 5) with midpoint-distance tie-breaking (Eq. 6) defines the supervised target <span class="mono">y = i* / (n - 1)</span> (Eq. 7).
+          </p>
+          <div class="data-table-wrap" style="max-height:320px; overflow-y:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Candidate #</th>
+                  <th>Rel. Index (i)</th>
+                  <th>Abs. Index</th>
+                  <th>Pivot Value A[i]</th>
+                  <th>Left Size (L_i)</th>
+                  <th>Right Size (R_i)</th>
+                  <th>Imbalance I_i = |L_i - R_i|</th>
+                  <th>Dist to Midpoint</th>
+                  <th>Normalized y = i/(n-1)</th>
+                  <th>Selection Status</th>
+                </tr>
+              </thead>
+              <tbody id="s03-candidates-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 04: POLYNOMIAL REGRESSION MODEL DEVELOPMENT (36 COEFFICIENTS)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s04" style="display:none;">
+      <!-- Top Model Quality Metrics -->
+      <div class="kpi-grid-5">
+        <div class="kpi-card">
+          <div class="kpi-label">Model Specification</div>
+          <div class="kpi-val">36 β</div>
+          <div class="kpi-sub">1 Intercept + 7 Linear + 7 Quad + 21 Interaction</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Validation MAE (Eq. 13)</div>
+          <div class="kpi-val" id="s04-val-mae">0.0000</div>
+          <div class="kpi-sub">Held-out validation partitions</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Validation RMSE (Eq. 14)</div>
+          <div class="kpi-val" id="s04-val-rmse">0.0000</div>
+          <div class="kpi-sub">Root mean squared prediction error</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Training Observations</div>
+          <div class="kpi-val" id="s04-train-count">0</div>
+          <div class="kpi-sub">Midpoint-derived subproblems</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Model Freeze Status</div>
+          <div class="kpi-val" style="color:#10b981; font-size:1.25rem;">FROZEN ✓</div>
+          <div class="kpi-sub" id="s04-model-version">SerMax-Poly2-36C</div>
+        </div>
       </div>
 
-      <!-- Academic Context Panel -->
-      <div class="academic-panel" id="academic-howit">
-        <div class="academic-panel-header" onclick="toggleAcademicPanel(this.parentElement)">
-          <div class="academic-panel-left">
-            <span class="academic-badge">Thesis Context</span>
-            <div>
-              <div class="academic-panel-title">Theoretical Foundations and Lomuto/Hoare Limitations</div>
-              <div class="academic-panel-ref">Reference: Section 1 and Section 2 — Theoretical Foundations</div>
+      <!-- SUB-PANEL 4A: Training Control & Validation Diagnostic Plots -->
+      <div class="subpanel active" data-subpanel="s04-training">
+      <div class="grid-2">
+        <!-- Training Control & Specification Table (Table 2) -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Table 2: Second-Degree Multivariate Polynomial Model (Eqs. 8–9)</h2>
+            </div>
+            <button class="btn btn-gold btn-sm" onclick="retrainModelInteractive()">⚡ Re-Train &amp; Freeze OLS Model</button>
+          </div>
+          <div class="card-body">
+            <div class="math-card mb-16">
+              <div style="color:var(--up-gold); font-weight:700; margin-bottom:4px;">Equation (8) — 36-Coefficient Multivariate Polynomial Formulation:</div>
+              ŷ = β₀ + ∑_{j=1..7} β_j X_j + ∑_{j=1..7} β_{jj} X_j² + ∑_{j=1..6} ∑_{k=j+1..7} β_{jk} X_j X_k
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-bottom:12px;">
+              <div>
+                <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:4px;">Training Seed</label>
+                <input type="number" id="s04-seed" value="20261001" style="width:100%;" />
+              </div>
+              <div>
+                <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:4px;">Arrays / Category</label>
+                <input type="number" id="s04-arrays-per-cat" value="16" min="4" max="50" style="width:100%;" />
+              </div>
+              <div>
+                <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:4px;">Source Array Size</label>
+                <input type="number" id="s04-array-size" value="250" min="50" max="1000" style="width:100%;" />
+              </div>
+            </div>
+            <div id="s04-training-log" class="code-tracer" style="max-height:135px; overflow-y:auto; padding:10px 14px; font-size:0.7rem;"></div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
+              <button class="btn btn-primary btn-sm" onclick="exportFrozenModelJSON()">&lt;/&gt; Export Frozen Model (JSON)</button>
+              <button class="btn btn-green btn-sm" onclick="openJavaModelModal()">☕ Generate Java Class (SerMaxPivotModel.java)</button>
             </div>
           </div>
-          <div class="academic-arrow">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+        </div>
+
+        <!-- Diagnostic Plots: Actual vs Predicted Scatter, Residual Histogram, Feature Importance -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Model Validation &amp; Feature Diagnostics (Section 4.3.7)</h2>
+            </div>
+            <div class="pill-tabs">
+              <button class="pill-tab active" onclick="switchS04Plot('scatter', this)">Actual vs. Predicted</button>
+              <button class="pill-tab" onclick="switchS04Plot('importance', this)">Term Importance</button>
+              <button class="pill-tab" onclick="switchS04Plot('residuals', this)">Residuals</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="s04-plot-area" style="height:260px;"></div>
           </div>
         </div>
-        <div class="academic-panel-body">
-          <div class="academic-panel-content">
-            <p>The theoretical basis of <b>SerMaxHybridQuickSort</b> addresses the three primary bottlenecks of standard recursive quicksort with Lomuto partitioning:</p>
-            <ol style="margin-left: 20px; margin-top: 5px;">
-              <li><b>O(n²) Worst-Case Time Complexity</b>: Solved by the Polynomial Regression model. It calculates optimal pivot indexes using statistical moments, avoiding unbalanced partitions.</li>
-              <li><b>Excessive Write Overhead</b>: Solved by bidirectional partitioning. The left and right scanning pointers swap elements across the array directly, reducing swaps by up to 66%.</li>
-              <li><b>Stack Overflow Vulnerability</b>: Solved by the Iterative Priority Queue. By replacing CPU recursive frames with heap-allocated priorities, stack depth remains strictly limited to logarithmic depth, guaranteeing system stability.</li>
-            </ol>
-            <p style="margin-top: 10px;">This page provides the mathematical models and comparative matrices analyzing these behaviors as proven in the core sections of the paper.</p>
-            <div class="academic-key-points">
-              <span class="academic-key-point">O(n log n) Guarantee</span>
-              <span class="academic-key-point">Pivot Estimation</span>
-              <span class="academic-key-point">Bidirectional Scanning</span>
-              <span class="academic-key-point">Stack Safety</span>
+      </div>
+      </div>
+
+      <!-- SUB-PANEL 4B: Training-Derived Standardization Scaler (7 Predictors) + 36 Coefficients Table -->
+      <div class="subpanel" data-subpanel="s04-coefficients" style="display:none;">
+      <div class="grid-2">
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Training-Derived Standardization Parameters (means[7] &amp; scales[7])</h2>
+            </div>
+            <span class="badge-pass">Fit on Training Split Only</span>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Predictor</th>
+                    <th>Description</th>
+                    <th>Train Mean (μ_train)</th>
+                    <th>Train Scale (σ_train)</th>
+                    <th>Min</th>
+                    <th>Max</th>
+                  </tr>
+                </thead>
+                <tbody id="s04-scaler-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Σ Fitted 36 Polynomial Regression Coefficients (β₀ … β₃₅)</h2>
+            </div>
+            <div class="pill-tabs">
+              <button class="pill-tab active" onclick="filterS04Coeffs('ALL', this)">All (36)</button>
+              <button class="pill-tab" onclick="filterS04Coeffs('Linear', this)">Linear (7)</button>
+              <button class="pill-tab" onclick="filterS04Coeffs('Quadratic', this)">Quad (7)</button>
+              <button class="pill-tab" onclick="filterS04Coeffs('Interaction', this)">Interact (21)</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap" style="max-height:310px; overflow-y:auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Symbol</th>
+                    <th>Term</th>
+                    <th>Type</th>
+                    <th>Coefficient (β)</th>
+                    <th>Std. Error</th>
+                    <th>t-stat</th>
+                    <th>p-value</th>
+                  </tr>
+                </thead>
+                <tbody id="s04-coeffs-tbody"></tbody>
+              </table>
             </div>
           </div>
         </div>
       </div>
-    </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 05: RUNTIME PIVOT ESTIMATION (PER SUBPROBLEM)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s05" style="display:none;">
+      <div class="section-card mb-20">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Figure 3: Exact 10-Step Runtime Pivot Estimation Process (Section 4.3.6, Equations 10–12)</h2>
+          </div>
+          <span class="badge-pass">Zero Array Mutation During Prediction</span>
+        </div>
+        <div class="card-body">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+            <label style="font-size:0.76rem; color:var(--up-gold); font-weight:700;">Subproblem Array:</label>
+            <input type="text" id="s05-array-input" value="6, 21, 3, 5, 1" style="flex:1; min-width:220px; font-family:'JetBrains Mono',monospace;" />
+            <label style="font-size:0.74rem; color:var(--text-dim);">low:</label>
+            <input type="number" id="s05-low" value="0" min="0" style="width:70px;" />
+            <label style="font-size:0.74rem; color:var(--text-dim);">high:</label>
+            <input type="number" id="s05-high" value="4" min="1" style="width:70px;" />
+            <button class="btn btn-primary" onclick="runScreen05PivotEstimation()">🎯 Estimate Pivot Index</button>
+            <button class="btn btn-ghost btn-sm" onclick="sendScreen05ToPartitioner()">Pass to Screen 06 Partitioner →</button>
+          </div>
+
+          <div id="s05-cells" class="array-cells-row"></div>
+        </div>
+      </div>
+
+      <!-- 10-Step Pipeline Cards + Full 36-Term Dot-Product Inspector -->
+      <div class="grid-2">
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>10-Step Runtime Inference Contract & Equations (10)–(12)</h2>
+            </div>
+            <span class="badge-pass" id="s05-fallback-badge">Valid Prediction</span>
+          </div>
+          <div class="card-body" id="s05-ten-steps"></div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Complete 36-Term Polynomial Evaluation Breakdown (β_k × Φ_k(X))</h2>
+            </div>
+            <span class="mono" id="s05-yhat-sum" style="font-size:0.74rem; color:var(--up-gold);">ŷ = 0.0000</span>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap" style="max-height:390px; overflow-y:auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Symbol</th>
+                    <th>Polynomial Term</th>
+                    <th>Std. Term Value Φ_k(X)</th>
+                    <th>Frozen Weight β_k</th>
+                    <th>Contribution (β_k · Φ_k)</th>
+                  </tr>
+                </thead>
+                <tbody id="s05-terms-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 06: BIDIRECTIONAL PARTITIONING VISUALIZER
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s06" style="display:none;">
+      <div class="section-card mb-20">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Figure 4: Bidirectional Partitioning Animator (Section 4.4, Equations 15–16)</h2>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+            <button class="btn btn-ghost btn-sm" onclick="s06StepFirst()">|&lt;&lt;</button>
+            <button class="btn btn-ghost btn-sm" onclick="s06StepPrev()">&lt;| Prev</button>
+            <button class="btn btn-gold btn-sm" id="s06-play-btn" onclick="s06TogglePlay()">▶ Auto Play</button>
+            <button class="btn btn-ghost btn-sm" onclick="s06StepNext()">Next |&gt;</button>
+            <button class="btn btn-ghost btn-sm" onclick="s06StepLast()">&gt;&gt;|</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:12px;">
+            <label style="font-size:0.75rem; color:var(--up-gold); font-weight:700;">Partition Input Array:</label>
+            <input type="text" id="s06-array-input" value="6, 21, 3, 5, 1" style="flex:1; min-width:200px; font-family:'JetBrains Mono',monospace;" />
+            <span class="badge-pass mono" id="s06-predicted-pivot-badge" style="padding:6px 12px; font-size:0.74rem;">Regression Pivot: p_abs = 2 • v = A[2] = 3</span>
+            <button class="btn btn-primary btn-sm" onclick="initScreen06PartitionTrace()">⇄ Trace Bidirectional Partition</button>
+          </div>
+
+          <!-- VisuAlgo-Style Live Step Narration Callout -->
+          <div id="s06-step-banner" class="math-card mb-16" style="background:linear-gradient(90deg, rgba(123,17,19,0.55), rgba(34,10,15,0.85)); font-size:0.84rem; font-weight:600; color:#fff;">
+            Step 0: Ready to partition
+          </div>
+
+          <!-- Visual Partition Array Cells with Pointers i, j, and Saved Pivot Value v -->
+          <div id="s06-cells" class="array-cells-row" style="justify-content:center; padding:22px 0 12px;"></div>
+
+          <div id="s06-pointer-pills" style="display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:8px;"></div>
+        </div>
+      </div>
+
+      <div class="grid-2">
+        <!-- Synchronized Pseudocode Line Highlighter (Algorithm-Visualizer / VisuAlgo style) -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Synchronized Bidirectional Partitioning Code Tracer</h2>
+            </div>
+            <span class="mono" style="font-size:0.7rem; color:var(--up-gold);">Section 4.4.1–4.4.3</span>
+          </div>
+          <div class="card-body">
+            <div class="code-tracer" id="s06-code-tracer">
+              <div class="code-line" data-line="1"><span class="ln">1</span><span>v = A[p_abs]; i = low; j = high; // Save pivot value v before swaps</span></div>
+              <div class="code-line" data-line="2"><span class="ln">2</span><span>while (i &lt;= j &amp;&amp; A[i] &lt; v) { i++; } // Left scan stops on A[i] &gt;= v</span></div>
+              <div class="code-line" data-line="3"><span class="ln">3</span><span>while (i &lt;= j &amp;&amp; A[j] &gt; v) { j--; } // Right scan stops on A[j] &lt;= v</span></div>
+              <div class="code-line" data-line="4"><span class="ln">4</span><span>if (i &lt;= j) { if (i &lt; j) swap(A, i, j); // Physical swap only when i &lt; j</span></div>
+              <div class="code-line" data-line="5"><span class="ln">5</span><span>  i++; j--; } // Advance both pointers (prevents infinite loop on duplicates)</span></div>
+              <div class="code-line" data-line="6"><span class="ln">6</span><span>return Left [low..j] (n_L = max(0, j-low+1)), Right [i..high] (n_R = max(0, high-i+1));</span></div>
+            </div>
+            <div id="s06-children-summary" class="math-card" style="margin-top:14px;"></div>
+          </div>
+        </div>
+
+        <!-- Step-by-Step Pointer Trace Table -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Step-by-Step Pointer & Swap Trace Log</h2>
+            </div>
+            <span class="badge-pass" id="s06-step-counter">Step 0 / 0</span>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap" style="max-height:310px; overflow-y:auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Step</th>
+                    <th>Operation / Pointer Action</th>
+                    <th>Array State</th>
+                    <th>i</th>
+                    <th>j</th>
+                    <th>Cmp</th>
+                    <th>Swp</th>
+                  </tr>
+                </thead>
+                <tbody id="s06-trace-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 07: PRIORITY QUEUE SUBPROBLEM SCHEDULING (MAX-HEAP)
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s07" style="display:none;">
+      <div class="kpi-grid-4">
+        <div class="kpi-card">
+          <div class="kpi-label">Primary Scheduling Priority (Eq. 18)</div>
+          <div class="kpi-val" style="font-size:1.3rem;">P(S) = n_S</div>
+          <div class="kpi-sub">Largest pending partition processed first</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Equal-Size Tie-Breaking (Sec 4.5.2)</div>
+          <div class="kpi-val" style="font-size:1.3rem;">FIFO (seq)</div>
+          <div class="kpi-sub">Smaller insertion sequence number first</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Max Queue Occupancy Q_max (Eq. 21)</div>
+          <div class="kpi-val" id="s07-qmax">0</div>
+          <div class="kpi-sub">Peak simultaneous subproblems in heap</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Max Logical Partition Depth (Eq. 20)</div>
+          <div class="kpi-val" id="s07-dmax">0</div>
+          <div class="kpi-sub">D(S_c) = D(S_p) + 1 hierarchy depth</div>
+        </div>
+      </div>
+
+      <!-- SUB-PANEL 7A: Binary Max-Heap Tree & Active Queue State -->
+      <div class="subpanel active" data-subpanel="s07-heap">
+      <div class="grid-2">
+        <!-- Binary Max-Heap SVG Tree Visualizer -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Figure 5: Live Binary Max-Heap Priority Queue Visualizer</h2>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <button class="btn btn-ghost btn-sm" onclick="s07PrevStep()">&lt;| Prev Iteration</button>
+              <button class="btn btn-gold btn-sm" onclick="s07NextStep()">Next Iteration |&gt;</button>
+              <button class="btn btn-ghost btn-sm" onclick="s07Reset()">↺ Reset</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="s07-iter-banner" class="math-card mb-16" style="font-size:0.76rem;"></div>
+            <div id="s07-heap-svg-box" style="height:260px; background:rgba(10,2,4,0.65); border-radius:8px; border:1px solid var(--border-subtle); display:flex; align-items:center; justify-content:center;"></div>
+          </div>
+        </div>
+
+        <!-- QueueDash-Style Pending Queue Inspector & Custom Enqueue Sandbox -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Priority Queue State: Max-Heap Ordered by Size &amp; FIFO Seq</h2>
+            </div>
+            <span class="badge-pass" id="s07-qsize-badge">|Q| = 0</span>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap" style="max-height:290px; overflow-y:auto;">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Queue Rank</th>
+                    <th>Bounds [low, high]</th>
+                    <th>Size P(S) = n_S</th>
+                    <th>Logical Depth D(S)</th>
+                    <th>FIFO Seq (#)</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody id="s07-queue-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- SUB-PANEL 7B: Queue Lifecycle History Table -->
+      <div class="subpanel" data-subpanel="s07-lifecycle" style="display:none;">
+      <div class="section-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Complete Iterative Subproblem Scheduling Lifecycle Log</h2>
+          </div>
+          <span class="mono" style="font-size:0.7rem; color:var(--up-gold);">Terminates when |Q| = 0 (Eq. 19)</span>
+        </div>
+        <div class="card-body">
+          <div class="data-table-wrap" style="max-height:330px; overflow-y:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Iter #</th>
+                  <th>Polled Subproblem</th>
+                  <th>Size (n_S)</th>
+                  <th>Depth</th>
+                  <th>FIFO Seq</th>
+                  <th>Predicted Pivot A[p_abs]</th>
+                  <th>Enqueued Left Child</th>
+                  <th>Enqueued Right Child</th>
+                  <th>Remaining |Q|</th>
+                </tr>
+              </thead>
+              <tbody id="s07-lifecycle-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 08: COMPLETE ITERATIVE SORTING EXECUTION & LIVE VISUALIZER
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s08" style="display:none;">
+      <!-- SUB-PANEL 8A: Live Side-by-Side Visualizer & 8-Node Event Timeline -->
+      <div class="subpanel active" data-subpanel="s08-visualizer">
+      <!-- Visualizer Controls Bar -->
+      <div class="section-card mb-20">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Side-by-Side Live Execution Visualizer &amp; 8-Node Event Timeline (Sections 4.2, 4.4, 4.5)</h2>
+          </div>
+          <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+            <button class="btn btn-gold btn-sm" id="vis-play-btn" onclick="togglePlay()">▶ Play</button>
+            <button class="btn btn-ghost btn-sm" id="vis-step-btn" onclick="stepOnce()">⏭ Step</button>
+            <button class="btn btn-ghost btn-sm" onclick="resetVis()">↺ Reset</button>
+            <button class="btn btn-primary btn-sm" onclick="generateForVis()">🎲 New Array</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Distribution</label>
+              <select id="vis-dist" onchange="generateForVis()">
+                <option value="random">Random (Uniform)</option>
+                <option value="nearly">Nearly Sorted (1% Swaps)</option>
+                <option value="reverse">Reverse Sorted</option>
+                <option value="duplicates">Many Duplicates (10 Values)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Baseline Opponent</label>
+              <select id="vis-baseline-algo" onchange="generateForVis()">
+                <option value="trad">Traditional QuickSort (First-Element Pivot)</option>
+                <option value="median3">Median-of-Three QuickSort</option>
+                <option value="random">Randomized-Pivot QuickSort</option>
+              </select>
+            </div>
+            <div style="flex:1; min-width:140px;">
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Array Size: <b id="vis-size-lbl" style="color:var(--up-gold);">30</b></label>
+              <input type="range" id="vis-size" min="5" max="80" step="5" value="30" style="width:100%;"
+                oninput="document.getElementById('vis-size-lbl').textContent=this.value"
+                onchange="generateForVis()" />
+            </div>
+            <div style="flex:1; min-width:140px;">
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Frame Delay: <b id="vis-speed-lbl" style="color:var(--up-gold);">40 ms</b></label>
+              <input type="range" id="vis-speed" min="5" max="400" step="10" value="40" style="width:100%;"
+                oninput="document.getElementById('vis-speed-lbl').textContent=this.value+' ms'" />
+            </div>
+            <div style="flex:1.5; min-width:180px;">
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">
+                Timeline Scrubber: Frame <b id="vis-frame-cur" style="color:var(--up-gold);">0</b> / <b id="vis-frame-tot">0</b>
+              </label>
+              <input type="range" id="vis-scrubber" min="0" max="100" value="0" style="width:100%;" oninput="scrubVisFrame(this.value)" />
+            </div>
+          </div>
+
+          <div id="vis-op-label" class="math-card" style="padding:8px 14px; font-size:0.78rem; color:#fff;">
+            Press Play to animate step-by-step execution
+          </div>
+
+          <!-- 8-Node Interactive Event Timeline Stepper -->
+          <div class="event-timeline" id="s08-event-timeline">
+            <div class="timeline-node active" data-stage="1"><div class="tn-num">1</div><div>Initialize Queue</div></div>
+            <div class="timeline-node" data-stage="2"><div class="tn-num">2</div><div>Extract 7 &amp; Predict ŷ</div></div>
+            <div class="timeline-node" data-stage="3"><div class="tn-num">3</div><div>Bidirectional Scan</div></div>
+            <div class="timeline-node" data-stage="4"><div class="tn-num">4</div><div>Form Subproblems</div></div>
+            <div class="timeline-node" data-stage="5"><div class="tn-num">5</div><div>Enqueue Eligible</div></div>
+            <div class="timeline-node" data-stage="6"><div class="tn-num">6</div><div>Poll Largest First</div></div>
+            <div class="timeline-node" data-stage="7"><div class="tn-num">7</div><div>Repeat Until |Q|=0</div></div>
+            <div class="timeline-node" data-stage="8"><div class="tn-num">8</div><div>Verify Ascending</div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Dual Live Bar Canvases -->
+      <div class="vis-dual">
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2 id="vis-baseline-title">Traditional QuickSort (First-Element Pivot)</h2>
+            </div>
+            <span class="badge-warn">Recursive Baseline</span>
+          </div>
+          <div class="card-body">
+            <div class="bar-stage" id="vis-bars-trad"></div>
+            <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; margin-top:12px; text-align:center; font-size:0.72rem;">
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Comparisons</div><b id="vc-cmp">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Swaps</div><b id="vc-swp">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Partitions</div><b id="vc-prt">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Logical Depth</div><b id="vc-dep">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Balance (B)</div><b id="vc-bal">0.00</b></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="section-card" style="border-color:rgba(242,169,0,0.4);">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2 style="color:var(--up-gold);">✦ SerMax Hybrid QuickSort (Proposed)</h2>
+            </div>
+            <span class="badge-pass">36-Term Regression • Largest-First PQ</span>
+          </div>
+          <div class="card-body">
+            <div class="bar-stage" id="vis-bars-sermax"></div>
+            <div style="display:grid; grid-template-columns:repeat(5, 1fr); gap:8px; margin-top:12px; text-align:center; font-size:0.72rem;">
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Comparisons</div><b id="vs-cmp" style="color:var(--up-gold);">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Swaps</div><b id="vs-swp" style="color:var(--up-gold);">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Queue Polls</div><b id="vs-cal" style="color:var(--up-gold);">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Logical Depth</div><b id="vs-dep" style="color:var(--up-gold);">0</b></div>
+              <div class="math-card" style="padding:6px;"><div style="color:var(--text-dim);font-size:0.62rem;">Balance (B)</div><b id="vs-bal" style="color:var(--up-gold);">0.00</b></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- SUB-PANEL 8B: Gate C Pass/Fail Functional Verification Suite -->
+      <div class="subpanel" data-subpanel="s08-gatec" style="display:none;">
+      <div class="section-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Gate C: Automated Functional Correctness Verification Suite (12 Test Families • Section 4.2.3 &amp; 4.6.5)</h2>
+          </div>
+          <button class="btn btn-green btn-sm" onclick="runGateCVerification()">✓ Run All 12 Correctness Tests</button>
+        </div>
+        <div class="card-body">
+          <div class="data-table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Test ID</th>
+                  <th>Verification Test Family</th>
+                  <th>n</th>
+                  <th>Input Checksum</th>
+                  <th>SerMax Hybrid</th>
+                  <th>Traditional (First)</th>
+                  <th>Median-of-Three</th>
+                  <th>Randomized-Pivot</th>
+                  <th>Multiset &amp; Order Gate</th>
+                </tr>
+              </thead>
+              <tbody id="s08-verify-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 09: COMPARATIVE BENCHMARKING LABORATORY & SORT BATTLE
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s09" style="display:none;">
+      <!-- SUB-PANEL 9A: Benchmark Controls & Sort Battle Leaderboard -->
+      <div class="subpanel active" data-subpanel="s09-leaderboard">
+      <div class="section-card mb-20">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Comparative Benchmarking Laboratory (Sections 4.6.4–4.6.6, Table 4)</h2>
+          </div>
+          <div style="display:flex; gap:8px;">
+            <button class="btn btn-primary btn-sm" id="bench-run-btn" onclick="runSingleBenchmark()">⚡ Run Paired Benchmark</button>
+            <button class="btn btn-gold btn-sm" id="bench-matrix-btn" onclick="runFull12ConditionMatrix()">🚀 Run All 12 Thesis Conditions</button>
+          </div>
+        </div>
+        <div class="card-body">
+          <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:14px;">
+            <div>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Dataset Category</label>
+              <select id="bench-dist" style="width:100%;">
+                <option value="nearly">Nearly Sorted (Ascending + 1% Exchanges)</option>
+                <option value="reverse">Reverse Sorted (Descending)</option>
+                <option value="duplicates">Many Duplicates (10-Value Pool)</option>
+                <option value="random">Random (Uniform Pseudorandom)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Benchmark Array Size (n)</label>
+              <select id="bench-size" style="width:100%;">
+                <option value="500">500 elements (Benchmark Condition 1)</option>
+                <option value="1000" selected>1,000 elements (Benchmark Condition 2)</option>
+                <option value="3000">3,000 elements (Medium Scale)</option>
+                <option value="10000">10,000 elements (Benchmark Condition 3)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Timing Protocol (Sec 4.6.5)</label>
+              <select id="bench-trials" style="width:100%;">
+                <option value="10">10 Warm-ups + 10 Measured Runs (Thesis Spec)</option>
+                <option value="5">5 Warm-ups + 5 Measured Runs (Fast)</option>
+              </select>
+            </div>
+            <div>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Recorded Seed</label>
+              <input type="number" id="bench-seed" value="20261001" style="width:100%;" />
+            </div>
+          </div>
+
+          <!-- Metric Visibility Toggles (Sort Battle style) -->
+          <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:0.74rem; color:var(--text-sub); padding-top:8px; border-top:1px solid var(--border-subtle);">
+            <span style="color:var(--up-gold); font-weight:700;">Visible Leaderboard Columns:</span>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('time', this.checked)" /> Execution Time (Median)</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('cmp', this.checked)" /> Comparisons</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('swp', this.checked)" /> Swaps</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('dep', this.checked)" /> Logical Depth (D_max)</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('bal', this.checked)" /> Partition Balance (B)</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('mem', this.checked)" /> Heap Bytes / Q_max</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sort Battle 4-Algorithm Ranked Leaderboard -->
+      <div class="section-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Sort Battle Leaderboard: Four Compared Algorithms (Table 4 Configuration)</h2>
+          </div>
+          <span class="badge-pass" id="s09-condition-badge">Paired Input Array</span>
+        </div>
+        <div class="card-body">
+          <div class="data-table-wrap">
+            <table class="data-table" id="s09-leaderboard-table">
+              <thead>
+                <tr>
+                  <th>Rank</th>
+                  <th>Sorting Algorithm</th>
+                  <th>Pivot Selection &amp; Scheduler</th>
+                  <th>Status</th>
+                  <th class="col-time">Median Time (ms)</th>
+                  <th class="col-cmp">Comparisons</th>
+                  <th class="col-swp">Swaps</th>
+                  <th class="col-dep">Logical Depth (D_max)</th>
+                  <th class="col-bal">Imbalance (B)</th>
+                  <th class="col-mem">Est. Heap / Q_max</th>
+                  <th>Speedup vs. Trad</th>
+                </tr>
+              </thead>
+              <tbody id="s09-leaderboard-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- SUB-PANEL 9B: Benchmark History Log -->
+      <div class="subpanel" data-subpanel="s09-history" style="display:none;">
+      <div class="section-card">
+        <div class="card-header">
+          <div class="card-header-left">
+            <div class="macos-dots">
+              <span class="mac-dot red" onclick="resetCard(this)"></span>
+              <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+              <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+            </div>
+            <h2>Benchmark Execution History Log</h2>
+          </div>
+          <button class="btn btn-ghost btn-sm" onclick="showScreen('s10')">View Statistical Analysis &amp; Heatmaps →</button>
+        </div>
+        <div class="card-body">
+          <div class="data-table-wrap" style="max-height:330px; overflow-y:auto;">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Run #</th>
+                  <th>Category</th>
+                  <th>Size (n)</th>
+                  <th>SerMax Time</th>
+                  <th>Traditional Time</th>
+                  <th>Median-of-3 Time</th>
+                  <th>Random-Pivot Time</th>
+                  <th>Speedup (Trad / SerMax)</th>
+                  <th>Swap Reduction</th>
+                  <th>Balance B (SerMax vs Trad)</th>
+                </tr>
+              </thead>
+              <tbody id="s09-history-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
+
+    <!-- ════════════════════════════════════════════════════════════════════════
+         SCREEN 10: RESULTS, STATISTICAL ANALYSIS & REPORTS
+         ════════════════════════════════════════════════════════════════════════ -->
+    <section class="view" id="view-s10" style="display:none;">
+      <!-- Top 5 Performance Delta KPIs -->
+      <div class="kpi-grid-5">
+        <div class="kpi-card">
+          <div class="kpi-label">Speedup vs. Traditional (Eq. 23)</div>
+          <div class="kpi-val" id="s10-kpi-speedup">—</div>
+          <div class="kpi-sub">T_baseline / T_SerMax</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Comparison Reduction</div>
+          <div class="kpi-val" id="s10-kpi-cmp">—</div>
+          <div class="kpi-sub">SerMax vs. Primary Baseline</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Swap Reduction</div>
+          <div class="kpi-val" id="s10-kpi-swp">—</div>
+          <div class="kpi-sub">Element write exchanges</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Partition Balance B (Eq. 22)</div>
+          <div class="kpi-val" id="s10-kpi-bal">—</div>
+          <div class="kpi-sub">|n_L - n_R| / (n_L + n_R)</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-label">Logical Partition Depth</div>
+          <div class="kpi-val" id="s10-kpi-depth">—</div>
+          <div class="kpi-sub">Iterative PQ vs. Recursion</div>
+        </div>
+      </div>
+
+      <!-- SUB-PANEL 10A: Multi-Metric Charts + Improvement Heatmap Matrix -->
+      <div class="subpanel active" data-subpanel="s10-charts">
+      <div class="grid-2">
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Comparative Performance Visualization</h2>
+            </div>
+            <div class="pill-tabs">
+              <button class="pill-tab active" onclick="switchS10Chart('time', this)">Time (ms)</button>
+              <button class="pill-tab" onclick="switchS10Chart('comparisons', this)">Comparisons</button>
+              <button class="pill-tab" onclick="switchS10Chart('swaps', this)">Swaps</button>
+              <button class="pill-tab" onclick="switchS10Chart('depth', this)">Depth</button>
+              <button class="pill-tab" onclick="switchS10Chart('balance', this)">Balance B</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div id="s10-chart-area" style="height:260px;"></div>
+          </div>
+        </div>
+
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>12-Condition Speedup &amp; Swap Reduction Heatmap Matrix</h2>
+            </div>
+            <button class="btn btn-gold btn-sm" onclick="runFull12ConditionMatrix()">↻ Refresh 12-Condition Matrix</button>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap">
+              <table class="data-table" id="s10-heatmap-table">
+                <thead>
+                  <tr>
+                    <th>Dataset Category</th>
+                    <th>n = 500</th>
+                    <th>n = 1,000</th>
+                    <th>n = 10,000 (or Scaled)</th>
+                    <th>Mean Swap Reduction</th>
+                  </tr>
+                </thead>
+                <tbody id="s10-heatmap-tbody"></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <!-- SUB-PANEL 10B: Inferential Statistical Analysis + Deliverables Export -->
+      <div class="subpanel" data-subpanel="s10-stats" style="display:none;">
+      <div class="grid-2">
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Inferential Statistical Analysis (Section 4.6.7: Wilcoxon + Holm + Bootstrap CI)</h2>
+            </div>
+            <span class="badge-pass">α = 0.05 • 2,000 Resamples</span>
+          </div>
+          <div class="card-body">
+            <div class="data-table-wrap">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Paired Baseline Comparison</th>
+                    <th>Speedup Ratio</th>
+                    <th>95% Bootstrap CI</th>
+                    <th>Wilcoxon z-stat</th>
+                    <th>Raw p-value</th>
+                    <th>Holm Adjusted p</th>
+                    <th>Conclusion (α=0.05)</th>
+                  </tr>
+                </thead>
+                <tbody id="s10-stats-tbody"></tbody>
+              </table>
+            </div>
+            <div class="math-card" style="margin-top:12px; font-size:0.73rem;">
+              <b style="color:var(--up-gold);">Thesis Interpretation Rule (Section 4.6.7):</b> Statistical significance is distinguished from practical computational importance. Lower prediction error (MAE/RMSE) or lower partition imbalance (<i>B</i>) does not automatically guarantee faster execution time because runtime feature extraction, 36-term polynomial evaluation, and priority queue maintenance introduce measurable computational overhead on small partitions.
+            </div>
+          </div>
+        </div>
+
+        <!-- Export & Report Generation Center -->
+        <div class="section-card">
+          <div class="card-header">
+            <div class="card-header-left">
+              <div class="macos-dots">
+                <span class="mac-dot red" onclick="resetCard(this)"></span>
+                <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
+                <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
+              </div>
+              <h2>Research Deliverables &amp; Export Center</h2>
+            </div>
+            <span class="badge-warn">Reproducible Artifacts</span>
+          </div>
+          <div class="card-body">
+            <p style="font-size:0.78rem; color:var(--text-sub); margin-bottom:14px; line-height:1.55;">
+              Export all empirical benchmark records, frozen 36-coefficient polynomial regression parameters, Java reference source code, and formatted statistical reports for Chapter 4 &amp; Chapter 5 documentation.
+            </p>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
+              <button class="btn btn-primary" onclick="exportBenchmarkCSV()">📊 Export Benchmark Records (CSV)</button>
+              <button class="btn btn-gold" onclick="exportFrozenModelJSON()">🧠 Export Frozen 36β Model (JSON)</button>
+              <button class="btn btn-green" onclick="openJavaModelModal()">☕ View/Download Java Implementation</button>
+              <button class="btn btn-ghost" onclick="window.print()">🖨️ Print / Save PDF Research Report</button>
+            </div>
+            <div id="s10-exec-summary" class="math-card"></div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </section>
 
   </main>
 </div>
 
+<!-- ════════════════════════════════════════════════════════════════════════════
+     6. ENLARGEABLE LOGO QUICKLOOK LIGHTBOX MODAL
+     ════════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="logo-lightbox-modal" onclick="if(event.target===this) closeLogoLightbox()">
+  <div class="lightbox-window">
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="macos-dots">
+          <span class="mac-dot red" onclick="closeLogoLightbox()" title="Close (Esc)"></span>
+          <span class="mac-dot yellow" onclick="zoomLightbox(1)" title="Reset Zoom"></span>
+          <span class="mac-dot green" onclick="zoomLightbox(1.6)" title="Zoom In"></span>
+        </div>
+        <h2 id="lightbox-title">SerMax Hybrid QuickSort — Official Logo</h2>
+      </div>
+      <div style="display:flex; gap:6px; align-items:center;">
+        <button class="btn btn-ghost btn-sm" onclick="zoomLightbox(1)">100%</button>
+        <button class="btn btn-ghost btn-sm" onclick="zoomLightbox(1.4)">140%</button>
+        <button class="btn btn-ghost btn-sm" onclick="zoomLightbox(1.85)">185%</button>
+        <button class="btn btn-primary btn-sm" onclick="closeLogoLightbox()">✕ Close</button>
+      </div>
+    </div>
+    <div class="lightbox-stage">
+      <img id="lightbox-img" src="sermax-logo.png?v=4" alt="Enlarged Official Logo" onclick="toggleLightboxZoom()" style="cursor:zoom-in;" />
+    </div>
+    <div style="padding:10px 18px; text-align:center; font-size:0.76rem; color:var(--text-sub); border-top:1px solid var(--border-subtle);" id="lightbox-desc">
+      Official Emblem of SerMax Hybrid QuickSort — Click image or zoom buttons to inspect in high resolution.
+    </div>
+    <div class="lightbox-thumbs" id="lightbox-thumbs">
+      <button class="lightbox-thumb active" onclick="openLogoLightbox(0)">✦ SerMax Official Logo</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(1)">🏛️ UP System Seal</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(2)">🎓 UP Cebu Seal</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(3)">🔬 College of Science</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(4)">💻 Dept. of Computer Science</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(5)">👤 Maxil S. Urocay</button>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════════
+     7. JAVA IMPLEMENTATION & FROZEN MODEL CODE GENERATOR MODAL
+     ════════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="java-code-modal" onclick="if(event.target===this) closeJavaModelModal()">
+  <div class="lightbox-window" style="max-width:860px;">
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="macos-dots">
+          <span class="mac-dot red" onclick="closeJavaModelModal()"></span>
+          <span class="mac-dot yellow" onclick="closeJavaModelModal()"></span>
+          <span class="mac-dot green" onclick="copyJavaCode()"></span>
+        </div>
+        <h2>Generated Java Research Implementation (SerMaxPivotModel.java)</h2>
+      </div>
+      <div style="display:flex; gap:6px;">
+        <button class="btn btn-gold btn-sm" onclick="copyJavaCode()">📋 Copy Java Code</button>
+        <button class="btn btn-primary btn-sm" onclick="downloadJavaCode()">↓ Download .java</button>
+        <button class="btn btn-ghost btn-sm" onclick="closeJavaModelModal()">✕ Close</button>
+      </div>
+    </div>
+    <div class="card-body">
+      <pre id="java-code-preview" class="code-tracer" style="max-height:420px; overflow:auto; padding:14px; color:#f8fafc; font-size:0.72rem; white-space:pre;"></pre>
+    </div>
+  </div>
+</div>
+
+<!-- ════════════════════════════════════════════════════════════════════════════
+     8. macOS SPOTLIGHT COMMAND PALETTE (⌘K / Ctrl+K)
+     ════════════════════════════════════════════════════════════════════════════ -->
+<div class="modal-backdrop" id="spotlight-modal" onclick="if(event.target===this) closeSpotlightModal()">
+  <div class="lightbox-window" style="max-width:540px;">
+    <div class="card-header">
+      <div class="card-header-left">
+        <div class="macos-dots">
+          <span class="mac-dot red" onclick="closeSpotlightModal()"></span>
+        </div>
+        <h2>⌘K Spotlight Command Palette</h2>
+      </div>
+      <span class="mono" style="font-size:0.68rem; color:var(--text-dim);">ESC to close</span>
+    </div>
+    <div class="card-body">
+      <input type="text" id="spotlight-input" placeholder="Jump to screen, run verification, train model, or enlarge logo..." style="width:100%; margin-bottom:12px; font-size:0.86rem;" oninput="filterSpotlight(this.value)" />
+      <div id="spotlight-list" style="display:flex; flex-direction:column; gap:6px; max-height:300px; overflow-y:auto;"></div>
+    </div>
+  </div>
+</div>
+
 <div id="toast" class="toast" style="display:none;"></div>
 
-<link rel="stylesheet" href="style.css" />
-<script src="app.js"></script>
+<script src="algorithms.js?v=11"></script>
+<script src="app.js?v=11"></script>
 </body>
 </html>
