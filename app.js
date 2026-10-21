@@ -94,8 +94,8 @@ const SCREEN_META = {
     title: 'Synthetic Dataset Generator and Data Splitter',
     sub: 'Section 4.6.1 – 4.6.3 • 4 categories • Sizes: 500, 1,000, 10,000 (5, 25, 50 for verification/visualization) • 70:15:15 split',
     subtabs: [
-      { id: 's02-generator', label: '🎲 Dataset Generator & 70:15:15 Data Splitter' },
-      { id: 's02-registry',  label: '📊 Example Array Profiles & Source Registry' }
+      { id: 's02-generator', label: 'Dataset Generator & 70:15:15 Data Splitter' },
+      { id: 's02-registry',  label: 'Example Array Profiles & Source Registry' }
     ]
   },
   s03: {
@@ -105,8 +105,8 @@ const SCREEN_META = {
     title: 'Seven-Predictor Extractor',
     sub: 'Section 4.3 • Extract (n, x_min, x_max, μ, σ, γ, d) & minimum-imbalance training targets (n ≤ 33 and n > 33)',
     subtabs: [
-      { id: 's03-predictors', label: '🧮 Seven Predictor Variables (1)–(7)' },
-      { id: 's03-targets',    label: '🎯 Minimum-Imbalance Pivot Target (n ≤ 33 & n > 33)' }
+      { id: 's03-predictors', label: 'Seven Predictor Variables (1)–(7)' },
+      { id: 's03-targets',    label: 'Minimum-Imbalance Pivot Target (n ≤ 33 & n > 33)' }
     ]
   },
   s04: {
@@ -116,8 +116,8 @@ const SCREEN_META = {
     title: 'Polynomial Regression Model Studio',
     sub: 'Section 4.3 • 2nd-degree polynomial model (36 coefficients) • Train via OLS • Validate MAE & RMSE vs. midpoint heuristic',
     subtabs: [
-      { id: 's04-training',     label: '📈 OLS Training, MAE/RMSE & Midpoint Comparison' },
-      { id: 's04-coefficients', label: 'Σ Standardization Scaler & 36 Coefficients (β₀…β₃₅)' }
+      { id: 's04-training',     label: 'OLS Training, MAE/RMSE & Midpoint Comparison' },
+      { id: 's04-coefficients', label: 'Standardization Scaler & 36 Coefficients (β₀…β₃₅)' }
     ]
   },
   s05: {
@@ -143,8 +143,8 @@ const SCREEN_META = {
     title: 'Priority Queue Management',
     sub: 'Sections 4.4 – 4.5 • Prioritize larger subproblems, FIFO tie-breaking for equal sizes, iterative processing, track max occupancy & logical depth',
     subtabs: [
-      { id: 's07-heap',      label: '🌳 Priority Queue (Max-Heap) State & Visualizer' },
-      { id: 's07-lifecycle', label: '📋 Iterative Subproblem Processing Log' }
+      { id: 's07-heap',      label: 'Priority Queue (Max-Heap) State & Visualizer' },
+      { id: 's07-lifecycle', label: 'Iterative Subproblem Processing Log' }
     ]
   },
   s08: {
@@ -154,8 +154,8 @@ const SCREEN_META = {
     title: 'Algorithm Implementation and Verification',
     sub: 'Section 4.2 • SerMax Hybrid + 3 baseline algorithms (Traditional, Median-of-Three, Randomized-Pivot) • Identical input arrays & sorted output check',
     subtabs: [
-      { id: 's08-visualizer', label: '⚙️ Step-by-Step Execution & Identical Input Comparison' },
-      { id: 's08-gatec',      label: '✓ Verify Correctness (Sorted Output Across All 4 Algorithms)' }
+      { id: 's08-visualizer', label: 'Step-by-Step Execution & Identical Input Comparison' },
+      { id: 's08-gatec',      label: 'Verify Correctness (Sorted Output Across All 4 Algorithms)' }
     ]
   },
   s09: {
@@ -165,8 +165,8 @@ const SCREEN_META = {
     title: 'Comparative Benchmarking',
     sub: 'Sections 4.6.4 – 4.6.6 • 12 benchmark conditions (4 categories × 3 sizes) • 10 warm-up + 10 measured runs • 6 Primary + 1 Supplementary Metrics',
     subtabs: [
-      { id: 's09-leaderboard', label: '⏱️ Comparative Benchmarking & Recorded Metrics' },
-      { id: 's09-history',     label: '📜 Recorded Benchmark Condition History' }
+      { id: 's09-leaderboard', label: 'Comparative Benchmarking & Recorded Metrics' },
+      { id: 's09-history',     label: 'Recorded Benchmark Condition History' }
     ]
   },
   s10: {
@@ -176,8 +176,8 @@ const SCREEN_META = {
     title: 'Statistical Analysis and Results Export',
     sub: 'Section 4.6.7 • Descriptive summaries • Wilcoxon signed-rank & paired sign test • Holm adjustment (36 comparisons) • 95% CI (2,000 bootstrap) • CSV/JSON exports',
     subtabs: [
-      { id: 's10-charts', label: '📊 Descriptive Summaries & 12-Condition Matrix' },
-      { id: 's10-stats',  label: '🔬 Paired Statistical Tests (Wilcoxon/Sign/Holm/CI) & Export' }
+      { id: 's10-charts', label: 'Descriptive Summaries & 12-Condition Matrix' },
+      { id: 's10-stats',  label: 'Paired Statistical Tests (Wilcoxon/Sign/Holm/CI) & Export' }
     ]
   }
 };
@@ -451,7 +451,7 @@ function runFullQuickExperiment() {
 
   const box = document.getElementById('s01-quick-results');
   const items = [
-    { key: 'sermax', label: '✦ SerMax Hybrid (Proposed)', data: res.sermax, color: 'var(--up-gold)' },
+    { key: 'sermax', label: 'SerMax Hybrid (Proposed)', data: res.sermax, color: 'var(--up-gold)' },
     { key: 'trad', label: 'Traditional (First-Pivot)', data: res.trad, color: 'var(--trad)' },
     { key: 'median3', label: 'Median-of-Three', data: res.median3, color: '#38bdf8' },
     { key: 'random', label: 'Randomized-Pivot', data: res.random, color: '#a78bfa' }
@@ -753,7 +753,7 @@ function runFormulaSimulator() {
         <td class="mono"><b>${c.imbalance}</b></td>
         <td class="mono">${c.distToMid.toFixed(1)}</td>
         <td class="mono">${c.normalizedPos.toFixed(4)}</td>
-        <td>${isBest ? '<span class="badge-pass">★ Minimum-Imbalance Target (Eq. 6)</span>' : '<span style="color:var(--text-dim);">Evaluated</span>'}</td>
+        <td>${isBest ? '<span class="badge-pass">Minimum-Imbalance Target (Eq. 6)</span>' : '<span style="color:var(--text-dim);">Evaluated</span>'}</td>
       </tr>
     `;
   }).join('');

@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="sermax-logo.png?v=9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=12" />
+  <link rel="stylesheet" href="style.css?v=13" />
 </head>
 <body>
 
@@ -149,7 +149,7 @@
       <!-- 2. SYSTEM FUNCTIONALITY FRAMEWORK (ALIGNED WITH CHAPTER 4, SECTIONS 4.2–4.6: PHASES 1–5 & MODULES 1–9) -->
       <div class="launchpad-section-header">
         <div>
-          <h3 class="launchpad-title">✦ System Functionality Framework — Aligned with Chapter 4 (Sections 4.2–4.6)</h3>
+          <h3 class="launchpad-title">System Functionality Framework — Aligned with Chapter 4 (Sections 4.2–4.6)</h3>
           <p class="launchpad-sub">Organized into 5 Research Phases and 9 Modules strictly limited to the approved methodology. Hover and click any module to open its simulator.</p>
         </div>
       </div>
@@ -163,7 +163,7 @@
             <span class="lc-tag">Sec 4.6.1 – 4.6.3</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">🎲</div>
+            <div class="lc-icon mono">M1</div>
             <div>
               <h4 class="lc-title">Synthetic Dataset Generator &amp; Data Splitter</h4>
               <p class="lc-desc">Generate Random, Nearly Sorted, Reverse Sorted, and Many Duplicates arrays • Benchmark sizes: 500, 1,000, 10,000 (5, 25, 50 for verification/visualization only) • 70:15:15 split (140 Train • 30 Val • 30 Test).</p>
@@ -183,7 +183,7 @@
             <span class="lc-tag">Section 4.3 • Eqs. (1)–(4)</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">🧮</div>
+            <div class="lc-icon mono">M2</div>
             <div>
               <h4 class="lc-title">Seven-Predictor Extractor</h4>
               <p class="lc-desc">Extract seven predictor variables from the active sorting subproblem: (1) Partition size n, (2) Min x_min, (3) Max x_max, (4) Mean μ, (5) Std. Dev. σ, (6) Skewness γ, and (7) Disorder ratio d.</p>
@@ -203,7 +203,7 @@
             <span class="lc-tag">Section 4.3 • Eqs. (5)–(9), (13)–(14)</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">📈</div>
+            <div class="lc-icon mono">M3</div>
             <div>
               <h4 class="lc-title">Polynomial Regression Model Studio</h4>
               <p class="lc-desc">Minimum-imbalance target (all positions for n ≤ 33; up to 33 positions for n &gt; 33) • 2nd-degree polynomial model (36 coefficients) • Train via OLS • Validate MAE &amp; RMSE vs. midpoint heuristic • Save model for runtime use.</p>
@@ -223,7 +223,7 @@
             <span class="lc-tag">Sections 4.4–4.5 • Eqs. (10)–(12)</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">🎯</div>
+            <div class="lc-icon mono">M4</div>
             <div>
               <h4 class="lc-title">Runtime Pivot Estimator</h4>
               <p class="lc-desc">Use trained model to predict pivot position: normalize and constrain to [0, 1], convert to relative and absolute index p_abs, validate index bounds, and apply midpoint fallback when necessary.</p>
@@ -243,7 +243,7 @@
             <span class="lc-tag">Sections 4.4–4.5 • Eqs. (15)–(16)</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">⇄</div>
+            <div class="lc-icon mono">M5</div>
             <div>
               <h4 class="lc-title">Bidirectional Partitioning</h4>
               <p class="lc-desc">Initialize boundaries and opposing pointers (i, j), scan from two directions around v = A[p_abs], compare, swap, and advance pointers, handle repeated values and edge cases, and generate left/right subproblems.</p>
@@ -263,7 +263,7 @@
             <span class="lc-tag">Sections 4.4–4.5 • Eqs. (17)–(21)</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">🌳</div>
+            <div class="lc-icon mono">M6</div>
             <div>
               <h4 class="lc-title">Priority Queue Management</h4>
               <p class="lc-desc">Represent subproblems (boundaries, size, depth, sequence), prioritize larger subproblems first, apply FIFO tie-breaking for equal sizes, iteratively process subproblems (no recursion), and track max queue occupancy &amp; logical depth.</p>
@@ -283,7 +283,7 @@
             <span class="lc-tag">Section 4.2</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">⚙️</div>
+            <div class="lc-icon mono">M7</div>
             <div>
               <h4 class="lc-title">Algorithm Implementation &amp; Verification</h4>
               <p class="lc-desc">Implement SerMax Hybrid QuickSort and three baseline algorithms (Traditional First-Element, Median-of-Three, Randomized-Pivot QuickSort) • Use identical input arrays for all algorithms • Verify correctness (sorted output).</p>
@@ -303,7 +303,7 @@
             <span class="lc-tag">Sections 4.6.4 – 4.6.6</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">⏱️</div>
+            <div class="lc-icon mono">M8</div>
             <div>
               <h4 class="lc-title">Comparative Benchmarking</h4>
               <p class="lc-desc">Execute 12 benchmark conditions (4 categories × 3 sizes: 500, 1,000, 10,000) • 10 warm-up runs + 10 measured runs per test array • Record 6 Primary Metrics + 1 Supplementary Metric (Max Priority Queue Occupancy).</p>
@@ -323,7 +323,7 @@
             <span class="lc-tag">Section 4.6.7 • Eqs. (22)–(23)</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">📊</div>
+            <div class="lc-icon mono">M9</div>
             <div>
               <h4 class="lc-title">Statistical Analysis &amp; Results Export</h4>
               <p class="lc-desc">Generate descriptive summaries for all metrics • Conduct paired comparisons (Wilcoxon signed-rank test &amp; paired sign test alternative) • Holm adjustment for 36 comparisons • 95% CI via 2,000 paired bootstrap resamples • Export CSV/JSON reports.</p>
@@ -339,7 +339,7 @@
       <!-- 3. ABOUT THE RESEARCHER (CURATED COMPUTER SCIENCE & ALGORITHMIC RESEARCH PROFILE) -->
       <div class="launchpad-section-header" id="researcher-profile-section" style="margin-top:28px;">
         <div>
-          <h3 class="launchpad-title">✦ About the Researcher &amp; Academic Profile</h3>
+          <h3 class="launchpad-title">About the Researcher &amp; Academic Profile</h3>
           <p class="launchpad-sub">Computer Science background, algorithmic &amp; data science research portfolio, and peer-review credentials relevant to this study.</p>
         </div>
       </div>
@@ -369,19 +369,19 @@
               <span class="sc-ico">iD</span><span>ORCID</span>
             </a>
             <a href="https://scholar.google.com/citations?user=CQy-SaMAAAAJ&amp;hl=en" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="Google Scholar Citations Profile">
-              <span class="sc-ico">🎓</span><span>Google Scholar</span>
+              <span class="sc-ico">GS</span><span>Google Scholar</span>
             </a>
             <a href="https://www.webofscience.com/wos/author/record/QYQ-9861-2026" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="Web of Science ResearcherID: QYQ-9861-2026">
-              <span class="sc-ico">🌐</span><span>Web of Science</span>
+              <span class="sc-ico">WoS</span><span>Web of Science</span>
             </a>
             <a href="https://github.com/urocaymaxil-dotcom" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="GitHub Research Repositories">
-              <span class="sc-ico">💻</span><span>GitHub</span>
+              <span class="sc-ico">GH</span><span>GitHub</span>
             </a>
             <a href="https://www.linkedin.com/in/maxilurocay143/" target="_blank" rel="noopener noreferrer" class="scholar-chip" title="LinkedIn Academic &amp; Professional Profile">
               <span class="sc-ico">in</span><span>LinkedIn</span>
             </a>
             <a href="mailto:urocaymaxil@gmail.com" class="scholar-chip" title="Email: urocaymaxil@gmail.com">
-              <span class="sc-ico">✉️</span><span>Email</span>
+              <span class="sc-ico">@</span><span>Email</span>
             </a>
           </div>
         </div>
@@ -389,9 +389,9 @@
         <!-- Right Interactive Tabbed Academic Dossier -->
         <div class="researcher-dossier-col">
           <div class="researcher-tabs-bar">
-            <button class="res-tab-btn active" onclick="switchResearcherTab('bio', this)">🎓 CS Education &amp; Instruction</button>
-            <button class="res-tab-btn" onclick="switchResearcherTab('research', this)">🔬 Computing &amp; AI Researches (8)</button>
-            <button class="res-tab-btn" onclick="switchResearcherTab('credentials', this)">🏅 Peer Review &amp; Data Science</button>
+            <button class="res-tab-btn active" onclick="switchResearcherTab('bio', this)">CS Education &amp; Instruction</button>
+            <button class="res-tab-btn" onclick="switchResearcherTab('research', this)">Computing &amp; AI Researches (8)</button>
+            <button class="res-tab-btn" onclick="switchResearcherTab('credentials', this)">Peer Review &amp; Data Science</button>
           </div>
 
           <!-- Tab 1: CS Education & Relevant Instruction -->
@@ -525,7 +525,7 @@
           <div class="res-tab-pane" id="res-pane-credentials" style="display:none;">
             <div class="res-cred-grid">
               <div class="res-cred-card">
-                <div class="res-cred-header">📖 Journal Peer Reviewer Appointments</div>
+                <div class="res-cred-header">Journal Peer Reviewer Appointments</div>
                 <ul class="res-cred-list">
                   <li><b>Peer Reviewer for Computing, Data Science, and Algorithms</b> — <i>International Journal of Research on Multidisciplinary Studies (IJROMS)</i> (Appointed August 2026)</li>
                   <li><b>Peer Reviewer</b> — <i>ASCEND: Journal of Interdisciplinary Scholarship and Innovation</i> (Appointed October 2026)</li>
@@ -533,7 +533,7 @@
               </div>
 
               <div class="res-cred-card">
-                <div class="res-cred-header">🏛️ Scientific Societies &amp; Statistical Practice</div>
+                <div class="res-cred-header">Scientific Societies &amp; Statistical Practice</div>
                 <ul class="res-cred-list">
                   <li><b>Computing Society of the Philippines (CSP)</b> — Active Member (2025 – 2026) &amp; Participant, <i>25th Philippine Computing Science Congress (PCSC)</i></li>
                   <li><b>International Society of Transdisciplinary Researchers, Educators, and Leaders (ISTREL)</b> — Member (2026 – 2027)</li>
@@ -542,7 +542,7 @@
               </div>
 
               <div class="res-cred-card" style="grid-column: 1 / -1;">
-                <div class="res-cred-header">🧬 Relevant Data Science, Statistical Computing &amp; AI Training</div>
+                <div class="res-cred-header">Relevant Data Science, Statistical Computing &amp; AI Training</div>
                 <div class="res-courses-tags" style="margin-top:6px;">
                   <span class="res-course-pill">Data Science &amp; AI • Matsuo Lab, Univ. of Tokyo (2026)</span>
                   <span class="res-course-pill">Intro to Data Science with R • UP SERDAC (June 2026)</span>
@@ -619,8 +619,8 @@
             </div>
 
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px;">
-              <button class="btn btn-primary" onclick="generateFromScreen02()">🎲 Generate &amp; Register Array</button>
-              <button class="btn btn-gold" onclick="generateBatchRegistry()">📦 Build 12-Condition Split Registry</button>
+              <button class="btn btn-primary" onclick="generateFromScreen02()">Generate &amp; Register Array</button>
+              <button class="btn btn-gold" onclick="generateBatchRegistry()">Build 12-Condition Split Registry</button>
               <button class="btn btn-ghost" onclick="exportCurrentDatasetCSV()">↓ Export Array CSV</button>
             </div>
 
@@ -791,7 +791,7 @@
           <div style="display:flex; gap:10px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
             <label style="font-size:0.78rem; font-weight:700; color:var(--up-gold);">Input Subproblem A[low..high]:</label>
             <input type="text" id="s03-array-input" value="6, 21, 3, 5, 1" style="flex:1; min-width:240px; font-family:'JetBrains Mono',monospace;" />
-            <button class="btn btn-primary" onclick="runFormulaSimulator()">🧮 Compute 7 Predictors &amp; 33-Candidate Target</button>
+            <button class="btn btn-primary" onclick="runFormulaSimulator()">Compute 7 Predictors &amp; 33-Candidate Target</button>
           </div>
 
           <!-- Indexed Array Cells -->
@@ -938,7 +938,7 @@
               </div>
               <h2>Table 2: Second-Degree Multivariate Polynomial Model (Eqs. 8–9)</h2>
             </div>
-            <button class="btn btn-gold btn-sm" onclick="retrainModelInteractive()">⚡ Train &amp; Validate OLS Model</button>
+            <button class="btn btn-gold btn-sm" onclick="retrainModelInteractive()">Train &amp; Validate OLS Model</button>
           </div>
           <div class="card-body">
             <div class="math-card mb-16">
@@ -961,7 +961,7 @@
             </div>
             <div id="s04-training-log" class="code-tracer" style="max-height:135px; overflow-y:auto; padding:10px 14px; font-size:0.7rem;"></div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
-              <button class="btn btn-primary btn-sm" onclick="exportFrozenModelJSON()">💾 Save Trained Model for Runtime Use (JSON)</button>
+              <button class="btn btn-primary btn-sm" onclick="exportFrozenModelJSON()">Save Trained Model for Runtime Use (JSON)</button>
             </div>
           </div>
         </div>
@@ -1089,7 +1089,7 @@
             <input type="number" id="s05-low" value="0" min="0" style="width:70px;" />
             <label style="font-size:0.74rem; color:var(--text-dim);">high:</label>
             <input type="number" id="s05-high" value="4" min="1" style="width:70px;" />
-            <button class="btn btn-primary" onclick="runScreen05PivotEstimation()">🎯 Estimate Pivot Index</button>
+            <button class="btn btn-primary" onclick="runScreen05PivotEstimation()">Estimate Pivot Index</button>
             <button class="btn btn-ghost btn-sm" onclick="sendScreen05ToPartitioner()">Pass to Screen 06 Partitioner →</button>
           </div>
 
@@ -1397,7 +1397,7 @@
             <button class="btn btn-gold btn-sm" id="vis-play-btn" onclick="togglePlay()">▶ Play</button>
             <button class="btn btn-ghost btn-sm" id="vis-step-btn" onclick="stepOnce()">⏭ Step</button>
             <button class="btn btn-ghost btn-sm" onclick="resetVis()">↺ Reset</button>
-            <button class="btn btn-primary btn-sm" onclick="generateForVis()">🎲 New Identical Input Array</button>
+            <button class="btn btn-primary btn-sm" onclick="generateForVis()">New Identical Input Array</button>
           </div>
         </div>
         <div class="card-body">
@@ -1492,7 +1492,7 @@
                 <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
                 <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
               </div>
-              <h2 style="color:var(--up-gold);">✦ SerMax Hybrid QuickSort (Proposed)</h2>
+              <h2 style="color:var(--up-gold);">SerMax Hybrid QuickSort (Proposed)</h2>
             </div>
             <span class="badge-pass">36-Term Regression • Largest-First PQ</span>
           </div>
@@ -1565,8 +1565,8 @@
             <h2>Module 8: Comparative Benchmarking (Sections 4.6.4–4.6.6, Table 4)</h2>
           </div>
           <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" id="bench-run-btn" onclick="runSingleBenchmark()">⚡ Run Paired Benchmark Condition</button>
-            <button class="btn btn-gold btn-sm" id="bench-matrix-btn" onclick="runFull12ConditionMatrix()">🚀 Execute All 12 Benchmark Conditions</button>
+            <button class="btn btn-primary btn-sm" id="bench-run-btn" onclick="runSingleBenchmark()">Run Paired Benchmark Condition</button>
+            <button class="btn btn-gold btn-sm" id="bench-matrix-btn" onclick="runFull12ConditionMatrix()">Execute All 12 Benchmark Conditions</button>
           </div>
         </div>
         <div class="card-body">
@@ -1837,9 +1837,9 @@
               Generate and export descriptive summary tables, statistical comparison reports (CSV), and trained 36-coefficient polynomial regression parameters (JSON) for Chapter 4 &amp; Chapter 5 manuscript results.
             </p>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
-              <button class="btn btn-primary" onclick="exportBenchmarkCSV()">📊 Export Benchmark &amp; Stats Table (CSV)</button>
-              <button class="btn btn-gold" onclick="exportFrozenModelJSON()">💾 Export Trained 36β Model (JSON)</button>
-              <button class="btn btn-ghost" style="grid-column: 1 / -1;" onclick="window.print()">🖨️ Print / Save Formatted Research Report (PDF)</button>
+              <button class="btn btn-primary" onclick="exportBenchmarkCSV()">Export Benchmark &amp; Stats Table (CSV)</button>
+              <button class="btn btn-gold" onclick="exportFrozenModelJSON()">Export Trained 36β Model (JSON)</button>
+              <button class="btn btn-ghost" style="grid-column: 1 / -1;" onclick="window.print()">Print / Save Formatted Research Report (PDF)</button>
             </div>
             <div id="s10-exec-summary" class="math-card"></div>
           </div>
@@ -1879,19 +1879,19 @@
       Official Emblem of SerMax Hybrid QuickSort — Click image or zoom buttons to inspect in high resolution.
     </div>
     <div class="lightbox-thumbs" id="lightbox-thumbs">
-      <button class="lightbox-thumb active" onclick="openLogoLightbox(0)">✦ SerMax Official Logo</button>
-      <button class="lightbox-thumb" onclick="openLogoLightbox(1)">🏛️ UP System Seal</button>
-      <button class="lightbox-thumb" onclick="openLogoLightbox(2)">🎓 UP Cebu Seal</button>
-      <button class="lightbox-thumb" onclick="openLogoLightbox(3)">🔬 College of Science</button>
-      <button class="lightbox-thumb" onclick="openLogoLightbox(4)">💻 Dept. of Computer Science</button>
-      <button class="lightbox-thumb" onclick="openLogoLightbox(5)">👤 Maxil S. Urocay</button>
+      <button class="lightbox-thumb active" onclick="openLogoLightbox(0)">SerMax Official Logo</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(1)">UP System Seal</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(2)">UP Cebu Seal</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(3)">College of Science</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(4)">Dept. of Computer Science</button>
+      <button class="lightbox-thumb" onclick="openLogoLightbox(5)">Maxil S. Urocay</button>
     </div>
   </div>
 </div>
 
 <div id="toast" class="toast" style="display:none;"></div>
 
-<script src="algorithms.js?v=12"></script>
-<script src="app.js?v=12"></script>
+<script src="algorithms.js?v=13"></script>
+<script src="app.js?v=13"></script>
 </body>
 </html>
