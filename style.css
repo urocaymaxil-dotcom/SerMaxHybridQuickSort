@@ -2025,3 +2025,211 @@ input[type="range"] {
     grid-template-columns: 1fr;
   }
 }
+
+/* ─── OPTIONAL WEBSITE PRESENTATION FEATURE: SERMAX THEME SONG PLAYER ─── */
+.anthem-player-card {
+  margin-top: 22px;
+  background: linear-gradient(145deg, rgba(46, 10, 18, 0.92), rgba(22, 5, 10, 0.96));
+  border: 1px solid rgba(242, 169, 0, 0.34);
+  border-radius: 16px;
+  padding: 16px 20px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.42);
+}
+
+.anthem-top-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  flex-wrap: wrap;
+}
+
+.anthem-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 280px;
+  flex: 1.1;
+}
+
+.anthem-disc {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--up-gold);
+  box-shadow: 0 0 14px rgba(242, 169, 0, 0.35);
+  transition: transform 0.3s ease;
+  flex-shrink: 0;
+}
+
+.anthem-disc.spinning {
+  animation: anthemSpin 9s linear infinite;
+}
+
+@keyframes anthemSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.anthem-badge-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 4px;
+}
+
+.anthem-opt-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(242, 169, 0, 0.14);
+  border: 1px solid rgba(242, 169, 0, 0.4);
+  color: var(--up-gold);
+}
+
+.anthem-isolation-badge {
+  display: inline-block;
+  font-size: 0.62rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(16, 185, 129, 0.14);
+  border: 1px solid rgba(16, 185, 129, 0.36);
+  color: #34d399;
+}
+
+.anthem-isolation-badge.paused-guard {
+  background: rgba(245, 158, 11, 0.18);
+  border-color: rgba(245, 158, 11, 0.5);
+  color: #fbbf24;
+}
+
+.anthem-title {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 2px;
+}
+
+.anthem-sub {
+  font-size: 0.72rem;
+  color: var(--text-sub);
+  margin: 0;
+}
+
+.anthem-controls-cluster {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1.4;
+  justify-content: flex-end;
+}
+
+.anthem-btn {
+  min-width: 68px;
+  text-align: center;
+}
+
+.anthem-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 195px;
+  flex: 1;
+  max-width: 280px;
+}
+
+.anthem-time-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.66rem;
+  color: var(--up-gold);
+}
+
+.anthem-slider,
+.anthem-vol-slider {
+  accent-color: var(--up-gold);
+  cursor: pointer;
+  height: 5px;
+}
+
+.anthem-vol-wrap {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 4px 8px;
+}
+
+.anthem-vol-slider {
+  width: 68px;
+}
+
+.anthem-lyrics-drawer {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid rgba(242, 169, 0, 0.22);
+}
+
+.anthem-lyrics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.anthem-lyrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 10px;
+  max-height: 310px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.lyric-stanza {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-left: 3px solid rgba(242, 169, 0, 0.35);
+  border-radius: 10px;
+  padding: 10px 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.lyric-stanza:hover {
+  background: rgba(242, 169, 0, 0.08);
+  border-color: rgba(242, 169, 0, 0.45);
+}
+
+.lyric-stanza.active-stanza {
+  background: rgba(242, 169, 0, 0.14);
+  border-color: var(--up-gold);
+  border-left: 3px solid var(--up-gold);
+  box-shadow: 0 0 14px rgba(242, 169, 0, 0.18);
+}
+
+.lyric-tag {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: var(--up-gold);
+  letter-spacing: 0.04em;
+  margin-bottom: 5px;
+}
+
+.lyric-stanza p {
+  margin: 0;
+  font-size: 0.74rem;
+  line-height: 1.55;
+  color: #f3f4f6;
+}

@@ -201,6 +201,7 @@ window.addEventListener('DOMContentLoaded', () => {
   runGateCVerification();
   runSingleBenchmark(true);
   runFull12ConditionMatrix(true);
+  initAnthemPlayer();
 
   showScreen('s01');
 });
@@ -267,6 +268,9 @@ function showScreen(screenId, subpanelId = null) {
 
   if (screenId === 's08' && sermaxSnaps.length === 0) {
     generateForVis(activeDataset.length <= 80 ? activeDataset : null);
+  }
+  if (screenId === 's09') {
+    pauseAnthemForBenchmarkIntegrity('Entered Comparative Benchmarking (Module 8)');
   }
 
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1464,6 +1468,7 @@ function toggleLeaderboardCol(colClass, show) {
 }
 
 function runSingleBenchmark(silent = false) {
+  if (!silent) pauseAnthemForBenchmarkIntegrity('Formal Benchmark Execution');
   const dist = document.getElementById('bench-dist').value || 'nearly';
   const size = parseInt(document.getElementById('bench-size').value, 10) || 1000;
   const trials = parseInt(document.getElementById('bench-trials').value, 10) || 10;
@@ -1555,6 +1560,7 @@ function renderS09HistoryTable() {
 }
 
 function runFull12ConditionMatrix(silent = false) {
+  if (!silent) pauseAnthemForBenchmarkIntegrity('12-Condition Benchmark Matrix Execution');
   const cats = ['random', 'nearly', 'reverse', 'duplicates'];
   const sizes = [500, 1000, 2500];
   let seed = 20261001;
@@ -1766,4 +1772,171 @@ function showToast(msg) {
   window._toastTimer = setTimeout(() => {
     t.style.display = 'none';
   }, 3200);
+}
+
+// ─── OPTIONAL WEBSITE PRESENTATION FEATURE: OFFICIAL SERMAX THEME SONG ───
+// Operates strictly independently of all research modules (Modules 1–9) and
+// automatically pauses during formal benchmarking to preserve timing integrity.
+const ANTHEM_SECTIONS = [
+  { start: 0,   end: 42,  label: 'INTRO — Soft, atmospheric vocals' },
+  { start: 42,  end: 78,  label: 'VERSE 1 — Gradually building' },
+  { start: 78,  end: 91,  label: 'PRE-CHORUS — Rising energy' },
+  { start: 91,  end: 128, label: 'CHORUS — Beyond the Pivot' },
+  { start: 128, end: 150, label: 'VERSE 2 — Confident, rhythmic' },
+  { start: 150, end: 164, label: 'PRE-CHORUS 2 — Instrumental build' },
+  { start: 164, end: 200, label: 'CHORUS — Full orchestral & electronic' },
+  { start: 200, end: 239, label: 'BRIDGE — Emotional, inspiring' },
+  { start: 239, end: 276, label: 'FINAL CHORUS — Grand cinematic climax' },
+  { start: 276, end: 320, label: 'OUTRO — Piano and fading synthesizer' }
+];
+
+function formatAnthemTime(sec) {
+  if (!isFinite(sec) || sec < 0) return '00:00';
+  const m = Math.floor(sec / 60);
+  const s = Math.floor(sec % 60);
+  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+}
+
+function initAnthemPlayer() {
+  const audio = document.getElementById('sermax-anthem-audio');
+  if (!audio) return;
+
+  // Ensure paused by default and initial volume set
+  audio.pause();
+  audio.autoplay = false;
+  audio.volume = 0.75;
+
+  audio.addEventListener('loadedmetadata', () => {
+    const durEl = document.getElementById('anthem-time-dur');
+    const seekEl = document.getElementById('anthem-seek');
+    if (durEl && isFinite(audio.duration)) {
+      durEl.textContent = formatAnthemTime(audio.duration);
+    }
+    if (seekEl && isFinite(audio.duration)) {
+      seekEl.max = Math.ceil(audio.duration);
+    }
+  });
+
+  audio.addEventListener('timeupdate', () => {
+    const cur = audio.currentTime || 0;
+    const curEl = document.getElementById('anthem-time-cur');
+    const seekEl = document.getElementById('anthem-seek');
+    const secEl = document.getElementById('anthem-current-section');
+
+    if (curEl) curEl.textContent = formatAnthemTime(cur);
+    if (seekEl) seekEl.value = cur;
+
+    const activeSec = ANTHEM_SECTIONS.find(s => cur >= s.start && cur < s.end);
+    if (secEl && !audio.paused) {
+      secEl.textContent = activeSec ? activeSec.label : 'PLAYING • BEYOND THE PIVOT';
+    }
+
+    document.querySelectorAll('#anthem-lyrics-grid .lyric-stanza').forEach(st => {
+      const stStart = parseFloat(st.getAttribute('data-start')) || 0;
+      const stEnd = parseFloat(st.getAttribute('data-end')) || 999;
+      st.classList.toggle('active-stanza', !audio.paused && cur >= stStart && cur < stEnd);
+    });
+  });
+
+  audio.addEventListener('ended', () => {
+    updateAnthemUIState(false, 'FINISHED • READY');
+  });
+}
+
+function updateAnthemUIState(isPlaying, statusText = null) {
+  const playBtn = document.getElementById('anthem-play-btn');
+  const disc = document.getElementById('anthem-disc');
+  const secEl = document.getElementById('anthem-current-section');
+  if (playBtn) playBtn.textContent = isPlaying ? '❚❚ Pause' : '▶ Play';
+  if (disc) disc.classList.toggle('spinning', isPlaying);
+  if (secEl && statusText) secEl.textContent = statusText;
+}
+
+function toggleAnthemPlayback() {
+  const audio = document.getElementById('sermax-anthem-audio');
+  if (!audio) return;
+
+  const badge = document.getElementById('anthem-isolation-status');
+  if (audio.paused) {
+    audio.play().then(() => {
+      updateAnthemUIState(true, 'PLAYING • BEYOND THE PIVOT');
+      if (badge) {
+        badge.textContent = 'Playing (Auto-Disabled During Benchmarks)';
+        badge.classList.remove('paused-guard');
+      }
+    }).catch(() => {
+      showToast('Unable to start audio playback');
+    });
+  } else {
+    audio.pause();
+    updateAnthemUIState(false, 'PAUSED BY USER');
+    if (badge) {
+      badge.textContent = 'Paused • Auto-Disabled During Benchmarks';
+      badge.classList.remove('paused-guard');
+    }
+  }
+}
+
+function stopAnthemPlayback() {
+  const audio = document.getElementById('sermax-anthem-audio');
+  if (!audio) return;
+  audio.pause();
+  audio.currentTime = 0;
+  updateAnthemUIState(false, 'STOPPED • READY');
+  document.querySelectorAll('#anthem-lyrics-grid .lyric-stanza').forEach(st => st.classList.remove('active-stanza'));
+}
+
+function seekAnthemAudio(seconds) {
+  const audio = document.getElementById('sermax-anthem-audio');
+  if (!audio) return;
+  const target = Math.max(0, parseFloat(seconds) || 0);
+  audio.currentTime = target;
+  const curEl = document.getElementById('anthem-time-cur');
+  if (curEl) curEl.textContent = formatAnthemTime(target);
+}
+
+function toggleAnthemMute() {
+  const audio = document.getElementById('sermax-anthem-audio');
+  const btn = document.getElementById('anthem-mute-btn');
+  if (!audio) return;
+  audio.muted = !audio.muted;
+  if (btn) btn.textContent = audio.muted ? 'Unmute' : 'Mute';
+}
+
+function setAnthemVolume(val) {
+  const audio = document.getElementById('sermax-anthem-audio');
+  const lbl = document.getElementById('anthem-vol-label');
+  const btn = document.getElementById('anthem-mute-btn');
+  if (!audio) return;
+  const v = Math.max(0, Math.min(1, parseFloat(val) || 0));
+  audio.volume = v;
+  if (v > 0 && audio.muted) {
+    audio.muted = false;
+    if (btn) btn.textContent = 'Mute';
+  }
+  if (lbl) lbl.textContent = `${Math.round(v * 100)}%`;
+}
+
+function toggleAnthemLyrics() {
+  const drawer = document.getElementById('anthem-lyrics-drawer');
+  const btn = document.getElementById('anthem-lyrics-btn');
+  if (!drawer) return;
+  const isHidden = drawer.style.display === 'none';
+  drawer.style.display = isHidden ? 'block' : 'none';
+  if (btn) {
+    btn.textContent = isHidden ? 'Lyrics ▴' : 'Lyrics ▾';
+    btn.setAttribute('aria-expanded', isHidden ? 'true' : 'false');
+  }
+}
+
+function pauseAnthemForBenchmarkIntegrity(reason = 'Benchmark Isolation') {
+  const audio = document.getElementById('sermax-anthem-audio');
+  if (!audio || audio.paused) return;
+  audio.pause();
+  updateAnthemUIState(false, 'AUTO-PAUSED FOR BENCHMARK INTEGRITY');
+  const badge = document.getElementById('anthem-isolation-status');
+  if (badge) {
+    badge.textContent = `Audio Auto-Paused (${reason})`;
+    badge.classList.add('paused-guard');
+  }
 }

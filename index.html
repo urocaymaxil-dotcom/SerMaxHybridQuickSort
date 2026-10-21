@@ -8,7 +8,7 @@
   <link rel="icon" type="image/png" href="sermax-logo.png?v=9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=13" />
+  <link rel="stylesheet" href="style.css?v=14" />
 </head>
 <body>
 
@@ -554,6 +554,115 @@
                   <span class="res-course-pill">Research Integrity in the Age of AI • UP Diliman (Mar 2026)</span>
                 </div>
               </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── OPTIONAL WEBSITE PRESENTATION FEATURE: OFFICIAL SERMAX THEME SONG ── -->
+      <div class="anthem-player-card" id="sermax-anthem-card" aria-label="Optional Website Presentation Audio Player">
+        <audio id="sermax-anthem-audio" preload="metadata" src="sermax-anthem-beyond-the-pivot.mp3"></audio>
+
+        <div class="anthem-top-row">
+          <div class="anthem-identity">
+            <img src="sermax-logo.png?v=12" alt="SerMax Emblem" class="anthem-disc" id="anthem-disc" />
+            <div>
+              <div class="anthem-badge-row">
+                <span class="anthem-opt-badge">OPTIONAL WEBSITE PRESENTATION FEATURE • PHASE 2 SUPPLEMENTARY</span>
+                <span class="anthem-isolation-badge" id="anthem-isolation-status">Paused by Default • Auto-Disabled During Benchmarks</span>
+              </div>
+              <h3 class="anthem-title">Beyond the Pivot — The SerMax Hybrid QuickSort Anthem</h3>
+              <p class="anthem-sub">Official SerMax Research Website Theme Song • Independent of Core Algorithm, Regression, Partitioning &amp; Benchmarking Modules</p>
+            </div>
+          </div>
+
+          <div class="anthem-controls-cluster">
+            <button type="button" class="btn btn-gold btn-sm anthem-btn" id="anthem-play-btn" onclick="toggleAnthemPlayback()" aria-label="Play or Pause Official Theme Song">
+              ▶ Play
+            </button>
+            <button type="button" class="btn btn-ghost btn-sm anthem-btn" id="anthem-stop-btn" onclick="stopAnthemPlayback()" aria-label="Reset Theme Song">
+              ■ Stop
+            </button>
+            <div class="anthem-progress-wrap">
+              <div class="anthem-time-row">
+                <span class="mono" id="anthem-current-section">PAUSED • READY</span>
+                <span class="mono"><span id="anthem-time-cur">00:00</span> / <span id="anthem-time-dur">05:06</span></span>
+              </div>
+              <input type="range" id="anthem-seek" class="anthem-slider" min="0" max="306" step="0.5" value="0" oninput="seekAnthemAudio(this.value)" aria-label="Seek Audio Timeline" />
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm anthem-btn" id="anthem-mute-btn" onclick="toggleAnthemMute()" aria-label="Mute or Unmute Theme Song">
+              Mute
+            </button>
+            <div class="anthem-vol-wrap" title="Audio Volume">
+              <span class="mono" style="font-size:0.65rem; color:var(--text-dim);">VOL</span>
+              <input type="range" id="anthem-volume" class="anthem-vol-slider" min="0" max="1" step="0.02" value="0.75" oninput="setAnthemVolume(this.value)" aria-label="Audio Volume" />
+              <span class="mono" id="anthem-vol-label" style="font-size:0.65rem; color:var(--up-gold); min-width:30px;">75%</span>
+            </div>
+            <button type="button" class="btn btn-ghost btn-sm anthem-btn" id="anthem-lyrics-btn" onclick="toggleAnthemLyrics()" aria-expanded="false">
+              Lyrics ▾
+            </button>
+          </div>
+        </div>
+
+        <!-- Collapsible Official Lyrics Drawer -->
+        <div class="anthem-lyrics-drawer" id="anthem-lyrics-drawer" style="display:none;">
+          <div class="anthem-lyrics-header">
+            <div>
+              <span class="mono" style="font-size:0.68rem; color:var(--up-gold); font-weight:700;">OFFICIAL LYRICS SHEET</span>
+              <h4 style="font-size:0.9rem; color:#fff; margin-top:2px;">BEYOND THE PIVOT — The SerMax Hybrid QuickSort Anthem</h4>
+            </div>
+            <span style="font-size:0.7rem; color:var(--text-dim);">Click any stanza below to jump to that musical section</span>
+          </div>
+
+          <div class="anthem-lyrics-grid" id="anthem-lyrics-grid">
+            <div class="lyric-stanza" data-start="0" data-end="42" onclick="seekAnthemAudio(5)">
+              <div class="lyric-tag">INTRO — Soft, atmospheric vocals (0:00)</div>
+              <p>Every number holds a story,<br/>Every pattern lights the way.<br/>Beyond the limits of the ordinary,<br/>A new idea begins today.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="42" data-end="78" onclick="seekAnthemAudio(43)">
+              <div class="lyric-tag">VERSE 1 — Gradually building (0:43)</div>
+              <p>In a world of endless information,<br/>Where the numbers rise and fall,<br/>We search for patterns in the chaos,<br/>And a way to sort them all.<br/>With every question comes discovery,<br/>With every challenge, something new,<br/>Through the language of computation,<br/>We pursue what minds can do.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="78" data-end="91" onclick="seekAnthemAudio(78)">
+              <div class="lyric-tag">PRE-CHORUS — Rising energy (1:18)</div>
+              <p>Read the patterns, find direction,<br/>Let the data guide the way.<br/>With precision and reflection,<br/>We build tomorrow from today.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="91" data-end="128" onclick="seekAnthemAudio(91)">
+              <div class="lyric-tag">CHORUS — Powerful and memorable (1:31)</div>
+              <p>SerMax! Beyond the pivot,<br/>Where intelligence meets design.<br/>Moving forward, seeking balance,<br/>One decision at a time.<br/>SerMax! Through every challenge,<br/>Let discovery lead the way.<br/>With the courage to keep learning,<br/>We create a brighter day.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="128" data-end="150" onclick="seekAnthemAudio(129)">
+              <div class="lyric-tag">VERSE 2 — Confident, rhythmic (2:09)</div>
+              <p>From the features of the numbers,<br/>A prediction takes its place.<br/>Two directions work together,<br/>As the pointers set their pace.<br/>Every partition finds its order,<br/>Every task awaits its turn.<br/>With priorities guiding progress,<br/>There is always more to learn.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="150" data-end="164" onclick="seekAnthemAudio(151)">
+              <div class="lyric-tag">PRE-CHORUS 2 — Stronger instrumental build (2:31)</div>
+              <p>Through regression and partition,<br/>Through the queue that leads the flow,<br/>We unite the strength of methods,<br/>To explore what we can know.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="164" data-end="200" onclick="seekAnthemAudio(164)">
+              <div class="lyric-tag">CHORUS — Full orchestral &amp; electronic arrangement (2:44)</div>
+              <p>SerMax! Beyond the pivot,<br/>Where intelligence meets design.<br/>Moving forward, seeking balance,<br/>One decision at a time.<br/>SerMax! Through every challenge,<br/>Let discovery lead the way.<br/>With the courage to keep learning,<br/>We create a brighter day.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="200" data-end="239" onclick="seekAnthemAudio(200)">
+              <div class="lyric-tag">BRIDGE — Emotional, inspiring (3:20)</div>
+              <p>Not every answer comes so easily,<br/>Not every path is clearly shown.<br/>But through the trials and the testing,<br/>Every lesson makes us grow.<br/>Let the evidence tell the story,<br/>Let the questions lead us through.<br/>For the future starts with learning,<br/>And the courage to pursue.</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="239" data-end="276" onclick="seekAnthemAudio(240)">
+              <div class="lyric-tag">FINAL CHORUS — Grand cinematic climax (4:00)</div>
+              <p>SerMax! Beyond the pivot,<br/>Where intelligence meets design.<br/>Through the science of discovery,<br/>We move forward, one step at a time.<br/>SerMax! A vision unfolding,<br/>Through the questions we explore.<br/>With determination and innovation,<br/>We keep reaching for something more!</p>
+            </div>
+
+            <div class="lyric-stanza" data-start="276" data-end="310" onclick="seekAnthemAudio(276)">
+              <div class="lyric-tag">OUTRO — Piano and fading synthesizer (4:36)</div>
+              <p>Every number holds a story,<br/>Every question opens doors.<br/>SerMax Hybrid QuickSort...<br/>Beyond the pivot, we explore.</p>
             </div>
           </div>
         </div>
@@ -1891,7 +2000,7 @@
 
 <div id="toast" class="toast" style="display:none;"></div>
 
-<script src="algorithms.js?v=13"></script>
-<script src="app.js?v=13"></script>
+<script src="algorithms.js?v=14"></script>
+<script src="app.js?v=14"></script>
 </body>
 </html>
