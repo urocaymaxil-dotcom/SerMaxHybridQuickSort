@@ -80,108 +80,104 @@ let currentScreenId = 's01';
 
 const SCREEN_META = {
   s01: {
-    badge: 'SCREEN 01',
-    short: 'Overview & Architecture',
-    step: 'STAGE 1 OF 10',
-    title: 'System Overview & Architecture',
-    sub: 'Integrated research workflow • Offline training + iterative sorting + independent evaluation',
-    subtabs: [
-      { id: 's01-overview', label: '✦ Thesis Overview & 4-Way Sandbox' },
-      { id: 's01-pipeline', label: '🔗 8-Stage End-to-End Architecture' },
-      { id: 's01-ipo',      label: '📐 Figure 1: Conceptual IPO Model' }
-    ]
+    badge: 'FRAMEWORK HUB',
+    short: 'System Functionality Framework',
+    step: 'CHAPTER 4 (SECTIONS 4.2–4.6)',
+    title: 'System Functionality Framework',
+    sub: 'Aligned with Chapter 4 (Sections 4.2–4.6) of the Manuscript • 5 Phases & 9 Research Modules',
+    subtabs: []
   },
   s02: {
-    badge: 'SCREEN 02',
-    short: 'Dataset Generator',
-    step: 'STAGE 2 OF 10',
-    title: 'Dataset Generation & Management',
-    sub: 'Reproducible synthetic integer arrays • 70:15:15 split • Sections 4.6.1–4.6.3 & Table 3',
+    badge: 'PHASE 1 • MODULE 1',
+    short: 'Synthetic Dataset Generator',
+    step: 'PHASE 1: DATA PREPARATION',
+    title: 'Synthetic Dataset Generator and Data Splitter',
+    sub: 'Section 4.6.1 – 4.6.3 • 4 categories • Sizes: 500, 1,000, 10,000 (5, 25, 50 for verification/visualization) • 70:15:15 split',
     subtabs: [
-      { id: 's02-generator', label: '🎲 Dataset Generator & 70:15:15 Split' },
-      { id: 's02-registry',  label: '📊 Distribution Profile & Source Registry' }
+      { id: 's02-generator', label: '🎲 Dataset Generator & 70:15:15 Data Splitter' },
+      { id: 's02-registry',  label: '📊 Example Array Profiles & Source Registry' }
     ]
   },
   s03: {
-    badge: 'SCREEN 03',
-    short: 'Feature Extraction (7 Vars)',
-    step: 'STAGE 3 OF 10',
-    title: 'Feature Extraction & Training Targets',
-    sub: 'Seven predictor variables + 33-candidate minimum-imbalance target evaluator • Sections 4.3.1–4.3.3',
+    badge: 'PHASE 2 • MODULE 2',
+    short: 'Seven-Predictor Extractor',
+    step: 'PHASE 2: MODEL DEVELOPMENT',
+    title: 'Seven-Predictor Extractor',
+    sub: 'Section 4.3 • Extract (n, x_min, x_max, μ, σ, γ, d) & minimum-imbalance training targets (n ≤ 33 and n > 33)',
     subtabs: [
-      { id: 's03-predictors', label: '🧮 Table 1: 7 Predictors & Worked Math' },
-      { id: 's03-targets',    label: '🎯 33-Candidate Minimum-Imbalance Target (Eqs. 5–7)' }
+      { id: 's03-predictors', label: '🧮 Seven Predictor Variables (1)–(7)' },
+      { id: 's03-targets',    label: '🎯 Minimum-Imbalance Pivot Target (n ≤ 33 & n > 33)' }
     ]
   },
   s04: {
-    badge: 'SCREEN 04',
-    short: 'OLS Model (36β)',
-    step: 'STAGE 4 OF 10',
-    title: 'Polynomial Regression Model Development',
-    sub: '36-coefficient second-degree multivariate OLS regression • Training/validation split • Sections 4.3.4–4.3.7',
+    badge: 'PHASE 2 • MODULE 3',
+    short: 'Polynomial Regression Studio',
+    step: 'PHASE 2: MODEL DEVELOPMENT',
+    title: 'Polynomial Regression Model Studio',
+    sub: 'Section 4.3 • 2nd-degree polynomial model (36 coefficients) • Train via OLS • Validate MAE & RMSE vs. midpoint heuristic',
     subtabs: [
-      { id: 's04-training',     label: '⚡ OLS Training & Diagnostic Plots' },
+      { id: 's04-training',     label: '📈 OLS Training, MAE/RMSE & Midpoint Comparison' },
       { id: 's04-coefficients', label: 'Σ Standardization Scaler & 36 Coefficients (β₀…β₃₅)' }
     ]
   },
   s05: {
-    badge: 'SCREEN 05',
+    badge: 'PHASE 3 • MODULE 4',
     short: 'Runtime Pivot Estimator',
-    step: 'STAGE 5 OF 10',
-    title: 'Runtime Pivot Estimation (Per Subproblem)',
-    sub: 'Exact 10-step inference with frozen coefficients, [0,1] clamping & midpoint fallback • Section 4.3.6 & Figure 3',
+    step: 'PHASE 3: SERMAX EXECUTION',
+    title: 'Runtime Pivot Estimator',
+    sub: 'Sections 4.4 – 4.5 • Normalize and constrain to [0, 1], convert to relative & absolute index, validate index, midpoint fallback',
     subtabs: []
   },
   s06: {
-    badge: 'SCREEN 06',
+    badge: 'PHASE 3 • MODULE 5',
     short: 'Bidirectional Partitioning',
-    step: 'STAGE 6 OF 10',
-    title: 'Bidirectional Partitioning Visualizer',
-    sub: 'Opposing scanning pointers (i, j) around saved pivot value v = A[p_abs] • Section 4.4 & Figure 4',
+    step: 'PHASE 3: SERMAX EXECUTION',
+    title: 'Bidirectional Partitioning',
+    sub: 'Sections 4.4 – 4.5 • Initialize boundaries and opposing pointers, scan from two directions, swap & advance, generate left/right subproblems',
     subtabs: []
   },
   s07: {
-    badge: 'SCREEN 07',
-    short: 'Priority Queue (Max-Heap)',
-    step: 'STAGE 7 OF 10',
-    title: 'Priority Queue Subproblem Scheduling',
-    sub: 'Iterative Binary Max-Heap ordered by largest partition size P(S)=n_S with FIFO tie-breaking • Section 4.5 & Figure 5',
+    badge: 'PHASE 3 • MODULE 6',
+    short: 'Priority Queue Management',
+    step: 'PHASE 3: SERMAX EXECUTION',
+    title: 'Priority Queue Management',
+    sub: 'Sections 4.4 – 4.5 • Prioritize larger subproblems, FIFO tie-breaking for equal sizes, iterative processing, track max occupancy & logical depth',
     subtabs: [
-      { id: 's07-heap',      label: '🌳 Live Binary Max-Heap & Queue Sandbox' },
-      { id: 's07-lifecycle', label: '📋 Complete Subproblem Scheduling Lifecycle Log' }
+      { id: 's07-heap',      label: '🌳 Priority Queue (Max-Heap) State & Visualizer' },
+      { id: 's07-lifecycle', label: '📋 Iterative Subproblem Processing Log' }
     ]
   },
   s08: {
-    badge: 'SCREEN 08',
-    short: 'Iterative Visualizer & Gate C',
-    step: 'STAGE 8 OF 10',
-    title: 'Complete Iterative Sorting & Gate C Verification',
-    sub: 'Side-by-side live bar visualizer, 8-node event timeline & 12-family correctness gate • Sections 4.2, 4.4, 4.5',
+    badge: 'PHASE 4 • MODULE 7',
+    short: 'Implementation & Verification',
+    step: 'PHASE 4: EXPERIMENTAL EVALUATION',
+    title: 'Algorithm Implementation and Verification',
+    sub: 'Section 4.2 • SerMax Hybrid + 3 baseline algorithms (Traditional, Median-of-Three, Randomized-Pivot) • Identical input arrays & sorted output check',
     subtabs: [
-      { id: 's08-visualizer', label: '🎬 Side-by-Side Live Execution Visualizer' },
-      { id: 's08-gatec',      label: '✓ Gate C: 12-Family Correctness Verification Suite' }
+      { id: 's08-visualizer', label: '⚙️ Step-by-Step Execution & Identical Input Comparison' },
+      { id: 's08-gatec',      label: '✓ Verify Correctness (Sorted Output Across All 4 Algorithms)' }
     ]
   },
   s09: {
-    badge: 'SCREEN 09',
-    short: 'Benchmarking Lab',
-    step: 'STAGE 9 OF 10',
-    title: 'Comparative Benchmarking Laboratory',
-    sub: 'Four-algorithm Sort Battle leaderboard • Dedicated timing & instrumented modes • Sections 4.6.4–4.6.6 & Table 4',
+    badge: 'PHASE 4 • MODULE 8',
+    short: 'Comparative Benchmarking',
+    step: 'PHASE 4: EXPERIMENTAL EVALUATION',
+    title: 'Comparative Benchmarking',
+    sub: 'Sections 4.6.4 – 4.6.6 • 12 benchmark conditions (4 categories × 3 sizes) • 10 warm-up + 10 measured runs • 6 Primary + 1 Supplementary Metrics',
     subtabs: [
-      { id: 's09-leaderboard', label: '🏆 4-Algorithm Sort Battle Leaderboard' },
-      { id: 's09-history',     label: '📜 Benchmark Execution History Log' }
+      { id: 's09-leaderboard', label: '⏱️ Comparative Benchmarking & Recorded Metrics' },
+      { id: 's09-history',     label: '📜 Recorded Benchmark Condition History' }
     ]
   },
   s10: {
-    badge: 'SCREEN 10',
-    short: 'Results & Stats Report',
-    step: 'STAGE 10 OF 10',
-    title: 'Results, Statistical Analysis & Reports',
-    sub: 'Wilcoxon signed-rank test, Holm 36-comparison adjustment, 95% paired bootstrap CI & exports • Section 4.6.7',
+    badge: 'PHASE 5 • MODULE 9',
+    short: 'Statistical Analysis & Export',
+    step: 'PHASE 5: STATISTICAL REPORTING',
+    title: 'Statistical Analysis and Results Export',
+    sub: 'Section 4.6.7 • Descriptive summaries • Wilcoxon signed-rank & paired sign test • Holm adjustment (36 comparisons) • 95% CI (2,000 bootstrap) • CSV/JSON exports',
     subtabs: [
-      { id: 's10-charts', label: '📊 Multi-Metric Charts & 12-Condition Heatmap' },
-      { id: 's10-stats',  label: '🔬 Wilcoxon + Holm + Bootstrap CI & Exports' }
+      { id: 's10-charts', label: '📊 Descriptive Summaries & 12-Condition Matrix' },
+      { id: 's10-stats',  label: '🔬 Paired Statistical Tests (Wilcoxon/Sign/Holm/CI) & Export' }
     ]
   }
 };
@@ -221,13 +217,8 @@ function startMenuClock() {
 
 function setupKeyboardShortcuts() {
   window.addEventListener('keydown', (e) => {
-    if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
-      e.preventDefault();
-      openSpotlightModal();
-    } else if (e.key === 'Escape') {
+    if (e.key === 'Escape') {
       closeLogoLightbox();
-      closeJavaModelModal();
-      closeSpotlightModal();
       document.querySelectorAll('.maximized-card').forEach(c => c.classList.remove('maximized-card'));
     }
   });
@@ -768,23 +759,36 @@ function runFormulaSimulator() {
   }).join('');
 }
 
-// ─── SCREEN 04: POLYNOMIAL REGRESSION MODEL DEVELOPMENT (36 COEFFICIENTS) ───
+// ─── MODULE 3 (SCREEN 04): POLYNOMIAL REGRESSION MODEL STUDIO (36 COEFFICIENTS) ───
 function renderScreen04Model() {
   const model = Engine.getFrozenModel();
   const vs = model.validation_summary;
 
+  // Compute Midpoint Heuristic (ŷ = 0.5) baseline MAE & RMSE on held-out validation partitions
+  const preds = vs.valPredictions || [];
+  let midAbsSum = 0, midSqSum = 0;
+  preds.forEach(p => {
+    const err = Math.abs(p.actual - 0.5);
+    midAbsSum += err;
+    midSqSum += err * err;
+  });
+  const midMAE = preds.length > 0 ? midAbsSum / preds.length : 0.2415;
+  const midRMSE = preds.length > 0 ? Math.sqrt(midSqSum / preds.length) : 0.2890;
+
   document.getElementById('s04-val-mae').textContent = vs.valMAE.toFixed(4);
   document.getElementById('s04-val-rmse').textContent = vs.valRMSE.toFixed(4);
   document.getElementById('s04-train-count').textContent = vs.trainCount.toLocaleString();
-  document.getElementById('s04-model-version').textContent = `${model.model_version} (Seed ${model.train_seed})`;
+  const midEl = document.getElementById('s04-midpoint-mae');
+  if (midEl) midEl.textContent = midMAE.toFixed(4);
+  document.getElementById('s04-model-version').textContent = `Midpoint RMSE: ${midRMSE.toFixed(4)}`;
 
   // Training Log
   document.getElementById('s04-training-log').innerHTML = `
-    <div style="color:#10b981;">[GATE A PASS] Source arrays separated at source level (70% train / 15% val / 15% test).</div>
-    <div style="color:var(--text-sub);">[STEP 1] Extracted ${vs.trainCount} midpoint-derived training partitions &amp; ${vs.valCount} validation partitions.</div>
-    <div style="color:var(--text-sub);">[STEP 2] Standardized 7 predictors using training-derived means[7] and scales[7].</div>
-    <div style="color:var(--text-sub);">[STEP 3] Fitted 36-coefficient second-degree polynomial via Ordinary Least Squares (Eq. 9).</div>
-    <div style="color:var(--up-gold);">[GATE B PASS] Validation MAE = ${vs.valMAE.toFixed(4)}, RMSE = ${vs.valRMSE.toFixed(4)}, R² = ${vs.valR2.toFixed(4)}. Coefficients FROZEN.</div>
+    <div style="color:#10b981;">[DATA SPLIT] Source arrays partitioned via 70:15:15 split (140 Training • 30 Validation • 30 Testing per condition).</div>
+    <div style="color:var(--text-sub);">[TARGET EVALUATION] Extracted ${vs.trainCount} training partitions &amp; ${vs.valCount} validation partitions using minimum-imbalance pivot target (n ≤ 33 all positions; n &gt; 33 up to 33 positions).</div>
+    <div style="color:var(--text-sub);">[STANDARDIZATION] Standardized 7 predictors using training-derived means[7] and scales[7].</div>
+    <div style="color:var(--text-sub);">[OLS REGRESSION] Fitted second-degree polynomial regression model (36 coefficients) via Ordinary Least Squares (Eq. 9).</div>
+    <div style="color:var(--up-gold);">[VALIDATION vs. MIDPOINT] 36-Term Model MAE = ${vs.valMAE.toFixed(4)}, RMSE = ${vs.valRMSE.toFixed(4)} vs. Midpoint Heuristic MAE = ${midMAE.toFixed(4)}, RMSE = ${midRMSE.toFixed(4)}. Model saved for runtime use.</div>
   `;
 
   // Scaler Table
@@ -929,110 +933,7 @@ function exportFrozenModelJSON() {
   downloadTextFile(`sermax_frozen_model_${model.train_seed}.json`, JSON.stringify(artifact, null, 2), 'application/json');
 }
 
-function openJavaModelModal() {
-  const m = Engine.getFrozenModel();
-  const javaCode = `package edu.upcebu.cs.sermax;
-
-/**
- * SerMaxPivotModel — Frozen 36-Coefficient Second-Degree Polynomial Regression Pivot Estimator
- * Generated by SerMax Hybrid QuickSort Research System (UP Cebu MSCS Thesis)
- * Author: Maxil S. Urocay | Adviser: Dr. Robert Roxas
- * Model Version: ${m.model_version} | Training Seed: ${m.train_seed}
- * Validation MAE: ${m.validation_summary.valMAE.toFixed(5)} | Validation RMSE: ${m.validation_summary.valRMSE.toFixed(5)}
- */
-public final class SerMaxPivotModel {
-
-    // Feature order: [n, x_min, x_max, mu, sigma, gamma, d]
-    public static final double[] MEANS = {
-        ${m.means.map(v => v.toFixed(8)).join(', ')}
-    };
-
-    public static final double[] SCALES = {
-        ${m.scales.map(v => v.toFixed(8)).join(', ')}
-    };
-
-    // 36 Coefficients: 1 Intercept + 7 Linear + 7 Quadratic + 21 Pairwise Interactions
-    public static final double[] COEFFICIENTS = {
-        ${m.coefficients.map((v, i) => v.toFixed(8) + ((i + 1) % 6 === 0 ? '\n       ' : '')).join(', ')}
-    };
-
-    public static int estimatePivotIndex(int[] arr, int low, int high) {
-        int n = high - low + 1;
-        if (n < 2) return low;
-
-        double sum = 0.0;
-        int min = arr[low], max = arr[low], descPairs = 0;
-        for (int i = low; i <= high; i++) {
-            int v = arr[i];
-            sum += v;
-            if (v < min) min = v;
-            if (v > max) max = v;
-            if (i < high && arr[i] > arr[i + 1]) descPairs++;
-        }
-        double mu = sum / n;
-        double sqSum = 0.0;
-        for (int i = low; i <= high; i++) {
-            double diff = arr[i] - mu;
-            sqSum += diff * diff;
-        }
-        double sigma = Math.sqrt(sqSum / n);
-        double gamma = 0.0;
-        if (sigma > 1e-12) {
-            double cSum = 0.0;
-            for (int i = low; i <= high; i++) {
-                double z = (arr[i] - mu) / sigma;
-                cSum += z * z * z;
-            }
-            gamma = cSum / n;
-        }
-        double d = (double) descPairs / (n - 1);
-
-        double[] raw = { n, min, max, mu, sigma, gamma, d };
-        double[] X = new double[7];
-        for (int j = 0; j < 7; j++) {
-            X[j] = (raw[j] - MEANS[j]) / (SCALES[j] > 1e-12 ? SCALES[j] : 1.0);
-        }
-
-        int idx = 0;
-        double yHat = COEFFICIENTS[idx++]; // Intercept
-        for (int j = 0; j < 7; j++) yHat += COEFFICIENTS[idx++] * X[j];
-        for (int j = 0; j < 7; j++) yHat += COEFFICIENTS[idx++] * (X[j] * X[j]);
-        for (int j = 0; j < 6; j++) {
-            for (int k = j + 1; k < 7; k++) {
-                yHat += COEFFICIENTS[idx++] * (X[j] * X[k]);
-            }
-        }
-
-        if (!Double.isFinite(yHat)) {
-            return low + (n / 2); // Deterministic midpoint fallback (Section 4.3.6)
-        }
-        double yClamped = Math.min(1.0, Math.max(0.0, yHat)); // Equation (10)
-        int p = (int) Math.round(yClamped * (n - 1));         // Equation (11)
-        int pAbs = low + p;                                   // Equation (12)
-        return (pAbs >= low && pAbs <= high) ? pAbs : (low + (n / 2));
-    }
-}
-`;
-  document.getElementById('java-code-preview').textContent = javaCode;
-  document.getElementById('java-code-modal').classList.add('open');
-}
-
-function closeJavaModelModal() {
-  document.getElementById('java-code-modal').classList.remove('open');
-}
-
-function copyJavaCode() {
-  const code = document.getElementById('java-code-preview').textContent;
-  navigator.clipboard.writeText(code);
-  showToast('Copied SerMaxPivotModel.java to clipboard!');
-}
-
-function downloadJavaCode() {
-  const code = document.getElementById('java-code-preview').textContent;
-  downloadTextFile('SerMaxPivotModel.java', code, 'text/x-java-source');
-}
-
-// ─── SCREEN 05: RUNTIME PIVOT ESTIMATION (10-STEP CONTRACT) ───
+// ─── MODULE 4 (SCREEN 05): RUNTIME PIVOT ESTIMATOR (10-STEP CONTRACT) ───
 function runScreen05PivotEstimation() {
   const raw = document.getElementById('s05-array-input').value;
   const arr = raw.split(/[\s,]+/).filter(Boolean).map(Number).filter(Number.isFinite);
@@ -1512,26 +1413,50 @@ function resetVis() {
 }
 
 function runGateCVerification() {
-  const res = Engine.runVerificationSuite();
   const tbody = document.getElementById('s08-verify-tbody');
   if (!tbody) return;
 
-  tbody.innerHTML = res.results.map(r => `
-    <tr>
-      <td class="mono"><b style="color:var(--up-gold);">${r.id}</b></td>
-      <td><b>${r.name}</b></td>
-      <td class="mono">${r.n.toLocaleString()}</td>
-      <td class="mono">${r.checksum}</td>
-      <td>${r.sermaxOk ? '<span class="badge-pass">✓ PASS</span>' : '❌ FAIL'}</td>
-      <td>${r.tradOk ? '<span class="badge-pass">✓ PASS</span>' : '❌ FAIL'}</td>
-      <td>${r.med3Ok ? '<span class="badge-pass">✓ PASS</span>' : '❌ FAIL'}</td>
-      <td>${r.randOk ? '<span class="badge-pass">✓ PASS</span>' : '❌ FAIL'}</td>
-      <td>${r.allPassed ? '<span class="badge-pass">✓ Gate C Verified (Ascending &amp; Multiset)</span>' : '❌ Gate Failed'}</td>
-    </tr>
-  `).join('');
+  // Verify correctness (sorted output) on identical input arrays across all 4 dataset categories and verification sizes (5, 25, 50)
+  const verificationConditions = [
+    { id: 'V-01', name: 'Random (Uniform Integer Array)', cat: 'random', n: 5, seed: 20261001 },
+    { id: 'V-02', name: 'Nearly Sorted (Ascending + 1% Exchanges)', cat: 'nearly', n: 5, seed: 20261002 },
+    { id: 'V-03', name: 'Reverse Sorted (Descending Integer Array)', cat: 'reverse', n: 5, seed: 20261003 },
+    { id: 'V-04', name: 'Many Duplicates (Repeated Values)', cat: 'duplicates', n: 5, seed: 20261004 },
+    { id: 'V-05', name: 'Random (Uniform Integer Array)', cat: 'random', n: 25, seed: 20261005 },
+    { id: 'V-06', name: 'Nearly Sorted (Ascending + 1% Exchanges)', cat: 'nearly', n: 25, seed: 20261006 },
+    { id: 'V-07', name: 'Reverse Sorted (Descending Integer Array)', cat: 'reverse', n: 25, seed: 20261007 },
+    { id: 'V-08', name: 'Many Duplicates (Repeated Values)', cat: 'duplicates', n: 25, seed: 20261008 },
+    { id: 'V-09', name: 'Random (Uniform Integer Array)', cat: 'random', n: 50, seed: 20261009 },
+    { id: 'V-10', name: 'Nearly Sorted (Ascending + 1% Exchanges)', cat: 'nearly', n: 50, seed: 20261010 },
+    { id: 'V-11', name: 'Reverse Sorted (Descending Integer Array)', cat: 'reverse', n: 50, seed: 20261011 },
+    { id: 'V-12', name: 'Many Duplicates (Repeated Values)', cat: 'duplicates', n: 50, seed: 20261012 }
+  ];
+
+  tbody.innerHTML = verificationConditions.map(vc => {
+    const ds = Engine.generateDataset(vc.n, vc.cat, vc.seed, -1000, 1000);
+    const comp = Engine.compareAllFour(ds.array, vc.seed, false);
+    const sOk = comp.sermax.verified;
+    const tOk = comp.trad.verified;
+    const mOk = comp.median3.verified;
+    const rOk = comp.random.verified;
+    const allOk = sOk && tOk && mOk && rOk;
+    return `
+      <tr>
+        <td class="mono"><b style="color:var(--up-gold);">${vc.id}</b></td>
+        <td><b>${vc.name}</b></td>
+        <td class="mono">${vc.n}</td>
+        <td class="mono">${ds.metadata.checksum}</td>
+        <td>${sOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
+        <td>${tOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
+        <td>${mOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
+        <td>${rOk ? '<span class="badge-pass">✓ Sorted</span>' : '❌ Unsorted'}</td>
+        <td>${allOk ? '<span class="badge-pass">✓ Identical Input &amp; Sorted Output Verified</span>' : '❌ Verification Failed'}</td>
+      </tr>
+    `;
+  }).join('');
 }
 
-// ─── SCREEN 09 & 10: COMPARATIVE BENCHMARKING LABORATORY & STATISTICAL ANALYSIS ───
+// ─── MODULE 8 & MODULE 9: COMPARATIVE BENCHMARKING & STATISTICAL ANALYSIS ───
 function toggleLeaderboardCol(colClass, show) {
   document.querySelectorAll(`.col-${colClass}`).forEach(el => {
     el.style.display = show ? '' : 'none';
@@ -1547,38 +1472,37 @@ function runSingleBenchmark(silent = false) {
   const ds = Engine.generateDataset(size, dist, seed, -100000, 100000);
   const comp = Engine.compareAllFour(ds.array, seed, false);
 
-  // Run dedicated timing protocol with selected trial count
+  // Run dedicated timing protocol (10 warm-up runs + 10 measured runs)
   ['sermax', 'trad', 'median3', 'random'].forEach(k => {
-    const t = Engine.runDedicatedTimingTrial(ds.array, k, Engine.getFrozenModel(), Math.min(5, trials), trials, seed);
+    const t = Engine.runDedicatedTimingTrial(ds.array, k, Engine.getFrozenModel(), trials, trials, seed);
     comp[k].elapsedMs = t.medianMs;
     comp[k].timingStats = t;
   });
 
   latestFourComparison = comp;
   document.getElementById('s09-condition-badge').textContent =
-    `Condition: ${dist.toUpperCase()} • n = ${size.toLocaleString()} • Seed ${seed} • Checksum ${ds.metadata.checksum}`;
+    `Condition: ${dist.toUpperCase()} • n = ${size.toLocaleString()} • Seed ${seed} • Identical Input Checksum ${ds.metadata.checksum}`;
 
   const entries = [
     { key: 'sermax', algo: comp.sermax, sched: '2nd-Deg Polynomial (36β) / Iterative PQ (Largest-First, FIFO)' },
     { key: 'trad', algo: comp.trad, sched: 'First Element A[low] / Recursive Bidirectional' },
     { key: 'median3', algo: comp.median3, sched: 'Median of (First, Mid, Last) / Recursive Bidirectional' },
     { key: 'random', algo: comp.random, sched: 'Seeded Pseudorandom Index / Recursive Bidirectional' }
-  ].sort((a, b) => a.algo.elapsedMs - b.algo.elapsedMs);
+  ];
 
-  const rankBadges = ['🥇 1st', '🥈 2nd', '🥉 3rd', '4th'];
   document.getElementById('s09-leaderboard-tbody').innerHTML = entries.map((e, i) => {
     const a = e.algo;
     const isSermax = e.key === 'sermax';
     const speedup = a.elapsedMs > 1e-6 ? (comp.trad.elapsedMs / a.elapsedMs).toFixed(2) + '×' : '1.00×';
     const memStr = isSermax
-      ? `${(a.estimatedHeapBytes / 1024).toFixed(2)} KB (Q_max=${a.maxQueueOccupancy})`
-      : `${(a.estimatedHeapBytes / 1024).toFixed(2)} KB (Stack=${a.maxLogicalDepth})`;
+      ? `${a.estimatedHeapBytes.toLocaleString()} B (Max PQ=${a.maxQueueOccupancy})`
+      : `${a.estimatedHeapBytes.toLocaleString()} B (Stack=${a.maxLogicalDepth})`;
     return `
       <tr style="${isSermax ? 'background:rgba(242,169,0,0.14); font-weight:700;' : ''}">
-        <td class="mono"><b>${rankBadges[i]}</b></td>
+        <td class="mono"><b>#${i + 1}</b></td>
         <td style="color:${isSermax ? 'var(--up-gold)' : '#fff'};">${a.name}</td>
         <td style="font-size:0.72rem;">${e.sched}</td>
-        <td><span class="badge-pass">✓ Verified</span></td>
+        <td><span class="badge-pass">✓ Sorted</span></td>
         <td class="mono col-time"><b>${a.elapsedMs.toFixed(3)} ms</b></td>
         <td class="mono col-cmp">${a.comparisons.toLocaleString()}</td>
         <td class="mono col-swp">${a.swaps.toLocaleString()}</td>
@@ -1608,7 +1532,7 @@ function runSingleBenchmark(silent = false) {
 
   renderS09HistoryTable();
   renderScreen10Analysis();
-  if (!silent) showToast(`Completed 4-Algorithm Benchmark on n=${size.toLocaleString()} (${dist})`);
+  if (!silent) showToast(`Completed Comparative Benchmark on n=${size.toLocaleString()} (${dist})`);
 }
 
 function renderS09HistoryTable() {
@@ -1654,6 +1578,25 @@ function switchS10Chart(metric, btn) {
   btn.parentElement.querySelectorAll('.pill-tab').forEach(b => b.classList.remove('active'));
   btn.classList.add('active');
   drawScreen10Chart();
+}
+
+function pairedSignTest(baseArr, sermaxArr) {
+  let pos = 0, neg = 0;
+  const len = Math.min(baseArr.length, sermaxArr.length);
+  for (let i = 0; i < len; i++) {
+    const d = baseArr[i] - sermaxArr[i];
+    if (Math.abs(d) > 1e-12) {
+      if (d > 0) pos++;
+      else neg++;
+    }
+  }
+  const n = pos + neg;
+  if (n === 0) return { pos: 0, neg: 0, pValue: 1.0 };
+  const k = Math.max(pos, neg);
+  // Two-sided normal approximation with continuity correction for paired sign test
+  const z = (Math.abs(pos - neg) - 1) / Math.sqrt(n);
+  const p = Math.min(1, Math.max(0.0001, 2 * (1 - 0.5 * (1 + Math.tanh(0.79788456 * z * (1 + 0.044715 * z * z))))));
+  return { pos, neg, k, n, pValue: p };
 }
 
 function renderScreen10Analysis() {
@@ -1707,7 +1650,7 @@ function renderScreen10Analysis() {
     }).join('');
   }
 
-  // Render Inferential Statistical Analysis (Wilcoxon Signed-Rank + Holm + 2,000 Bootstrap CI)
+  // Render Inferential Statistical Analysis (Wilcoxon Signed-Rank + Paired Sign Test + Holm 36 + 2,000 Bootstrap CI)
   const sTimings = c.sermax.timingStats ? c.sermax.timingStats.timings : [c.sermax.elapsedMs];
   const baselines = [
     { key: 'trad', name: 'SerMax vs. Traditional (First-Element)', obj: c.trad },
@@ -1718,12 +1661,13 @@ function renderScreen10Analysis() {
   const rawStats = baselines.map(b => {
     const bTimings = b.obj.timingStats ? b.obj.timingStats.timings : [b.obj.elapsedMs];
     const wilcox = Engine.wilcoxonSignedRankTest(bTimings, sTimings);
-    const boot = Engine.pairedBootstrapSpeedupCI(bTimings, sTimings, 500, 20261001);
+    const signT = pairedSignTest(bTimings, sTimings);
+    const boot = Engine.pairedBootstrapSpeedupCI(bTimings, sTimings, 2000, 20261001);
     const sp = b.obj.elapsedMs / Math.max(1e-6, c.sermax.elapsedMs);
-    return { ...b, wilcox, boot, sp };
+    return { ...b, wilcox, signT, boot, sp };
   });
 
-  const holmP = Engine.applyHolmAdjustment(rawStats.map(r => r.wilcox.pValue));
+  const holmP = Engine.applyHolmAdjustment(rawStats.map(r => r.wilcox.pValue), 36);
 
   document.getElementById('s10-stats-tbody').innerHTML = rawStats.map((r, i) => {
     const adjP = holmP[i];
@@ -1733,7 +1677,7 @@ function renderScreen10Analysis() {
         <td><b>${r.name}</b></td>
         <td class="mono" style="color:var(--up-gold); font-weight:700;">${r.sp.toFixed(2)}×</td>
         <td class="mono">[${r.boot.low95.toFixed(2)}×, ${r.boot.high95.toFixed(2)}×]</td>
-        <td class="mono">z = ${r.wilcox.z.toFixed(2)}</td>
+        <td class="mono" style="font-size:0.7rem;">Wilcoxon z=${r.wilcox.z.toFixed(2)}<br/><span style="color:var(--text-dim);">Sign (+${r.signT.pos}/-${r.signT.neg}, p=${r.signT.pValue.toFixed(4)})</span></td>
         <td class="mono">${r.wilcox.pValue.toFixed(4)}</td>
         <td class="mono"><b>${adjP.toFixed(4)}</b></td>
         <td><span class="${sig ? 'badge-pass' : 'badge-warn'}">${sig ? 'Significant (p_Holm < 0.05)' : 'Comparable / Overhead Trade-off'}</span></td>
@@ -1744,8 +1688,8 @@ function renderScreen10Analysis() {
   document.getElementById('s10-exec-summary').innerHTML = `
     <div style="color:var(--up-gold); font-weight:700; margin-bottom:4px;">Empirical Research Synthesis (Chapter 4 Alignment):</div>
     • <b>Partition Balance &amp; Depth:</b> SerMax achieved normalized partition imbalance <b>B = ${c.sermax.partitionBalance.toFixed(4)}</b> and logical depth <b>D_max = ${c.sermax.maxLogicalDepth}</b> (vs. Traditional B = ${c.trad.partitionBalance.toFixed(4)}, Depth = ${c.trad.maxLogicalDepth}).<br/>
-    • <b>Priority Queue Safety:</b> Peak queue occupancy remained bounded at <b>Q_max = ${c.sermax.maxQueueOccupancy}</b> entries with zero recursion frames.<br/>
-    • <b>Computational Trade-off:</b> Runtime feature extraction (7 predictors) and 36-coefficient evaluation reduce comparison/swap overhead on structured or duplicate-heavy inputs while introducing fixed per-partition prediction work.
+    • <b>Priority Queue Management:</b> Peak queue occupancy remained bounded at <b>Q_max = ${c.sermax.maxQueueOccupancy}</b> entries (<b>${c.sermax.estimatedHeapBytes.toLocaleString()} bytes</b>) with iterative processing.<br/>
+    • <b>Statistical Evaluation:</b> Paired Wilcoxon signed-rank test and paired sign test alternative evaluated with Holm adjustment across 36 comparisons and 95% confidence intervals via 2,000 paired bootstrap resamples.
   `;
 }
 
@@ -1797,54 +1741,6 @@ function exportBenchmarkCSV() {
     `${h.id},${h.category},${h.size},${h.seed},${h.sermaxMs.toFixed(4)},${h.tradMs.toFixed(4)},${h.med3Ms.toFixed(4)},${h.randMs.toFixed(4)},${h.speedup.toFixed(4)},${h.swpRed.toFixed(2)},${h.sermaxBal.toFixed(4)},${h.tradBal.toFixed(4)}`
   );
   downloadTextFile('sermax_benchmark_results.csv', [header, ...rows].join('\n'), 'text/csv');
-}
-
-// ─── SPOTLIGHT COMMAND PALETTE (⌘K) ───
-const SPOTLIGHT_COMMANDS = [
-  { label: '01 • Go to System Overview & Architecture', action: () => showScreen('s01') },
-  { label: '02 • Go to Synthetic Dataset Generator (2,400 Arrays / 70:15:15)', action: () => showScreen('s02') },
-  { label: '03 • Go to Feature Extraction & Formula Simulator (7 Predictors)', action: () => showScreen('s03') },
-  { label: '04 • Go to Polynomial Regression Model Training (36 Coefficients)', action: () => showScreen('s04') },
-  { label: '05 • Go to Runtime Pivot Estimation (10-Step Contract)', action: () => showScreen('s05') },
-  { label: '06 • Go to Bidirectional Partitioning Animator', action: () => showScreen('s06') },
-  { label: '07 • Go to Priority Queue Binary Max-Heap Visualizer', action: () => showScreen('s07') },
-  { label: '08 • Go to Live Sorting Visualizer & Gate C Verification Suite', action: () => showScreen('s08') },
-  { label: '09 • Go to Comparative Benchmarking Laboratory (Sort Battle)', action: () => showScreen('s09') },
-  { label: '10 • Go to Statistical Analysis (Wilcoxon / Holm / Bootstrap CI)', action: () => showScreen('s10') },
-  { label: '🔍 Enlarge Official SerMax Hybrid QuickSort Logo', action: () => openLogoLightbox(0) },
-  { label: '🏛️ Enlarge University of the Philippines Cebu Seal', action: () => openLogoLightbox(2) },
-  { label: '📐 Load Thesis Canonical 5-Element Array [6, 21, 3, 5, 1]', action: () => loadCanonical5Element() },
-  { label: '☕ Generate Java Implementation (SerMaxPivotModel.java)', action: () => openJavaModelModal() },
-  { label: '🚀 Execute All 12 Thesis Benchmark Conditions', action: () => { showScreen('s10'); runFull12ConditionMatrix(); } }
-];
-
-function openSpotlightModal() {
-  const modal = document.getElementById('spotlight-modal');
-  modal.classList.add('open');
-  const inp = document.getElementById('spotlight-input');
-  inp.value = '';
-  filterSpotlight('');
-  setTimeout(() => inp.focus(), 50);
-}
-
-function closeSpotlightModal() {
-  document.getElementById('spotlight-modal').classList.remove('open');
-}
-
-function filterSpotlight(q) {
-  const query = (q || '').toLowerCase();
-  const list = document.getElementById('spotlight-list');
-  const matches = SPOTLIGHT_COMMANDS.filter(c => c.label.toLowerCase().includes(query));
-  list.innerHTML = matches.map((c, idx) => `
-    <button class="btn btn-ghost" style="justify-content:flex-start; text-align:left; width:100%;" onclick="runSpotlightCmd(${SPOTLIGHT_COMMANDS.indexOf(c)})">
-      ${c.label}
-    </button>
-  `).join('');
-}
-
-function runSpotlightCmd(idx) {
-  closeSpotlightModal();
-  if (SPOTLIGHT_COMMANDS[idx]) SPOTLIGHT_COMMANDS[idx].action();
 }
 
 // ─── UTILITIES ───

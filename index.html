@@ -8,57 +8,57 @@
   <link rel="icon" type="image/png" href="sermax-logo.png?v=9" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="style.css?v=10" />
+  <link rel="stylesheet" href="style.css?v=12" />
 </head>
 <body>
 
 <!-- ════════════════════════════════════════════════════════════════════════════
-     1. SINGLE COMPACT FLOATING NAVBAR (ONLY BAR ON SUB-SCREENS 02–10!)
+     1. SINGLE COMPACT FLOATING NAVBAR (ALIGNED WITH MODULES 1–9 OF CHAPTER 4)
      ════════════════════════════════════════════════════════════════════════════ -->
 <div class="floating-nav-shell">
   <div class="floating-pill-navbar">
     <!-- Left: Enlargeable SerMax Emblem + Home Trigger -->
     <div class="nav-brand-cluster">
-      <div class="sermax-brand-pill" onclick="showScreen('s01')" title="Return to Main Dashboard (Screen 01)">
-        <img src="sermax-logo.png?v=8" alt="SerMax Logo" class="sermax-mini-logo" onclick="event.stopPropagation(); openLogoLightbox(0);" title="Click logo to enlarge" />
+      <div class="sermax-brand-pill" onclick="showScreen('s01')" title="Return to Main Dashboard & System Functionality Framework">
+        <img src="sermax-logo.png?v=12" alt="SerMax Logo" class="sermax-mini-logo" onclick="event.stopPropagation(); openLogoLightbox(0);" title="SerMax Hybrid QuickSort Emblem" />
         <div class="sermax-brand-text">
-          <span class="brand-name">SerMax <span class="gold-grad">OS</span></span>
+          <span class="brand-name">SerMax <span class="gold-grad">QuickSort</span></span>
           <span class="brand-sub">UP Cebu • MSCS</span>
         </div>
       </div>
     </div>
 
-    <!-- Center: Clean 10-Stage Pill Selector -->
-    <nav class="pill-stage-bar" aria-label="10 Thesis Stages">
-      <button class="stage-pill active" data-screen="s01" onclick="showScreen('s01')" title="01 • Main Dashboard & Architecture">
-        <span class="sp-num">01</span><span class="sp-txt">Dashboard</span>
+    <!-- Center: Clean 9-Module Pill Selector (Aligned with System Functionality Framework) -->
+    <nav class="pill-stage-bar" aria-label="Chapter 4 Research Modules">
+      <button class="stage-pill active" data-screen="s01" onclick="showScreen('s01')" title="System Functionality Framework & Main Hub">
+        <span class="sp-num">HUB</span><span class="sp-txt">Framework</span>
       </button>
-      <button class="stage-pill" data-screen="s02" onclick="showScreen('s02')" title="02 • Dataset Generation & 70:15:15 Split">
-        <span class="sp-num">02</span><span class="sp-txt">Datasets</span>
+      <button class="stage-pill" data-screen="s02" onclick="showScreen('s02')" title="Phase 1 • Module 1: Synthetic Dataset Generator and Data Splitter (Sec 4.6.1–4.6.3)">
+        <span class="sp-num">M1</span><span class="sp-txt">Datasets</span>
       </button>
-      <button class="stage-pill" data-screen="s03" onclick="showScreen('s03')" title="03 • 7 Predictor Variables & Formula Simulator">
-        <span class="sp-num">03</span><span class="sp-txt">7 Features</span>
+      <button class="stage-pill" data-screen="s03" onclick="showScreen('s03')" title="Phase 2 • Module 2: Seven-Predictor Extractor (Sec 4.3)">
+        <span class="sp-num">M2</span><span class="sp-txt">7 Predictors</span>
       </button>
-      <button class="stage-pill" data-screen="s04" onclick="showScreen('s04')" title="04 • 36-Coefficient Polynomial OLS Regression">
-        <span class="sp-num">04</span><span class="sp-txt">OLS (36β)</span>
+      <button class="stage-pill" data-screen="s04" onclick="showScreen('s04')" title="Phase 2 • Module 3: Polynomial Regression Model Studio (Sec 4.3)">
+        <span class="sp-num">M3</span><span class="sp-txt">OLS Model</span>
       </button>
-      <button class="stage-pill" data-screen="s05" onclick="showScreen('s05')" title="05 • 10-Step Runtime Pivot Estimator">
-        <span class="sp-num">05</span><span class="sp-txt">Pivot Est.</span>
+      <button class="stage-pill" data-screen="s05" onclick="showScreen('s05')" title="Phase 3 • Module 4: Runtime Pivot Estimator (Sec 4.4–4.5)">
+        <span class="sp-num">M4</span><span class="sp-txt">Pivot Est.</span>
       </button>
-      <button class="stage-pill" data-screen="s06" onclick="showScreen('s06')" title="06 • Bidirectional Partitioning Animator">
-        <span class="sp-num">06</span><span class="sp-txt">Partition</span>
+      <button class="stage-pill" data-screen="s06" onclick="showScreen('s06')" title="Phase 3 • Module 5: Bidirectional Partitioning (Sec 4.4–4.5)">
+        <span class="sp-num">M5</span><span class="sp-txt">Partitioning</span>
       </button>
-      <button class="stage-pill" data-screen="s07" onclick="showScreen('s07')" title="07 • Priority Queue (Binary Max-Heap)">
-        <span class="sp-num">07</span><span class="sp-txt">Max-Heap</span>
+      <button class="stage-pill" data-screen="s07" onclick="showScreen('s07')" title="Phase 3 • Module 6: Priority Queue Management (Sec 4.4–4.5)">
+        <span class="sp-num">M6</span><span class="sp-txt">Priority Queue</span>
       </button>
-      <button class="stage-pill" data-screen="s08" onclick="showScreen('s08')" title="08 • Side-by-Side Visualizer & Gate C Verification">
-        <span class="sp-num">08</span><span class="sp-txt">Visualizer</span>
+      <button class="stage-pill" data-screen="s08" onclick="showScreen('s08')" title="Phase 4 • Module 7: Algorithm Implementation and Verification (Sec 4.2)">
+        <span class="sp-num">M7</span><span class="sp-txt">Verification</span>
       </button>
-      <button class="stage-pill" data-screen="s09" onclick="showScreen('s09')" title="09 • 4-Algorithm Benchmarking Lab">
-        <span class="sp-num">09</span><span class="sp-txt">Benchmarks</span>
+      <button class="stage-pill" data-screen="s09" onclick="showScreen('s09')" title="Phase 4 • Module 8: Comparative Benchmarking (Sec 4.6.4–4.6.6)">
+        <span class="sp-num">M8</span><span class="sp-txt">Benchmarking</span>
       </button>
-      <button class="stage-pill" data-screen="s10" onclick="showScreen('s10')" title="10 • Statistical Tests (Wilcoxon/Holm/CI) & Exports">
-        <span class="sp-num">10</span><span class="sp-txt">Stats &amp; Export</span>
+      <button class="stage-pill" data-screen="s10" onclick="showScreen('s10')" title="Phase 5 • Module 9: Statistical Analysis and Results Export (Sec 4.6.7)">
+        <span class="sp-num">M9</span><span class="sp-txt">Stats &amp; Export</span>
       </button>
     </nav>
     <span id="menubar-clock" class="mono" style="display:none;">Oct 2026</span>
@@ -146,192 +146,192 @@
         </div>
       </div>
 
-      <!-- 2. INTERACTIVE BENTO MODULE LAUNCHPAD (HOVER ANIMATION + CLICK TO LAUNCH ANY SECTION) -->
+      <!-- 2. SYSTEM FUNCTIONALITY FRAMEWORK (ALIGNED WITH CHAPTER 4, SECTIONS 4.2–4.6: PHASES 1–5 & MODULES 1–9) -->
       <div class="launchpad-section-header">
         <div>
-          <h3 class="launchpad-title">✦ System Architecture &amp; Interactive Research Modules</h3>
-          <p class="launchpad-sub">Select any module card below to open its interactive simulator, mathematical model, or experimental benchmark view.</p>
+          <h3 class="launchpad-title">✦ System Functionality Framework — Aligned with Chapter 4 (Sections 4.2–4.6)</h3>
+          <p class="launchpad-sub">Organized into 5 Research Phases and 9 Modules strictly limited to the approved methodology. Hover and click any module to open its simulator.</p>
         </div>
       </div>
 
       <div class="interactive-launchpad-grid">
-        <!-- Module 02 -->
+        <!-- PHASE 1 • MODULE 1 -->
         <div class="launch-card" onclick="showScreen('s02')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 02</span>
-            <span class="lc-tag">Sec 4.6.1 • Table 3</span>
+            <span class="lc-num">PHASE 1 • MODULE 1</span>
+            <span class="lc-tag">Sec 4.6.1 – 4.6.3</span>
           </div>
           <div class="lc-icon-row">
             <div class="lc-icon">🎲</div>
             <div>
-              <h4 class="lc-title">Dataset Generator &amp; 70:15:15 Split</h4>
-              <p class="lc-desc">Generate seeded Random, Nearly Sorted (1% swaps), Reverse, and Many-Duplicates arrays across n ∈ {5, 500, 1,000, 10,000}.</p>
+              <h4 class="lc-title">Synthetic Dataset Generator &amp; Data Splitter</h4>
+              <p class="lc-desc">Generate Random, Nearly Sorted, Reverse Sorted, and Many Duplicates arrays • Benchmark sizes: 500, 1,000, 10,000 (5, 25, 50 for verification/visualization only) • 70:15:15 split (140 Train • 30 Val • 30 Test).</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">2,400 Source Arrays • FNV-1a Checksum</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 1: Data Preparation</span>
+            <span class="lc-arrow">Open Module 1 →</span>
           </div>
         </div>
 
-        <!-- Module 03 -->
+        <!-- PHASE 2 • MODULE 2 -->
         <div class="launch-card" onclick="showScreen('s03')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 03</span>
-            <span class="lc-tag">Eqs. (1)–(7) • Table 1</span>
+            <span class="lc-num">PHASE 2 • MODULE 2</span>
+            <span class="lc-tag">Section 4.3 • Eqs. (1)–(4)</span>
           </div>
           <div class="lc-icon-row">
             <div class="lc-icon">🧮</div>
             <div>
-              <h4 class="lc-title">7-Predictor Extractor &amp; Formula Lab</h4>
-              <p class="lc-desc">Step-by-step arithmetic derivation of (n, x_min, x_max, μ, σ, γ, d) and 33-candidate minimum-imbalance target y = i*/(n-1).</p>
+              <h4 class="lc-title">Seven-Predictor Extractor</h4>
+              <p class="lc-desc">Extract seven predictor variables from the active sorting subproblem: (1) Partition size n, (2) Min x_min, (3) Max x_max, (4) Mean μ, (5) Std. Dev. σ, (6) Skewness γ, and (7) Disorder ratio d.</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">Canonical [6, 21, 3, 5, 1] Verified</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 2: Model Development</span>
+            <span class="lc-arrow">Open Module 2 →</span>
           </div>
         </div>
 
-        <!-- Module 04 -->
+        <!-- PHASE 2 • MODULE 3 -->
         <div class="launch-card" onclick="showScreen('s04')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 04</span>
-            <span class="lc-tag">Eqs. (8)–(9), (13)–(14)</span>
+            <span class="lc-num">PHASE 2 • MODULE 3</span>
+            <span class="lc-tag">Section 4.3 • Eqs. (5)–(9), (13)–(14)</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">🧠</div>
+            <div class="lc-icon">📈</div>
             <div>
-              <h4 class="lc-title">36-Term Polynomial OLS Studio</h4>
-              <p class="lc-desc">Train &amp; freeze the 2nd-degree multivariate polynomial model (1 intercept + 7 linear + 7 quad + 21 interaction terms).</p>
+              <h4 class="lc-title">Polynomial Regression Model Studio</h4>
+              <p class="lc-desc">Minimum-imbalance target (all positions for n ≤ 33; up to 33 positions for n &gt; 33) • 2nd-degree polynomial model (36 coefficients) • Train via OLS • Validate MAE &amp; RMSE vs. midpoint heuristic • Save model for runtime use.</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">MAE / RMSE + Java Code Export</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 2: Model Development</span>
+            <span class="lc-arrow">Open Module 3 →</span>
           </div>
         </div>
 
-        <!-- Module 05 -->
+        <!-- PHASE 3 • MODULE 4 -->
         <div class="launch-card" onclick="showScreen('s05')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 05</span>
-            <span class="lc-tag">Eqs. (10)–(12) • Fig 3</span>
+            <span class="lc-num">PHASE 3 • MODULE 4</span>
+            <span class="lc-tag">Sections 4.4–4.5 • Eqs. (10)–(12)</span>
           </div>
           <div class="lc-icon-row">
             <div class="lc-icon">🎯</div>
             <div>
-              <h4 class="lc-title">10-Step Runtime Pivot Estimator</h4>
-              <p class="lc-desc">Inspect live standardization, 36-term dot product ŷ, [0,1] clamping ŷ_c, index mapping p_abs, and midpoint fallback.</p>
+              <h4 class="lc-title">Runtime Pivot Estimator</h4>
+              <p class="lc-desc">Use trained model to predict pivot position: normalize and constrain to [0, 1], convert to relative and absolute index p_abs, validate index bounds, and apply midpoint fallback when necessary.</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">p_abs = low + round[ŷ_c(n-1)]</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 3: SerMax Execution</span>
+            <span class="lc-arrow">Open Module 4 →</span>
           </div>
         </div>
 
-        <!-- Module 06 -->
+        <!-- PHASE 3 • MODULE 5 -->
         <div class="launch-card" onclick="showScreen('s06')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 06</span>
-            <span class="lc-tag">Eqs. (15)–(16) • Fig 4</span>
+            <span class="lc-num">PHASE 3 • MODULE 5</span>
+            <span class="lc-tag">Sections 4.4–4.5 • Eqs. (15)–(16)</span>
           </div>
           <div class="lc-icon-row">
             <div class="lc-icon">⇄</div>
             <div>
-              <h4 class="lc-title">Bidirectional Partitioning Animator</h4>
-              <p class="lc-desc">Step-by-step Hoare two-pointer scan (i, j) around saved pivot value v = A[p_abs] with synchronized code line tracer.</p>
+              <h4 class="lc-title">Bidirectional Partitioning</h4>
+              <p class="lc-desc">Initialize boundaries and opposing pointers (i, j), scan from two directions around v = A[p_abs], compare, swap, and advance pointers, handle repeated values and edge cases, and generate left/right subproblems.</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">Left [low..j] • Right [i..high]</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 3: SerMax Execution</span>
+            <span class="lc-arrow">Open Module 5 →</span>
           </div>
         </div>
 
-        <!-- Module 07 -->
+        <!-- PHASE 3 • MODULE 6 -->
         <div class="launch-card" onclick="showScreen('s07')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 07</span>
-            <span class="lc-tag">Eqs. (17)–(21) • Fig 5</span>
+            <span class="lc-num">PHASE 3 • MODULE 6</span>
+            <span class="lc-tag">Sections 4.4–4.5 • Eqs. (17)–(21)</span>
           </div>
           <div class="lc-icon-row">
             <div class="lc-icon">🌳</div>
             <div>
-              <h4 class="lc-title">Priority Queue (Max-Heap) Scheduler</h4>
-              <p class="lc-desc">Interactive Binary Max-Heap scheduling largest partition first P(S)=n_S with deterministic FIFO seq tie-breaking.</p>
+              <h4 class="lc-title">Priority Queue Management</h4>
+              <p class="lc-desc">Represent subproblems (boundaries, size, depth, sequence), prioritize larger subproblems first, apply FIFO tie-breaking for equal sizes, iteratively process subproblems (no recursion), and track max queue occupancy &amp; logical depth.</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">Tracks D_max &amp; Q_max</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 3: SerMax Execution</span>
+            <span class="lc-arrow">Open Module 6 →</span>
           </div>
         </div>
 
-        <!-- Module 08 -->
+        <!-- PHASE 4 • MODULE 7 -->
         <div class="launch-card" onclick="showScreen('s08')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 08</span>
-            <span class="lc-tag">Sec 4.2 &amp; Gate C</span>
+            <span class="lc-num">PHASE 4 • MODULE 7</span>
+            <span class="lc-tag">Section 4.2</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">🎬</div>
+            <div class="lc-icon">⚙️</div>
             <div>
-              <h4 class="lc-title">Side-by-Side Visualizer &amp; Gate C</h4>
-              <p class="lc-desc">Watch SerMax Hybrid race against Traditional/Median-3/Random in real time + run the 12-family Gate C correctness suite.</p>
+              <h4 class="lc-title">Algorithm Implementation &amp; Verification</h4>
+              <p class="lc-desc">Implement SerMax Hybrid QuickSort and three baseline algorithms (Traditional First-Element, Median-of-Three, Randomized-Pivot QuickSort) • Use identical input arrays for all algorithms • Verify correctness (sorted output).</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">8-Stage Timeline + 12/12 Gate C</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 4: Experimental Evaluation</span>
+            <span class="lc-arrow">Open Module 7 →</span>
           </div>
         </div>
 
-        <!-- Module 09 -->
+        <!-- PHASE 4 • MODULE 8 -->
         <div class="launch-card" onclick="showScreen('s09')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 09</span>
-            <span class="lc-tag">Sec 4.6.4–4.6.6 • Table 4</span>
+            <span class="lc-num">PHASE 4 • MODULE 8</span>
+            <span class="lc-tag">Sections 4.6.4 – 4.6.6</span>
           </div>
           <div class="lc-icon-row">
-            <div class="lc-icon">🏆</div>
+            <div class="lc-icon">⏱️</div>
             <div>
-              <h4 class="lc-title">4-Algorithm Sort Battle Leaderboard</h4>
-              <p class="lc-desc">Paired benchmarking with 10 warm-up + 10 measured runs, isolated instrumentation, and 12-condition matrix execution.</p>
+              <h4 class="lc-title">Comparative Benchmarking</h4>
+              <p class="lc-desc">Execute 12 benchmark conditions (4 categories × 3 sizes: 500, 1,000, 10,000) • 10 warm-up runs + 10 measured runs per test array • Record 6 Primary Metrics + 1 Supplementary Metric (Max Priority Queue Occupancy).</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">Time • Cmp • Swp • D_max • Balance B</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 4: Experimental Evaluation</span>
+            <span class="lc-arrow">Open Module 8 →</span>
           </div>
         </div>
 
-        <!-- Module 10 -->
+        <!-- PHASE 5 • MODULE 9 -->
         <div class="launch-card" onclick="showScreen('s10')">
           <div class="lc-glow"></div>
           <div class="lc-top">
-            <span class="lc-num">MODULE 10</span>
-            <span class="lc-tag">Sec 4.6.7 • Eqs. (22)–(23)</span>
+            <span class="lc-num">PHASE 5 • MODULE 9</span>
+            <span class="lc-tag">Section 4.6.7 • Eqs. (22)–(23)</span>
           </div>
           <div class="lc-icon-row">
             <div class="lc-icon">📊</div>
             <div>
-              <h4 class="lc-title">Statistical Analysis &amp; Report Exports</h4>
-              <p class="lc-desc">Wilcoxon signed-rank test, Holm 36-comparison adjustment, 2,000-resample 95% Bootstrap CI, and CSV/JSON/Java exports.</p>
+              <h4 class="lc-title">Statistical Analysis &amp; Results Export</h4>
+              <p class="lc-desc">Generate descriptive summaries for all metrics • Conduct paired comparisons (Wilcoxon signed-rank test &amp; paired sign test alternative) • Holm adjustment for 36 comparisons • 95% CI via 2,000 paired bootstrap resamples • Export CSV/JSON reports.</p>
             </div>
           </div>
           <div class="lc-footer">
-            <span class="mono">α = 0.05 • Chapter 4/5 Ready</span>
-            <span class="lc-arrow">Open Lab →</span>
+            <span class="mono">Phase 5: Statistical Reporting</span>
+            <span class="lc-arrow">Open Module 9 →</span>
           </div>
         </div>
       </div>
@@ -593,12 +593,16 @@
               <div>
                 <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Dataset Size (n)</label>
                 <select id="s02-size" style="width:100%;" onchange="generateFromScreen02()">
-                  <option value="5">5 (Functional Verification Size)</option>
-                  <option value="25">25 (Visualizer Trace Size)</option>
-                  <option value="50" selected>50 (Interactive Default)</option>
-                  <option value="500">500 (Thesis Benchmark Size 1)</option>
-                  <option value="1000">1,000 (Thesis Benchmark Size 2)</option>
-                  <option value="10000">10,000 (Thesis Benchmark Size 3)</option>
+                  <optgroup label="Benchmark Sizes (Sections 4.6.1–4.6.3)">
+                    <option value="500">500 (Benchmark Size 1)</option>
+                    <option value="1000">1,000 (Benchmark Size 2)</option>
+                    <option value="10000">10,000 (Benchmark Size 3)</option>
+                  </optgroup>
+                  <optgroup label="Verification / Visualization Only">
+                    <option value="5">5 (Verification / Visualization Only)</option>
+                    <option value="25">25 (Verification / Visualization Only)</option>
+                    <option value="50" selected>50 (Verification / Visualization Only)</option>
+                  </optgroup>
                 </select>
               </div>
               <div>
@@ -914,9 +918,9 @@
           <div class="kpi-sub">Midpoint-derived subproblems</div>
         </div>
         <div class="kpi-card">
-          <div class="kpi-label">Model Freeze Status</div>
-          <div class="kpi-val" style="color:#10b981; font-size:1.25rem;">FROZEN ✓</div>
-          <div class="kpi-sub" id="s04-model-version">SerMax-Poly2-36C</div>
+          <div class="kpi-label">Midpoint Heuristic MAE</div>
+          <div class="kpi-val" id="s04-midpoint-mae" style="color:var(--up-gold);">0.2415</div>
+          <div class="kpi-sub" id="s04-model-version">Compared against ŷ = 0.5000</div>
         </div>
       </div>
 
@@ -934,7 +938,7 @@
               </div>
               <h2>Table 2: Second-Degree Multivariate Polynomial Model (Eqs. 8–9)</h2>
             </div>
-            <button class="btn btn-gold btn-sm" onclick="retrainModelInteractive()">⚡ Re-Train &amp; Freeze OLS Model</button>
+            <button class="btn btn-gold btn-sm" onclick="retrainModelInteractive()">⚡ Train &amp; Validate OLS Model</button>
           </div>
           <div class="card-body">
             <div class="math-card mb-16">
@@ -957,8 +961,7 @@
             </div>
             <div id="s04-training-log" class="code-tracer" style="max-height:135px; overflow-y:auto; padding:10px 14px; font-size:0.7rem;"></div>
             <div style="display:flex; gap:8px; flex-wrap:wrap; margin-top:12px;">
-              <button class="btn btn-primary btn-sm" onclick="exportFrozenModelJSON()">&lt;/&gt; Export Frozen Model (JSON)</button>
-              <button class="btn btn-green btn-sm" onclick="openJavaModelModal()">☕ Generate Java Class (SerMaxPivotModel.java)</button>
+              <button class="btn btn-primary btn-sm" onclick="exportFrozenModelJSON()">💾 Save Trained Model for Runtime Use (JSON)</button>
             </div>
           </div>
         </div>
@@ -1374,10 +1377,10 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         SCREEN 08: COMPLETE ITERATIVE SORTING EXECUTION & LIVE VISUALIZER
+         MODULE 7 (SCREEN 08): ALGORITHM IMPLEMENTATION AND VERIFICATION
          ════════════════════════════════════════════════════════════════════════ -->
     <section class="view" id="view-s08" style="display:none;">
-      <!-- SUB-PANEL 8A: Live Side-by-Side Visualizer & 8-Node Event Timeline -->
+      <!-- SUB-PANEL 8A: Comparative Execution Visualizer & 8-Stage Algorithmic Workflow -->
       <div class="subpanel active" data-subpanel="s08-visualizer">
       <!-- Visualizer Controls Bar -->
       <div class="section-card mb-20">
@@ -1388,19 +1391,19 @@
               <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
               <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
             </div>
-            <h2>Side-by-Side Live Execution Visualizer &amp; 8-Node Event Timeline (Sections 4.2, 4.4, 4.5)</h2>
+            <h2>Module 7: Algorithm Implementation &amp; Execution Verification (Sections 4.2, 4.4, 4.5)</h2>
           </div>
           <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
             <button class="btn btn-gold btn-sm" id="vis-play-btn" onclick="togglePlay()">▶ Play</button>
             <button class="btn btn-ghost btn-sm" id="vis-step-btn" onclick="stepOnce()">⏭ Step</button>
             <button class="btn btn-ghost btn-sm" onclick="resetVis()">↺ Reset</button>
-            <button class="btn btn-primary btn-sm" onclick="generateForVis()">🎲 New Array</button>
+            <button class="btn btn-primary btn-sm" onclick="generateForVis()">🎲 New Identical Input Array</button>
           </div>
         </div>
         <div class="card-body">
           <div style="display:flex; gap:18px; align-items:center; flex-wrap:wrap; margin-bottom:14px;">
             <div>
-              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Distribution</label>
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Dataset Category</label>
               <select id="vis-dist" onchange="generateForVis()">
                 <option value="random">Random (Uniform)</option>
                 <option value="nearly">Nearly Sorted (1% Swaps)</option>
@@ -1409,18 +1412,20 @@
               </select>
             </div>
             <div>
-              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Baseline Opponent</label>
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Baseline Algorithm (Section 4.2.2)</label>
               <select id="vis-baseline-algo" onchange="generateForVis()">
-                <option value="trad">Traditional QuickSort (First-Element Pivot)</option>
+                <option value="trad">Traditional QuickSort (First Element)</option>
                 <option value="median3">Median-of-Three QuickSort</option>
                 <option value="random">Randomized-Pivot QuickSort</option>
               </select>
             </div>
-            <div style="flex:1; min-width:140px;">
-              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Array Size: <b id="vis-size-lbl" style="color:var(--up-gold);">30</b></label>
-              <input type="range" id="vis-size" min="5" max="80" step="5" value="30" style="width:100%;"
-                oninput="document.getElementById('vis-size-lbl').textContent=this.value"
-                onchange="generateForVis()" />
+            <div>
+              <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Verification / Visualization Size (<span id="vis-size-lbl" style="color:var(--up-gold);">25</span>)</label>
+              <select id="vis-size" onchange="document.getElementById('vis-size-lbl').textContent=this.value; generateForVis();">
+                <option value="5">n = 5 (Verification Only)</option>
+                <option value="25" selected>n = 25 (Verification / Visualization)</option>
+                <option value="50">n = 50 (Verification / Visualization)</option>
+              </select>
             </div>
             <div style="flex:1; min-width:140px;">
               <label style="font-size:0.7rem; color:var(--text-dim); display:block; margin-bottom:3px;">Frame Delay: <b id="vis-speed-lbl" style="color:var(--up-gold);">40 ms</b></label>
@@ -1436,7 +1441,7 @@
           </div>
 
           <div id="vis-op-label" class="math-card" style="padding:8px 14px; font-size:0.78rem; color:#fff;">
-            Press Play to animate step-by-step execution
+            Press Play to inspect step-by-step execution on identical input arrays
           </div>
 
           <!-- 8-Node Interactive Event Timeline Stepper -->
@@ -1448,7 +1453,7 @@
             <div class="timeline-node" data-stage="5"><div class="tn-num">5</div><div>Enqueue Eligible</div></div>
             <div class="timeline-node" data-stage="6"><div class="tn-num">6</div><div>Poll Largest First</div></div>
             <div class="timeline-node" data-stage="7"><div class="tn-num">7</div><div>Repeat Until |Q|=0</div></div>
-            <div class="timeline-node" data-stage="8"><div class="tn-num">8</div><div>Verify Ascending</div></div>
+            <div class="timeline-node" data-stage="8"><div class="tn-num">8</div><div>Verify Sorted Output</div></div>
           </div>
         </div>
       </div>
@@ -1465,7 +1470,7 @@
               </div>
               <h2 id="vis-baseline-title">Traditional QuickSort (First-Element Pivot)</h2>
             </div>
-            <span class="badge-warn">Recursive Baseline</span>
+            <span class="badge-warn">Baseline Algorithm</span>
           </div>
           <div class="card-body">
             <div class="bar-stage" id="vis-bars-trad"></div>
@@ -1505,7 +1510,7 @@
       </div>
       </div>
 
-      <!-- SUB-PANEL 8B: Gate C Pass/Fail Functional Verification Suite -->
+      <!-- SUB-PANEL 8B: Sorted Output Correctness Verification Across All 4 Algorithms -->
       <div class="subpanel" data-subpanel="s08-gatec" style="display:none;">
       <div class="section-card">
         <div class="card-header">
@@ -1515,24 +1520,24 @@
               <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
               <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
             </div>
-            <h2>Gate C: Automated Functional Correctness Verification Suite (12 Test Families • Section 4.2.3 &amp; 4.6.5)</h2>
+            <h2>Algorithm Correctness Verification: Identical Input Arrays &amp; Sorted Output Check (Section 4.2)</h2>
           </div>
-          <button class="btn btn-green btn-sm" onclick="runGateCVerification()">✓ Run All 12 Correctness Tests</button>
+          <button class="btn btn-green btn-sm" onclick="runGateCVerification()">✓ Verify Sorted Output Correctness</button>
         </div>
         <div class="card-body">
           <div class="data-table-wrap">
             <table class="data-table">
               <thead>
                 <tr>
-                  <th>Test ID</th>
-                  <th>Verification Test Family</th>
+                  <th>Condition #</th>
+                  <th>Dataset Category &amp; Verification Case</th>
                   <th>n</th>
-                  <th>Input Checksum</th>
+                  <th>Identical Input Checksum</th>
                   <th>SerMax Hybrid</th>
                   <th>Traditional (First)</th>
                   <th>Median-of-Three</th>
                   <th>Randomized-Pivot</th>
-                  <th>Multiset &amp; Order Gate</th>
+                  <th>Sorted Output Verification</th>
                 </tr>
               </thead>
               <tbody id="s08-verify-tbody"></tbody>
@@ -1544,10 +1549,10 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         SCREEN 09: COMPARATIVE BENCHMARKING LABORATORY & SORT BATTLE
+         MODULE 8 (SCREEN 09): COMPARATIVE BENCHMARKING
          ════════════════════════════════════════════════════════════════════════ -->
     <section class="view" id="view-s09" style="display:none;">
-      <!-- SUB-PANEL 9A: Benchmark Controls & Sort Battle Leaderboard -->
+      <!-- SUB-PANEL 9A: Benchmark Controls & Comparative Summary Table -->
       <div class="subpanel active" data-subpanel="s09-leaderboard">
       <div class="section-card mb-20">
         <div class="card-header">
@@ -1557,17 +1562,17 @@
               <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
               <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
             </div>
-            <h2>Comparative Benchmarking Laboratory (Sections 4.6.4–4.6.6, Table 4)</h2>
+            <h2>Module 8: Comparative Benchmarking (Sections 4.6.4–4.6.6, Table 4)</h2>
           </div>
           <div style="display:flex; gap:8px;">
-            <button class="btn btn-primary btn-sm" id="bench-run-btn" onclick="runSingleBenchmark()">⚡ Run Paired Benchmark</button>
-            <button class="btn btn-gold btn-sm" id="bench-matrix-btn" onclick="runFull12ConditionMatrix()">🚀 Run All 12 Thesis Conditions</button>
+            <button class="btn btn-primary btn-sm" id="bench-run-btn" onclick="runSingleBenchmark()">⚡ Run Paired Benchmark Condition</button>
+            <button class="btn btn-gold btn-sm" id="bench-matrix-btn" onclick="runFull12ConditionMatrix()">🚀 Execute All 12 Benchmark Conditions</button>
           </div>
         </div>
         <div class="card-body">
           <div style="display:grid; grid-template-columns:repeat(4, 1fr); gap:14px; margin-bottom:14px;">
             <div>
-              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Dataset Category</label>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Dataset Category (4 Categories)</label>
               <select id="bench-dist" style="width:100%;">
                 <option value="nearly">Nearly Sorted (Ascending + 1% Exchanges)</option>
                 <option value="reverse">Reverse Sorted (Descending)</option>
@@ -1576,41 +1581,39 @@
               </select>
             </div>
             <div>
-              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Benchmark Array Size (n)</label>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Approved Benchmark Size (3 Sizes)</label>
               <select id="bench-size" style="width:100%;">
-                <option value="500">500 elements (Benchmark Condition 1)</option>
-                <option value="1000" selected>1,000 elements (Benchmark Condition 2)</option>
-                <option value="3000">3,000 elements (Medium Scale)</option>
-                <option value="10000">10,000 elements (Benchmark Condition 3)</option>
+                <option value="500">500 elements (Benchmark Size 1)</option>
+                <option value="1000" selected>1,000 elements (Benchmark Size 2)</option>
+                <option value="10000">10,000 elements (Benchmark Size 3)</option>
               </select>
             </div>
             <div>
-              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Timing Protocol (Sec 4.6.5)</label>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Execution Protocol (Sec 4.6.5)</label>
               <select id="bench-trials" style="width:100%;">
-                <option value="10">10 Warm-ups + 10 Measured Runs (Thesis Spec)</option>
-                <option value="5">5 Warm-ups + 5 Measured Runs (Fast)</option>
+                <option value="10" selected>10 Warm-up Runs + 10 Measured Runs</option>
               </select>
             </div>
             <div>
-              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Recorded Seed</label>
+              <label style="font-size:0.72rem; color:var(--text-dim); display:block; margin-bottom:4px;">Pseudorandom Seed</label>
               <input type="number" id="bench-seed" value="20261001" style="width:100%;" />
             </div>
           </div>
 
-          <!-- Metric Visibility Toggles (Sort Battle style) -->
+          <!-- Recorded Performance Metrics (6 Primary + 1 Supplementary) -->
           <div style="display:flex; gap:14px; align-items:center; flex-wrap:wrap; font-size:0.74rem; color:var(--text-sub); padding-top:8px; border-top:1px solid var(--border-subtle);">
-            <span style="color:var(--up-gold); font-weight:700;">Visible Leaderboard Columns:</span>
-            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('time', this.checked)" /> Execution Time (Median)</label>
-            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('cmp', this.checked)" /> Comparisons</label>
-            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('swp', this.checked)" /> Swaps</label>
-            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('dep', this.checked)" /> Logical Depth (D_max)</label>
-            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('bal', this.checked)" /> Partition Balance (B)</label>
-            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('mem', this.checked)" /> Heap Bytes / Q_max</label>
+            <span style="color:var(--up-gold); font-weight:700;">Recorded Metrics (6 Primary + 1 Supplementary):</span>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('time', this.checked)" /> (1) Execution Time (ms)</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('cmp', this.checked)" /> (2) Comparisons</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('swp', this.checked)" /> (3) Swaps</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('dep', this.checked)" /> (4) Logical Partition Depth</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('bal', this.checked)" /> (5) Partition Balance</label>
+            <label><input type="checkbox" checked onchange="toggleLeaderboardCol('mem', this.checked)" /> (6) Memory (bytes) + Max PQ Occupancy</label>
           </div>
         </div>
       </div>
 
-      <!-- Sort Battle 4-Algorithm Ranked Leaderboard -->
+      <!-- Comparative Evaluation Table: Four Compared Algorithms -->
       <div class="section-card">
         <div class="card-header">
           <div class="card-header-left">
@@ -1619,25 +1622,25 @@
               <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
               <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
             </div>
-            <h2>Sort Battle Leaderboard: Four Compared Algorithms (Table 4 Configuration)</h2>
+            <h2>Comparative Evaluation Results: SerMax Hybrid vs. Three Baselines (Table 4)</h2>
           </div>
-          <span class="badge-pass" id="s09-condition-badge">Paired Input Array</span>
+          <span class="badge-pass" id="s09-condition-badge">Identical Input Array • Isolated Instrumentation</span>
         </div>
         <div class="card-body">
           <div class="data-table-wrap">
             <table class="data-table" id="s09-leaderboard-table">
               <thead>
                 <tr>
-                  <th>Rank</th>
-                  <th>Sorting Algorithm</th>
-                  <th>Pivot Selection &amp; Scheduler</th>
-                  <th>Status</th>
-                  <th class="col-time">Median Time (ms)</th>
+                  <th>#</th>
+                  <th>Algorithm</th>
+                  <th>Pivot Selection &amp; Subproblem Management</th>
+                  <th>Sorted Check</th>
+                  <th class="col-time">Execution Time (ms)</th>
                   <th class="col-cmp">Comparisons</th>
                   <th class="col-swp">Swaps</th>
-                  <th class="col-dep">Logical Depth (D_max)</th>
-                  <th class="col-bal">Imbalance (B)</th>
-                  <th class="col-mem">Est. Heap / Q_max</th>
+                  <th class="col-dep">Logical Depth</th>
+                  <th class="col-bal">Partition Balance (B)</th>
+                  <th class="col-mem">Memory (Bytes) / Max PQ</th>
                   <th>Speedup vs. Trad</th>
                 </tr>
               </thead>
@@ -1658,9 +1661,9 @@
               <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
               <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
             </div>
-            <h2>Benchmark Execution History Log</h2>
+            <h2>Recorded Benchmark Condition History Log</h2>
           </div>
-          <button class="btn btn-ghost btn-sm" onclick="showScreen('s10')">View Statistical Analysis &amp; Heatmaps →</button>
+          <button class="btn btn-ghost btn-sm" onclick="showScreen('s10')">Proceed to Phase 5: Statistical Analysis →</button>
         </div>
         <div class="card-body">
           <div class="data-table-wrap" style="max-height:330px; overflow-y:auto;">
@@ -1688,7 +1691,7 @@
     </section>
 
     <!-- ════════════════════════════════════════════════════════════════════════
-         SCREEN 10: RESULTS, STATISTICAL ANALYSIS & REPORTS
+         MODULE 9 (SCREEN 10): STATISTICAL ANALYSIS AND RESULTS EXPORT
          ════════════════════════════════════════════════════════════════════════ -->
     <section class="view" id="view-s10" style="display:none;">
       <!-- Top 5 Performance Delta KPIs -->
@@ -1720,7 +1723,7 @@
         </div>
       </div>
 
-      <!-- SUB-PANEL 10A: Multi-Metric Charts + Improvement Heatmap Matrix -->
+      <!-- SUB-PANEL 10A: Descriptive Summaries & 12-Condition Matrix -->
       <div class="subpanel active" data-subpanel="s10-charts">
       <div class="grid-2">
         <div class="section-card">
@@ -1731,7 +1734,7 @@
                 <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
                 <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
               </div>
-              <h2>Comparative Performance Visualization</h2>
+              <h2>Descriptive Summaries Across All Metrics (Section 4.6.7)</h2>
             </div>
             <div class="pill-tabs">
               <button class="pill-tab active" onclick="switchS10Chart('time', this)">Time (ms)</button>
@@ -1754,9 +1757,9 @@
                 <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
                 <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
               </div>
-              <h2>12-Condition Speedup &amp; Swap Reduction Heatmap Matrix</h2>
+              <h2>12-Condition Benchmark Summary Matrix (4 Categories × 3 Sizes)</h2>
             </div>
-            <button class="btn btn-gold btn-sm" onclick="runFull12ConditionMatrix()">↻ Refresh 12-Condition Matrix</button>
+            <button class="btn btn-gold btn-sm" onclick="runFull12ConditionMatrix()">↻ Run 12-Condition Matrix</button>
           </div>
           <div class="card-body">
             <div class="data-table-wrap">
@@ -1766,7 +1769,7 @@
                     <th>Dataset Category</th>
                     <th>n = 500</th>
                     <th>n = 1,000</th>
-                    <th>n = 10,000 (or Scaled)</th>
+                    <th>n = 10,000</th>
                     <th>Mean Swap Reduction</th>
                   </tr>
                 </thead>
@@ -1789,7 +1792,7 @@
                 <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
                 <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
               </div>
-              <h2>Inferential Statistical Analysis (Section 4.6.7: Wilcoxon + Holm + Bootstrap CI)</h2>
+              <h2>Paired Statistical Comparisons (Wilcoxon Signed-Rank / Paired Sign Test + Holm 36 + 2,000 Bootstrap CI)</h2>
             </div>
             <span class="badge-pass">α = 0.05 • 2,000 Resamples</span>
           </div>
@@ -1800,10 +1803,10 @@
                   <tr>
                     <th>Paired Baseline Comparison</th>
                     <th>Speedup Ratio</th>
-                    <th>95% Bootstrap CI</th>
-                    <th>Wilcoxon z-stat</th>
+                    <th>95% Bootstrap CI (2,000)</th>
+                    <th>Wilcoxon / Sign Test</th>
                     <th>Raw p-value</th>
-                    <th>Holm Adjusted p</th>
+                    <th>Holm Adjusted p (36)</th>
                     <th>Conclusion (α=0.05)</th>
                   </tr>
                 </thead>
@@ -1811,7 +1814,7 @@
               </table>
             </div>
             <div class="math-card" style="margin-top:12px; font-size:0.73rem;">
-              <b style="color:var(--up-gold);">Thesis Interpretation Rule (Section 4.6.7):</b> Statistical significance is distinguished from practical computational importance. Lower prediction error (MAE/RMSE) or lower partition imbalance (<i>B</i>) does not automatically guarantee faster execution time because runtime feature extraction, 36-term polynomial evaluation, and priority queue maintenance introduce measurable computational overhead on small partitions.
+              <b style="color:var(--up-gold);">Thesis Statistical Protocol (Section 4.6.7):</b> Conducts paired comparisons using the Wilcoxon signed-rank test (when symmetry assumptions hold) and the paired sign test alternative, applies the Holm step-down adjustment across the family of 36 comparisons, and computes 95% confidence intervals using 2,000 paired bootstrap resamples.
             </div>
           </div>
         </div>
@@ -1825,19 +1828,18 @@
                 <span class="mac-dot yellow" onclick="toggleMinimizeCard(this)"></span>
                 <span class="mac-dot green" onclick="toggleMaximizeCard(this)"></span>
               </div>
-              <h2>Research Deliverables &amp; Export Center</h2>
+              <h2>Tables, Figures &amp; Research Reports Export (Section 4.6.7)</h2>
             </div>
-            <span class="badge-warn">Reproducible Artifacts</span>
+            <span class="badge-warn">Manuscript Results</span>
           </div>
           <div class="card-body">
             <p style="font-size:0.78rem; color:var(--text-sub); margin-bottom:14px; line-height:1.55;">
-              Export all empirical benchmark records, frozen 36-coefficient polynomial regression parameters, Java reference source code, and formatted statistical reports for Chapter 4 &amp; Chapter 5 documentation.
+              Generate and export descriptive summary tables, statistical comparison reports (CSV), and trained 36-coefficient polynomial regression parameters (JSON) for Chapter 4 &amp; Chapter 5 manuscript results.
             </p>
             <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:14px;">
-              <button class="btn btn-primary" onclick="exportBenchmarkCSV()">📊 Export Benchmark Records (CSV)</button>
-              <button class="btn btn-gold" onclick="exportFrozenModelJSON()">🧠 Export Frozen 36β Model (JSON)</button>
-              <button class="btn btn-green" onclick="openJavaModelModal()">☕ View/Download Java Implementation</button>
-              <button class="btn btn-ghost" onclick="window.print()">🖨️ Print / Save PDF Research Report</button>
+              <button class="btn btn-primary" onclick="exportBenchmarkCSV()">📊 Export Benchmark &amp; Stats Table (CSV)</button>
+              <button class="btn btn-gold" onclick="exportFrozenModelJSON()">💾 Export Trained 36β Model (JSON)</button>
+              <button class="btn btn-ghost" style="grid-column: 1 / -1;" onclick="window.print()">🖨️ Print / Save Formatted Research Report (PDF)</button>
             </div>
             <div id="s10-exec-summary" class="math-card"></div>
           </div>
@@ -1871,7 +1873,7 @@
       </div>
     </div>
     <div class="lightbox-stage">
-      <img id="lightbox-img" src="sermax-logo.png?v=4" alt="Enlarged Official Logo" onclick="toggleLightboxZoom()" style="cursor:zoom-in;" />
+      <img id="lightbox-img" src="sermax-logo.png?v=12" alt="Enlarged Official Logo" onclick="toggleLightboxZoom()" style="cursor:zoom-in;" />
     </div>
     <div style="padding:10px 18px; text-align:center; font-size:0.76rem; color:var(--text-sub); border-top:1px solid var(--border-subtle);" id="lightbox-desc">
       Official Emblem of SerMax Hybrid QuickSort — Click image or zoom buttons to inspect in high resolution.
@@ -1887,56 +1889,9 @@
   </div>
 </div>
 
-<!-- ════════════════════════════════════════════════════════════════════════════
-     7. JAVA IMPLEMENTATION & FROZEN MODEL CODE GENERATOR MODAL
-     ════════════════════════════════════════════════════════════════════════════ -->
-<div class="modal-backdrop" id="java-code-modal" onclick="if(event.target===this) closeJavaModelModal()">
-  <div class="lightbox-window" style="max-width:860px;">
-    <div class="card-header">
-      <div class="card-header-left">
-        <div class="macos-dots">
-          <span class="mac-dot red" onclick="closeJavaModelModal()"></span>
-          <span class="mac-dot yellow" onclick="closeJavaModelModal()"></span>
-          <span class="mac-dot green" onclick="copyJavaCode()"></span>
-        </div>
-        <h2>Generated Java Research Implementation (SerMaxPivotModel.java)</h2>
-      </div>
-      <div style="display:flex; gap:6px;">
-        <button class="btn btn-gold btn-sm" onclick="copyJavaCode()">📋 Copy Java Code</button>
-        <button class="btn btn-primary btn-sm" onclick="downloadJavaCode()">↓ Download .java</button>
-        <button class="btn btn-ghost btn-sm" onclick="closeJavaModelModal()">✕ Close</button>
-      </div>
-    </div>
-    <div class="card-body">
-      <pre id="java-code-preview" class="code-tracer" style="max-height:420px; overflow:auto; padding:14px; color:#f8fafc; font-size:0.72rem; white-space:pre;"></pre>
-    </div>
-  </div>
-</div>
-
-<!-- ════════════════════════════════════════════════════════════════════════════
-     8. macOS SPOTLIGHT COMMAND PALETTE (⌘K / Ctrl+K)
-     ════════════════════════════════════════════════════════════════════════════ -->
-<div class="modal-backdrop" id="spotlight-modal" onclick="if(event.target===this) closeSpotlightModal()">
-  <div class="lightbox-window" style="max-width:540px;">
-    <div class="card-header">
-      <div class="card-header-left">
-        <div class="macos-dots">
-          <span class="mac-dot red" onclick="closeSpotlightModal()"></span>
-        </div>
-        <h2>⌘K Spotlight Command Palette</h2>
-      </div>
-      <span class="mono" style="font-size:0.68rem; color:var(--text-dim);">ESC to close</span>
-    </div>
-    <div class="card-body">
-      <input type="text" id="spotlight-input" placeholder="Jump to screen, run verification, train model, or enlarge logo..." style="width:100%; margin-bottom:12px; font-size:0.86rem;" oninput="filterSpotlight(this.value)" />
-      <div id="spotlight-list" style="display:flex; flex-direction:column; gap:6px; max-height:300px; overflow-y:auto;"></div>
-    </div>
-  </div>
-</div>
-
 <div id="toast" class="toast" style="display:none;"></div>
 
-<script src="algorithms.js?v=11"></script>
-<script src="app.js?v=11"></script>
+<script src="algorithms.js?v=12"></script>
+<script src="app.js?v=12"></script>
 </body>
 </html>
