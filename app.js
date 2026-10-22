@@ -184,8 +184,6 @@ const SCREEN_META = {
 
 // ─── INITIALIZATION ───
 window.addEventListener('DOMContentLoaded', () => {
-  initThemeSystem();
-  initVisualizerControls();
   startMenuClock();
   setupKeyboardShortcuts();
 
@@ -207,79 +205,6 @@ window.addEventListener('DOMContentLoaded', () => {
 
   showScreen('s01');
 });
-
-
-// ─── THEME & APPEARANCE SYSTEM (DARK / LIGHT / SYSTEM DEFAULT) ───
-function setThemePreference(pref) {
-  try {
-    localStorage.setItem('sermax-theme-pref', pref);
-  } catch (e) {}
-  applyResolvedTheme(pref);
-}
-
-function applyResolvedTheme(pref) {
-  let resolved = pref;
-  if (pref === 'system') {
-    resolved = (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) ? 'light' : 'dark';
-  }
-
-  document.documentElement.setAttribute('data-theme', resolved === 'light' ? 'light' : 'dark');
-  document.documentElement.setAttribute('data-theme-pref', pref);
-
-  // Update switcher radio buttons UI
-  document.querySelectorAll('.theme-opt').forEach(btn => {
-    const opt = btn.getAttribute('data-theme-opt');
-    const isSel = (opt === pref);
-    btn.setAttribute('aria-checked', isSel ? 'true' : 'false');
-    btn.classList.toggle('active', isSel);
-  });
-
-  const lbl = document.getElementById('theme-status-label');
-  if (lbl) {
-    lbl.textContent = 'Appearance: ' + (pref === 'system' ? 'System Default (' + resolved + ')' : (pref === 'light' ? 'Light Mode' : 'Dark Mode'));
-  }
-}
-
-if (window.matchMedia) {
-  window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
-    let pref = 'dark';
-    try { pref = localStorage.getItem('sermax-theme-pref') || 'dark'; } catch (e) {}
-    if (pref === 'system') applyResolvedTheme('system');
-  });
-}
-
-function initThemeSystem() {
-  let pref = 'dark';
-  try { pref = localStorage.getItem('sermax-theme-pref') || 'dark'; } catch (e) {}
-  applyResolvedTheme(pref);
-
-  try {
-    const rm = localStorage.getItem('sermax-reduced-motion') === '1';
-    setReducedMotion(rm);
-  } catch (e) {}
-}
-
-function setReducedMotion(enabled) {
-  try { localStorage.setItem('sermax-reduced-motion', enabled ? '1' : '0'); } catch (e) {}
-  document.documentElement.setAttribute('data-reduced-motion', enabled ? '1' : '0');
-  const chk = document.getElementById('vis-reduced-motion');
-  if (chk) chk.checked = !!enabled;
-}
-
-function initVisualizerControls() {
-  const sel = document.getElementById('vis-speed-mult');
-  if (sel) sel.value = String(visSpeedMultiplier);
-  const chkMotion = document.getElementById('vis-reduced-motion');
-  if (chkMotion) {
-    try { chkMotion.checked = localStorage.getItem('sermax-reduced-motion') === '1'; } catch (e) {}
-  }
-}
-
-function toggleFullscreenEl(id) {
-  const el = document.getElementById(id);
-  if (!el) return;
-  el.classList.toggle('fullscreen-active');
-}
 
 function startMenuClock() {
   const el = document.getElementById('menubar-clock');
@@ -1760,49 +1685,28 @@ function s07ManualPoll() {
 }
 
 // ─── SCREEN 08: LIVE VISUALIZER & GATE C VERIFICATION SUITE ───
-let visGlobalMin = 0;
-let visGlobalMax = 100;
-let visSpeedMultiplier = 1.0;
-let pinnedElementInfo = null;
-
-function computeVisGlobalExtremes(arr) {
-  if (!arr || arr.length === 0) {
-    visGlobalMin = 0;
-    visGlobalMax = 100;
-    return;
-  }
-  visGlobalMin = Math.min(...arr);
-  visGlobalMax = Math.max(...arr);
-  if (visGlobalMax === visGlobalMin) {
-    visGlobalMax = visGlobalMin + 1;
-  }
-}
-
 function generateForVis(forceArray = null) {
   stopPlay();
-  const baselineAlgo = document.getElementById('vis-baseline-algo')?.value || 'trad';
+  const baselineAlgo = document.getElementById('vis-baseline-algo').value || 'trad';
   const titles = {
     trad: 'Traditional QuickSort (First-Element Pivot)',
     median3: 'Median-of-Three QuickSort',
     random: 'Randomized-Pivot QuickSort'
   };
-  const titleEl = document.getElementById('vis-baseline-title');
-  if (titleEl) titleEl.textContent = titles[baselineAlgo] || titles.trad;
+  document.getElementById('vis-baseline-title').textContent = titles[baselineAlgo] || titles.trad;
 
   let arr;
   if (forceArray && Array.isArray(forceArray)) {
     arr = [...forceArray];
   } else {
-    const size = parseInt(document.getElementById('vis-size')?.value, 10) || 25;
-    const dist = document.getElementById('vis-dist')?.value || 'random';
+    const size = parseInt(document.getElementById('vis-size').value, 10) || 30;
+    const dist = document.getElementById('vis-dist').value || 'random';
     arr = Engine.generateDataset(size, dist, 20261001, 5, 100).array;
   }
 
-  computeVisGlobalExtremes(arr);
   tradSnaps = Engine.getVisualizerSnapshots(arr, baselineAlgo, Engine.getFrozenModel());
   sermaxSnaps = Engine.getVisualizerSnapshots(arr, 'sermax', Engine.getFrozenModel());
   frameIdx = 0;
-  unpinBarElement();
 
   const maxF = Math.max(tradSnaps.length, sermaxSnaps.length) - 1;
   const scrub = document.getElementById('vis-scrubber');
@@ -1810,28 +1714,18 @@ function generateForVis(forceArray = null) {
     scrub.max = Math.max(1, maxF);
     scrub.value = 0;
   }
-
-  // Update element counts in array state panel headers
-  const tc = document.getElementById('trad-state-count');
-  if (tc) tc.textContent = '(' + arr.length + ' elements)';
-  const sc = document.getElementById('sermax-state-count');
-  if (sc) sc.textContent = '(' + arr.length + ' elements)';
-
   renderFrame();
-  if (document.getElementById('vis-history-drawer')?.style.display !== 'none') {
-    populateVisHistory();
-  }
 }
 
 function getBarColor(idx, frame, isSermax) {
-  if (!frame) return isSermax ? '#D9AB56' : '#e28532';
+  if (!frame) return isSermax ? '#F2A900' : '#F58220';
   const { left, right, pivot, low, high, op } = frame;
   if (op === 'done') return '#10b981';
   if (idx === pivot) return '#22d3ee';
   if (op === 'swap' && (idx === left || idx === right)) return '#f43f5e';
   if (idx === left || idx === right) return '#fbbf24';
-  if (low !== -1 && idx >= low && idx <= high) return isSermax ? '#D9AB56' : '#e28532';
-  return '#30121c';
+  if (low !== -1 && idx >= low && idx <= high) return isSermax ? '#F2A900' : '#F58220';
+  return '#3b1219';
 }
 
 function renderVisBars(containerId, frameArr, isSermax) {
@@ -1840,189 +1734,16 @@ function renderVisBars(containerId, frameArr, isSermax) {
 
   const frame = frameArr[Math.min(frameIdx, frameArr.length - 1)];
   const arr = frame ? frame.array : frameArr[0].array;
-  const showValues = document.getElementById('vis-show-values')?.checked ?? true;
-  const showIndices = document.getElementById('vis-show-indices')?.checked ?? false;
-  const zoom = parseFloat(document.getElementById('vis-zoom')?.value || '1');
-  const n = arr.length;
-  const baselineKey = document.getElementById('vis-baseline-algo')?.value || 'trad';
-  const algoName = isSermax ? 'SerMax Hybrid QuickSort' : (baselineKey === 'median3' ? 'Median-of-Three QuickSort' : (baselineKey === 'random' ? 'Randomized QuickSort' : 'Traditional QuickSort'));
+  const min = Math.min(...arr);
+  const max = Math.max(...arr);
+  const span = Math.max(1, max - min);
 
-  // Consistent vertical scale across both panels
-  const span = Math.max(1, visGlobalMax - visGlobalMin);
-  const hasNegative = visGlobalMin < 0;
-  const zeroPercent = hasNegative ? Math.max(5, Math.min(95, ((0 - visGlobalMin) / span) * 100)) : 0;
-
-  // Adaptive label density based on array size and zoom factor:
-  // - 5 to 20 elements: show all values and indices (if toggled on)
-  // - 21 to 50 elements: show labels when sufficient space exists (step = 2; zoom >= 1.5 shows all)
-  // - 51 to 100 elements: step = Math.ceil(n / 20); zoom >= 2.0 shows all
-  // - > 100 elements: step = Math.ceil(n / 15); zoom >= 3.0 shows all
-  let valStep = 1;
-  let idxStep = 1;
-
-  if (n <= 20) {
-    valStep = 1;
-    idxStep = 1;
-  } else if (n <= 50) {
-    valStep = zoom >= 1.5 ? 1 : 2;
-    idxStep = zoom >= 1.5 ? 1 : 2;
-  } else if (n <= 100) {
-    valStep = zoom >= 2.0 ? 1 : Math.ceil(n / 20);
-    idxStep = zoom >= 2.0 ? 1 : Math.ceil(n / 20);
-  } else {
-    valStep = zoom >= 3.0 ? 1 : Math.ceil(n / 15);
-    idxStep = zoom >= 3.0 ? 1 : Math.ceil(n / 15);
-  }
-
-  const innerWidth = zoom > 1 ? 'calc(100% * ' + zoom + ')' : '100%';
-  let html = '<div class="bar-stage-inner" style="width:' + innerWidth + '; min-width:100%;">';
-  if (hasNegative) {
-    html += '<div class="zero-baseline" style="bottom:' + zeroPercent + '%;" title="Zero Baseline (0)"><span class="zero-label">0</span></div>';
-  }
-
-  for (let i = 0; i < arr.length; i++) {
-    const v = arr[i];
+  el.innerHTML = arr.map((v, i) => {
+    const h = Math.max(5, ((v - min) / span) * 90 + 5);
     const col = getBarColor(i, frame, isSermax);
-    const isPinned = pinnedElementInfo && pinnedElementInfo.algoName === algoName && pinnedElementInfo.idx === i;
-    const isSwapping = frame && frame.op === 'swap' && (i === frame.left || i === frame.right);
-    const isPivot = frame && frame.pivot === i;
-    const isLeft = frame && frame.left === i;
-    const isRight = frame && frame.right === i;
-
-    // Pointer tags displayed prominently above the bar
-    let pointerTag = '';
-    if (isPivot) {
-      pointerTag = '<span class="bar-tag bar-tag-pivot">p=' + v + '</span>';
-    } else if (isLeft && isRight) {
-      pointerTag = '<span class="bar-tag bar-tag-both">i,j</span>';
-    } else if (isLeft) {
-      pointerTag = '<span class="bar-tag bar-tag-l">i</span>';
-    } else if (isRight) {
-      pointerTag = '<span class="bar-tag bar-tag-r">j</span>';
-    }
-
-    let barStyle = '';
-    if (hasNegative) {
-      if (v >= 0) {
-        const h = Math.max(4, (v / span) * 72);
-        barStyle = 'bottom:' + zeroPercent + '%; height:' + h + '%;';
-      } else {
-        const h = Math.max(4, (Math.abs(v) / span) * 72);
-        barStyle = 'top:' + (100 - zeroPercent) + '%; height:' + h + '%; border-radius:0 0 3px 3px;';
-      }
-    } else {
-      const h = Math.max(6, ((v - Math.min(0, visGlobalMin)) / span) * 72 + 5);
-      barStyle = 'bottom:0px; height:' + h + '%;';
-    }
-
-    // Always show numerical value on pinned, hovered, or critical operational elements
-    const isCritical = isPivot || isLeft || isRight || isSwapping || isPinned;
-    const shouldShowVal = showValues && (i % valStep === 0 || i === 0 || i === n - 1 || isCritical);
-    const shouldShowIdx = showIndices && (i % idxStep === 0 || i === 0 || i === n - 1 || isPinned);
-
-    const valLabel = shouldShowVal ? '<span class="bar-val">' + v + '</span>' : '';
-    const idxLabel = shouldShowIdx ? '<span class="bar-idx">' + i + '</span>' : '';
-
-    html += '<div class="bar-col ' + (isPinned ? 'pinned' : '') + '" data-idx="' + i + '" data-val="' + v + '" ' +
-            'onmouseenter="handleBarHover(event, ' + i + ', ' + v + ', \'' + algoName + '\', ' + isSermax + ')" ' +
-            'onmouseleave="handleBarLeave()" ' +
-            'onclick="handleBarClick(event, ' + i + ', ' + v + ', \'' + algoName + '\', ' + isSermax + ')">' +
-            pointerTag +
-            '<div class="bar-body ' + (isSwapping ? 'swap-pulse' : '') + '" style="' + barStyle + ' background-color:' + col + ';">' +
-              valLabel +
-            '</div>' +
-            idxLabel +
-          '</div>';
-  }
-  html += '</div>';
-  el.innerHTML = html;
-}
-
-function handleBarHover(event, idx, val, algoName, isSermax) {
-  const snaps = isSermax ? sermaxSnaps : tradSnaps;
-  const frame = snaps[Math.min(frameIdx, snaps.length - 1)];
-  showBarTooltip(event, idx, val, algoName, frame);
-  highlightElementInArrayState(idx, isSermax);
-}
-
-function handleBarLeave() {
-  const tt = document.getElementById('bar-tooltip');
-  if (tt) tt.classList.remove('active');
-  // Clear hover highlight from array state table if not pinned
-  if (!pinnedElementInfo) {
-    document.querySelectorAll('.array-cell-row').forEach(r => r.classList.remove('highlight-selected'));
-  }
-}
-
-function handleBarClick(event, idx, val, algoName, isSermax) {
-  const snaps = isSermax ? sermaxSnaps : tradSnaps;
-  const frame = snaps[Math.min(frameIdx, snaps.length - 1)];
-  if (pinnedElementInfo && pinnedElementInfo.algoName === algoName && pinnedElementInfo.idx === idx) {
-    unpinBarElement();
-  } else {
-    pinBarElement(idx, val, algoName, frame);
-    highlightElementInArrayState(idx, isSermax);
-  }
-}
-
-function showBarTooltip(e, idx, val, algoName, frame) {
-  const tt = document.getElementById('bar-tooltip');
-  if (!tt) return;
-  const isPivot = frame && frame.pivot === idx;
-  const isLeft = frame && frame.left === idx;
-  const isRight = frame && frame.right === idx;
-  let pointerDesc = 'None';
-  if (isLeft && isRight) pointerDesc = 'Left & Right Pointers Converged';
-  else if (isLeft) pointerDesc = 'Left Scan Pointer (i)';
-  else if (isRight) pointerDesc = 'Right Scan Pointer (j)';
-  else if (frame && frame.low !== -1 && idx >= frame.low && idx <= frame.high) pointerDesc = 'Subproblem Bound [' + frame.low + '..' + frame.high + ']';
-
-  const pivotDesc = isPivot ? '<b style="color:var(--pivot);">Active Pivot (p = ' + val + ')</b>' : 'Non-Pivot Element';
-
-  tt.innerHTML = '<div style="font-weight:700; color:var(--up-gold); margin-bottom:4px;">' + algoName + '</div>' +
-    '<div><b>Current Index:</b> <span class="mono">' + idx + '</span></div>' +
-    '<div><b>Actual Integer Value:</b> <span class="mono">' + val + '</span></div>' +
-    '<div><b>Current Operation:</b> <span class="mono">' + (frame ? (frame.op || 'idle') : 'initial') + '</span></div>' +
-    '<div><b>Pivot Status:</b> ' + pivotDesc + '</div>' +
-    '<div><b>Pointer Status:</b> <span class="mono">' + pointerDesc + '</span></div>';
-
-  tt.classList.add('active');
-  const x = Math.min(window.innerWidth - 240, Math.max(10, (e.clientX || 0) + 12));
-  const y = Math.min(window.innerHeight - 190, Math.max(10, (e.clientY || 0) - 20));
-  tt.style.left = x + 'px';
-  tt.style.top = y + 'px';
-}
-
-function pinBarElement(idx, val, algoName, frame) {
-  pinnedElementInfo = { idx, val, algoName, frame };
-  const pPanel = document.getElementById('bar-pinned-panel');
-  const pText = document.getElementById('bar-pin-text');
-  if (pPanel && pText) {
-    pText.innerHTML = '<b>' + algoName + '</b> | Current Index: <b>' + idx + '</b> | Actual Value: <b>' + val + '</b> | Operation: <b>' + (frame ? frame.op : 'idle') + '</b> | Pivot: <b>' + (frame && frame.pivot === idx ? 'YES' : 'NO') + '</b>';
-    pPanel.style.display = 'flex';
-  }
-  renderFrame();
-}
-
-function unpinBarElement() {
-  pinnedElementInfo = null;
-  const pPanel = document.getElementById('bar-pinned-panel');
-  if (pPanel) pPanel.style.display = 'none';
-  document.querySelectorAll('.array-cell-row').forEach(r => r.classList.remove('highlight-selected'));
-  renderFrame();
-}
-
-function highlightElementInArrayState(idx, isSermax) {
-  const containerId = isSermax ? 'sermax-array-state-grid' : 'trad-array-state-grid';
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  container.querySelectorAll('.array-cell-row').forEach(r => r.classList.remove('highlight-selected'));
-  const targetRow = container.querySelector('.array-row-' + idx);
-  if (targetRow) {
-    targetRow.classList.add('highlight-selected');
-    targetRow.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  }
+    const lbl = arr.length <= 26 ? `<span>${v}</span>` : '';
+    return `<div class="bar" style="height:${h}%; background-color:${col};" title="A[${i}] = ${v}">${lbl}</div>`;
+  }).join('');
 }
 
 function renderFrame() {
@@ -2060,185 +1781,12 @@ function renderFrame() {
       nd.classList.toggle('active', parseInt(nd.getAttribute('data-stage'), 10) === (activeFrame.eventStage || 1));
     });
   }
-
-  // Synchronize both Current Array State panels
-  updateArrayStateGrid(tf ? tf.array : null, sf ? sf.array : null, tf, sf);
-
-  // If pinned element exists, refresh info from latest frame and re-highlight
-  if (pinnedElementInfo) {
-    const isSer = pinnedElementInfo.algoName.includes('SerMax');
-    const curFrame = isSer ? sf : tf;
-    if (curFrame && curFrame.array) {
-      const curVal = curFrame.array[pinnedElementInfo.idx];
-      const pText = document.getElementById('bar-pin-text');
-      if (pText && curVal !== undefined) {
-        pText.innerHTML = '<b>' + pinnedElementInfo.algoName + '</b> | Current Index: <b>' + pinnedElementInfo.idx + '</b> | Actual Value: <b>' + curVal + '</b> | Operation: <b>' + curFrame.op + '</b> | Pivot: <b>' + (curFrame.pivot === pinnedElementInfo.idx ? 'YES' : 'NO') + '</b>';
-      }
-      highlightElementInArrayState(pinnedElementInfo.idx, isSer);
-    }
-  }
-
-  // Highlight active row in operation history if drawer is open
-  const histRows = document.querySelectorAll('#vis-history-tbody tr');
-  histRows.forEach((r, idx) => {
-    r.classList.toggle('highlight-search', idx === frameIdx);
-  });
-}
-
-function updateArrayStateGrid(tradArr, sermaxArr, tradFrame, sermaxFrame) {
-  const tradEl = document.getElementById('trad-array-state-grid');
-  const sermaxEl = document.getElementById('sermax-array-state-grid');
-
-  const renderTable = (arr, frame, isSermax) => {
-    if (!arr || arr.length === 0) return '<div style="padding:8px; color:var(--text-dim);">No array available</div>';
-    let rows = '';
-    for (let i = 0; i < arr.length; i++) {
-      const v = arr[i];
-      let tag = '-';
-      let badgeClass = 'badge-ghost';
-      if (frame) {
-        if (frame.pivot === i) { tag = 'PIVOT'; badgeClass = 'badge-pass'; }
-        else if (frame.left === i) { tag = 'POINTER_L'; badgeClass = 'badge-warn'; }
-        else if (frame.right === i) { tag = 'POINTER_R'; badgeClass = 'badge-warn'; }
-        else if (frame.low !== -1 && i >= frame.low && i <= frame.high) { tag = 'IN_SUB'; badgeClass = 'badge-ghost'; }
-      }
-      const isPinned = pinnedElementInfo && pinnedElementInfo.idx === i && ((isSermax && pinnedElementInfo.algoName.includes('SerMax')) || (!isSermax && !pinnedElementInfo.algoName.includes('SerMax')));
-      rows += '<tr data-idx="' + i + '" class="array-cell-row array-row-' + i + ' ' + (isPinned ? 'highlight-selected' : '') + '" ' +
-        'onclick="handleArrayRowClick(' + i + ', ' + v + ', ' + isSermax + ')">' +
-        '<td><b class="mono">' + i + '</b></td>' +
-        '<td><span class="mono" style="font-weight:700;">' + v + '</span></td>' +
-        '<td><span class="' + badgeClass + '">' + tag + '</span></td>' +
-      '</tr>';
-    }
-    return '<table class="array-state-table">' +
-      '<thead><tr><th style="width:50px;">Index</th><th style="width:80px;">Actual Value</th><th>Status</th></tr></thead>' +
-      '<tbody>' + rows + '</tbody>' +
-    '</table>';
-  };
-
-  if (tradEl) tradEl.innerHTML = renderTable(tradArr, tradFrame, false);
-  if (sermaxEl) sermaxEl.innerHTML = renderTable(sermaxArr, sermaxFrame, true);
-}
-
-function handleArrayRowClick(idx, val, isSermax) {
-  const baselineKey = document.getElementById('vis-baseline-algo')?.value || 'trad';
-  const algoName = isSermax ? 'SerMax Hybrid QuickSort' : (baselineKey === 'median3' ? 'Median-of-Three QuickSort' : (baselineKey === 'random' ? 'Randomized QuickSort' : 'Traditional QuickSort'));
-  const snaps = isSermax ? sermaxSnaps : tradSnaps;
-  const frame = snaps[Math.min(frameIdx, snaps.length - 1)];
-
-  if (pinnedElementInfo && pinnedElementInfo.algoName === algoName && pinnedElementInfo.idx === idx) {
-    unpinBarElement();
-  } else {
-    pinBarElement(idx, val, algoName, frame);
-    highlightElementInArrayState(idx, isSermax);
-  }
-}
-
-function highlightSearchedIndex(val, isSermax) {
-  const containerId = isSermax ? 'sermax-array-state-grid' : 'trad-array-state-grid';
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  container.querySelectorAll('.array-cell-row').forEach(tr => tr.classList.remove('highlight-search'));
-  if (val === '' || val === null || val === undefined) return;
-  const idx = parseInt(val, 10);
-  if (isNaN(idx)) return;
-  const matched = container.querySelectorAll('.array-row-' + idx);
-  matched.forEach(tr => {
-    tr.classList.add('highlight-search');
-    tr.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
-  });
-}
-
-function toggleLocalArrayState(wrapId) {
-  const wrap = document.getElementById(wrapId);
-  if (wrap) {
-    wrap.style.display = (wrap.style.display === 'none') ? 'block' : 'none';
-  }
-}
-
-function toggleVisHistory() {
-  const drawer = document.getElementById('vis-history-drawer');
-  if (!drawer) return;
-  const isHidden = (drawer.style.display === 'none');
-  drawer.style.display = isHidden ? 'block' : 'none';
-  if (isHidden) populateVisHistory();
-}
-
-function populateVisHistory() {
-  const tbody = document.getElementById('vis-history-tbody');
-  if (!tbody) return;
-  const maxF = Math.max(tradSnaps.length, sermaxSnaps.length);
-  let rows = '';
-
-  for (let s = 0; s < maxF; s++) {
-    const tf = tradSnaps[Math.min(s, tradSnaps.length - 1)];
-    const sf = sermaxSnaps[Math.min(s, sermaxSnaps.length - 1)];
-    const curFrame = sf || tf;
-    const prevFrame = s > 0 ? (sf ? sermaxSnaps[s - 1] : tradSnaps[s - 1]) : curFrame;
-    if (!curFrame) continue;
-
-    const op = curFrame.op || 'step';
-    const left = curFrame.left !== -1 ? curFrame.left : '-';
-    const right = curFrame.right !== -1 ? curFrame.right : '-';
-    const pivot = curFrame.pivot !== -1 ? curFrame.pivot : '-';
-    const affected = 'L:' + left + ', R:' + right + (pivot !== '-' ? (', P:' + pivot) : '');
-
-    // Values before the operation
-    let valBefore = '-';
-    if (curFrame.op === 'swap' && prevFrame && prevFrame.array && curFrame.left !== -1 && curFrame.right !== -1) {
-      valBefore = 'A[' + left + ']=' + prevFrame.array[curFrame.left] + ', A[' + right + ']=' + prevFrame.array[curFrame.right];
-    } else if (curFrame.left !== -1 && curFrame.right !== -1 && curFrame.array) {
-      valBefore = 'A[' + left + ']=' + curFrame.array[curFrame.left] + ', A[' + right + ']=' + curFrame.array[curFrame.right];
-    } else if (curFrame.pivot !== -1 && curFrame.array) {
-      valBefore = 'p = ' + curFrame.array[curFrame.pivot];
-    }
-
-    // Values after the operation
-    let valAfter = '-';
-    if (curFrame.op === 'swap' && curFrame.array && curFrame.left !== -1 && curFrame.right !== -1) {
-      valAfter = 'A[' + left + ']=' + curFrame.array[curFrame.left] + ', A[' + right + ']=' + curFrame.array[curFrame.right];
-    } else if (curFrame.op === 'done') {
-      valAfter = 'Sorted Array Verified';
-    } else if (curFrame.left !== -1 && curFrame.right !== -1) {
-      valAfter = 'Pointers at (' + left + ', ' + right + ')';
-    } else {
-      valAfter = curFrame.detail || op;
-    }
-
-    // Resulting array state
-    const snippet = curFrame.array ? ('[' + curFrame.array.slice(0, 8).join(', ') + (curFrame.array.length > 8 ? ', ...' : '') + ']') : '[]';
-
-    rows += '<tr style="cursor:pointer;" onclick="jumpToVisFrame(' + s + ')" class="' + (s === frameIdx ? 'highlight-search' : '') + '">' +
-      '<td><b class="mono">' + s + '</b></td>' +
-      '<td><span class="' + (sf ? 'badge-pass' : 'badge-warn') + '">' + op + '</span></td>' +
-      '<td class="mono" style="font-size:0.68rem;">' + affected + '</td>' +
-      '<td class="mono" style="font-size:0.68rem;">' + valBefore + '</td>' +
-      '<td class="mono" style="font-size:0.68rem;">' + valAfter + '</td>' +
-      '<td class="mono" style="font-size:0.68rem;" title="' + (curFrame.array ? curFrame.array.join(', ') : '') + '">' + snippet + '</td>' +
-    '</tr>';
-  }
-  tbody.innerHTML = rows;
-}
-
-function jumpToVisFrame(step) {
-  stopPlay();
-  frameIdx = Math.max(0, Math.min(step, Math.max(tradSnaps.length, sermaxSnaps.length) - 1));
-  renderFrame();
 }
 
 function scrubVisFrame(val) {
   stopPlay();
   frameIdx = parseInt(val, 10) || 0;
   renderFrame();
-}
-
-function setAnimationSpeed(val) {
-  visSpeedMultiplier = parseFloat(val) || 1.0;
-  if (playing) {
-    stopPlay();
-    startPlay();
-  }
 }
 
 function togglePlay() {
@@ -2251,15 +1799,14 @@ function startPlay() {
   if (frameIdx >= maxFrames - 1) { frameIdx = 0; renderFrame(); }
   playing = true;
   document.getElementById('vis-play-btn').innerHTML = '⏸ Pause';
-  const baseSpeed = parseInt(document.getElementById('vis-speed').value, 10) || 40;
-  const effectiveDelay = Math.max(5, Math.round(baseSpeed / visSpeedMultiplier));
+  const speed = parseInt(document.getElementById('vis-speed').value, 10) || 40;
 
   playTimer = setInterval(() => {
     const max = Math.max(tradSnaps.length, sermaxSnaps.length);
     if (frameIdx >= max - 1) { stopPlay(); return; }
     frameIdx++;
     renderFrame();
-  }, effectiveDelay);
+  }, speed);
 }
 
 function stopPlay() {
@@ -2275,60 +1822,10 @@ function stepOnce() {
   if (frameIdx < max - 1) { frameIdx++; renderFrame(); }
 }
 
-function stepBack() {
-  stopPlay();
-  if (frameIdx > 0) {
-    frameIdx--;
-    renderFrame();
-  }
-}
-
 function resetVis() {
   stopPlay();
   frameIdx = 0;
-  unpinBarElement();
   renderFrame();
-}
-
-function exportVisTrace() {
-  const traceData = {
-    exportedAt: new Date().toISOString(),
-    configuration: {
-      category: document.getElementById('vis-dist')?.value || 'random',
-      size: parseInt(document.getElementById('vis-size')?.value, 10) || 25,
-      baseline: document.getElementById('vis-baseline-algo')?.value || 'trad',
-      initialArray: tradSnaps[0]?.array || []
-    },
-    traditionalBaselineSnapshots: tradSnaps.map((f, i) => ({
-      frameIndex: i,
-      op: f.op,
-      detail: f.detail,
-      left: f.left,
-      right: f.right,
-      pivot: f.pivot,
-      array: f.array,
-      metrics: f.metrics
-    })),
-    sermaxSnapshots: sermaxSnaps.map((f, i) => ({
-      frameIndex: i,
-      op: f.op,
-      detail: f.detail,
-      eventStage: f.eventStage,
-      left: f.left,
-      right: f.right,
-      pivot: f.pivot,
-      array: f.array,
-      metrics: f.metrics
-    }))
-  };
-
-  const blob = new Blob([JSON.stringify(traceData, null, 2)], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'sermax_trace_n' + traceData.configuration.size + '_' + Date.now() + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
 }
 
 function runGateCVerification() {
