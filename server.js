@@ -58,6 +58,5 @@ app.get('/api/verify', (req, res) => {
   res.json(Engine.runVerificationSuite());
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
-});
+module.exports = app;
+
