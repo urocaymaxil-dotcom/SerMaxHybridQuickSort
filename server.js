@@ -10,6 +10,11 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname)));
 
+// Serve the UI entry point at the root URL
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 app.post('/api/sort/trad', (req, res) => {
   const { array, seed } = req.body;
   if (!array || !Array.isArray(array)) return res.status(400).json({ error: 'Invalid array' });
